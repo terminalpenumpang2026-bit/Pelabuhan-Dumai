@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jadwal Keberangkatan Kapal - Pelabuhan Dumai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0f4c81;
+      --primary-dark: #093256;
+      --accent: #00a8cc;
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --row-hover: #f8fafc;
+      --badge-ok-bg: #dcfce7;
+      --badge-ok-text: #15803d;
+      --badge-warn-bg: #fee2e2;
+      --badge-warn-text: #b91c1c;
+      --badge-info-bg: #e0f2fe;
+      --badge-info-text: #0369a1;
+      --badge-prep-bg: #fef3c7;
+      --badge-prep-text: #b45309;
+      --badge-neutral-bg: #f1f5f9;
+      --badge-neutral-text: #475569;
+    }
+
+    body.dark-mode {
+      --primary: #38bdf8;
+      --primary-dark: #0284c7;
+      --accent: #22d3ee;
+      --bg: #070d19;
+      --card-bg: #111b2e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #24344d;
+      --row-hover: #18253d;
+      --badge-ok-bg: rgba(74, 222, 128, 0.16);
+      --badge-ok-text: #4ade80;
+      --badge-warn-bg: rgba(248, 113, 113, 0.16);
+      --badge-warn-text: #f87171;
+      --badge-info-bg: rgba(56, 189, 248, 0.16);
+      --badge-info-text: #38bdf8;
+      --badge-prep-bg: rgba(250, 204, 21, 0.18);
+      --badge-prep-text: #facc15;
+      --badge-neutral-bg: rgba(192, 132, 252, 0.16);
+      --badge-neutral-text: #d8b4fe;
+    }
+
+    body.dark-mode .ticker-wrap {
+      background: #040811;
+      border-bottom-color: rgba(148, 163, 184, 0.16);
+    }
+
+    body.dark-mode .header-banner-box {
+      background: linear-gradient(135deg, #061326, #0f294a);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    body.dark-mode .summary-card,
+    body.dark-mode .controls-bar,
+    body.dark-mode .table-card,
+    body.dark-mode .note-box {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.4;
+      transition: background-color 0.25s, color 0.25s;
+      overflow-x: hidden;
+      min-height: 100dvh;
+      width: 100vw;
+      max-width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Mode layar penuh penuh-lebar & penuh-tinggi tanpa ruang kosong samping/bawah */
+    :fullscreen,
+    :-webkit-full-screen,
+    :-moz-full-screen,
+    :ms-fullscreen,
+    ::backdrop {
+      background-color: var(--bg);
+      color: var(--text-main);
+      width: 100vw;
+      height: 100dvh;
+      min-height: 100dvh;
+      max-width: 100vw;
+      opacity: 1 !important;
+      visibility: visible !important;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body.pseudo-fullscreen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      min-height: 100dvh;
+      max-width: 100vw;
+      opacity: 1 !important;
+      visibility: visible !important;
+      z-index: 99990;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen {
+      opacity: 1 !important;
+      visibility: visible !important;
+      background-color: var(--bg) !important;
+    }
+
+    body.fit-screen-active {
+      min-height: 100dvh;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .header-wrap,
+    body.is-fullscreen .main-container,
+    .header-wrap,
+    .main-container {
+      max-width: 100vw;
+      width: 100%;
+    }
+
+    @media (min-width: 1536px) {
+      .header-wrap,
+      .main-container {
+        max-width: 100vw;
+      }
+      .header-center h1 {
+        font-size: clamp(1.5rem, 2.1vw, 2.2rem);
+      }
+      .summary-value {
+        font-size: clamp(1.35rem, 1.75vw, 1.8rem);
+      }
+    }
+
+    /* Running Text Ticker */
+    .ticker-wrap {
+      background: #072540;
+      color: #f8fafc;
+      font-size: clamp(0.75rem, 0.9vw, 0.88rem);
+      padding: 0.35rem 0;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .ticker-label {
+      background: #eab308;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.75rem;
+      margin-left: 0.75rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .ticker-marquee {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      margin-left: 0.75rem;
+    }
+
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 48s linear infinite;
+    }
+
+    .ticker-wrap:hover .ticker-text {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .inline-ticker-wrap {
+      flex: 1;
+      min-width: 260px;
+      width: 100%;
+      max-width: none;
+      background: rgba(234, 179, 8, 0.14);
+      border: 1px solid rgba(234, 179, 8, 0.45);
+      border-radius: 10px;
+      padding: 0.32rem 0.85rem 0.32rem 0.42rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      overflow: hidden;
+    }
+
+    .inline-ticker-badge {
+      background: #eab308;
+      color: #0f172a;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+      padding: 0.22rem 0.65rem;
+      border-radius: 7px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 0.5px;
+    }
+
+    .inline-ticker-marquee {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-align: center;
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(0.84rem, 1.05vw, 1.02rem);
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    .inline-ticker-text {
+      display: inline-block;
+      padding-left: 0;
+      text-align: center;
+      font-family: 'Roboto', sans-serif;
+      color: var(--text-main);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .inline-ticker-text.is-fading {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+
+    .ticker-edit-input {
+      width: clamp(160px, 22vw, 310px);
+      padding: 0.26rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-size: 0.76rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .ticker-edit-input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Header Penuh Lebar Layar */
+    header {
+      background: transparent;
+      padding: clamp(0.45rem, 0.9vh, 0.85rem) 0 0;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    .header-wrap {
+      max-width: 100vw;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 clamp(0.5rem, 1.2vw, 1.25rem);
+    }
+
+    .header-banner-box {
+      width: 100%;
+      background: linear-gradient(135deg, #0b3960, #166096);
+      color: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: clamp(0.35rem, 0.7vh, 0.55rem) clamp(0.75rem, 1.5vw, 1.5rem) clamp(0.75rem, 1.4vh, 1.25rem);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: clamp(0.5rem, 1.2vw, 1.25rem);
+      position: relative;
+    }
+
+    .header-center {
+      text-align: center;
+      flex: 1;
+      padding-top: 0.25rem;
+    }
+
+    .header-center h1 {
+      font-size: clamp(1.15rem, 1.9vw, 1.85rem);
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 0.15rem;
+    }
+
+    .header-center p {
+      font-size: clamp(0.78rem, 1vw, 0.96rem);
+      opacity: 0.92;
+    }
+
+    .header-meta {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .live-pill {
+      background: rgba(255, 255, 255, 0.16);
+      padding: 0.32rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 0 rgba(74, 222, 128, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 0.32rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .header-logo-slot {
+      height: clamp(190px, 28vh, 380px);
+      max-width: clamp(190px, 31vw, 440px);
+      width: clamp(190px, 31vw, 440px);
+      margin-top: 0;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      z-index: 3;
+      transition: width 0.25s ease, height 0.25s ease;
+    }
+
+    .header-logo-slot:empty {
+      display: none;
+    }
+
+    .header-logo-slot img {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      background: transparent;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.28));
+      display: block;
+    }
+
+    /* Main Layout memenuhi ruang vertikal & horizontal layar */
+    .main-container {
+      max-width: 100vw;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin: clamp(0.45rem, 0.8vh, 0.75rem) auto 0;
+      padding: 0 clamp(0.5rem, 1.2vw, 1.25rem) clamp(0.35rem, 0.7vh, 0.6rem);
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(0.55rem, 1vw, 0.9rem);
+      margin-bottom: clamp(0.5rem, 0.9vh, 0.85rem);
+      align-items: stretch;
+      flex-shrink: 0;
+    }
+
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: clamp(0.6rem, 1.1vh, 0.95rem) clamp(0.8rem, 1.3vw, 1.15rem);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: clamp(74px, 10vh, 106px);
+      opacity: 1 !important;
+      visibility: visible !important;
+      transition: border-color 0.2s ease;
+    }
+
+    .summary-card:hover {
+      border-color: var(--primary);
+    }
+
+    .summary-card.static-card,
+    .summary-card.static-card:hover {
+      transform: none !important;
+      transition: none !important;
+      border-color: var(--border);
+      cursor: default;
+      position: relative;
+      z-index: 2;
+    }
+
+    .summary-label {
+      font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: normal;
+      overflow: visible;
+      opacity: 1;
+      visibility: visible;
+      display: block;
+    }
+
+    .summary-value {
+      font-size: clamp(1.1rem, 1.55vw, 1.55rem);
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 0.2rem;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+      white-space: normal;
+      overflow: visible;
+      opacity: 1;
+      visibility: visible;
+      display: block;
+    }
+
+    .summary-sub {
+      font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+      line-height: 1.3;
+      opacity: 0.95;
+      visibility: visible;
+      display: block;
+      font-weight: 500;
+      white-space: normal;
+      overflow: visible;
+    }
+
+    @media (max-width: 1024px) {
+      .summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      .summary-card {
+        min-height: auto;
+      }
+    }
+
+    /* Sync Info Bar */
+    .sync-status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      font-size: clamp(0.72rem, 0.85vw, 0.82rem);
+      color: var(--text-muted);
+      margin-bottom: clamp(0.35rem, 0.65vh, 0.55rem);
+      padding: 0 0.25rem;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .refresh-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.3rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .refresh-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Table memenuhi sisa tinggi layar agar seluruh baris terlihat utuh dalam satu layar */
+    .table-card {
+      position: relative;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    body.dark-mode .table-card {
+      background-color: var(--card-bg);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    table {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      background: transparent;
+    }
+
+    thead {
+      background: linear-gradient(90deg, #0b3960, #166096);
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    body.dark-mode thead {
+      background: linear-gradient(90deg, #09182e, #122b4d);
+      border-bottom-color: rgba(56, 189, 248, 0.28);
+    }
+
+    th {
+      padding: var(--fit-head-py, 0.52rem) clamp(0.6rem, 0.9vw, 0.95rem);
+      font-size: var(--fit-head-fs, clamp(0.68rem, 0.82vw, 0.8rem));
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #f8fafc;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    body.dark-mode th {
+      color: #bae6fd;
+    }
+
+    td {
+      padding: var(--fit-row-py, 0.36rem) clamp(0.55rem, 0.85vw, 0.85rem);
+      border-bottom: 1px solid var(--border);
+      font-size: var(--fit-row-fs, clamp(0.66rem, 0.78vw, 0.8rem));
+      font-weight: 600;
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: var(--row-hover);
+    }
+
+    body.dark-mode tbody tr:hover {
+      background: var(--row-hover);
+    }
+
+    /* Animasi transisi slide baris tabel */
+    @keyframes tableSlideFade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    tbody.slide-animate tr {
+      animation: tableSlideFade 0.35s ease;
+    }
+
+    /* Slide Video Terjadwal di dalam area tabel */
+    .scheduled-video-panel {
+      display: none;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      background: #020617;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .scheduled-video-panel.active {
+      display: flex;
+      animation: tableSlideFade 0.4s ease;
+    }
+
+    .scheduled-video-panel video,
+    .scheduled-video-panel iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: contain;
+      background: #000000;
+    }
+
+    .scheduled-video-caption {
+      position: absolute;
+      left: 1rem;
+      bottom: 0.85rem;
+      background: rgba(15, 23, 42, 0.78);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      padding: 0.32rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .scheduled-video-unmute-btn {
+      position: absolute;
+      right: 1rem;
+      bottom: 0.85rem;
+      background: #eab308;
+      color: #0f172a;
+      border: none;
+      padding: 0.38rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      z-index: 5;
+      display: none;
+    }
+
+    .scheduled-video-unmute-btn.visible {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .video-schedule-list {
+      max-height: 220px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-top: 0.45rem;
+    }
+
+    .video-schedule-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 0.78rem;
+    }
+
+    .video-schedule-item-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .video-schedule-item-title {
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-schedule-item-meta {
+      color: var(--text-muted);
+      font-size: 0.72rem;
+    }
+
+    .btn-danger-xs {
+      background: rgba(239, 68, 68, 0.16);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 6px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .ship-name {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: var(--fit-ship-fs, clamp(0.7rem, 0.84vw, 0.86rem));
+    }
+
+    .gate-pill {
+      display: inline-block;
+      padding: 0.12rem 0.42rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: var(--fit-badge-fs, clamp(0.62rem, 0.72vw, 0.75rem));
+      background: var(--badge-info-bg);
+      color: var(--badge-info-text);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.14rem 0.48rem;
+      border-radius: 999px;
+      font-size: var(--fit-badge-fs, clamp(0.62rem, 0.72vw, 0.75rem));
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .status-ok { background: var(--badge-ok-bg); color: var(--badge-ok-text); }
+    .status-warn { background: var(--badge-warn-bg); color: var(--badge-warn-text); }
+    .status-info { background: var(--badge-info-bg); color: var(--badge-info-text); }
+    .status-prep { background: var(--badge-prep-bg); color: var(--badge-prep-text); }
+    .status-neutral { background: var(--badge-neutral-bg); color: var(--badge-neutral-text); }
+
+    .empty-msg {
+      text-align: center;
+      padding: 2.2rem 1rem;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    /* Operational Note Card */
+    .note-box {
+      margin-top: 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid #eab308;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: 0.86rem;
+      color: var(--text-main);
+    }
+
+    /* Modal Tambah Logo */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      max-width: 440px;
+      width: 100%;
+      padding: 1.4rem;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-card h3 {
+      margin-bottom: 0.85rem;
+      font-size: 1.1rem;
+    }
+
+    .form-group {
+      margin-bottom: 0.9rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: var(--text-muted);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="file"],
+    .form-group textarea {
+      width: 100%;
+      padding: 0.5rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text-main);
+      font-size: 0.84rem;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .form-hint {
+      margin-top: 0.35rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .btn-secondary, .btn-primary {
+      padding: 0.48rem 0.95rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    body.dark-mode .btn-primary {
+      color: #0f172a;
+    }
+
+    footer {
+      text-align: center;
+      padding: clamp(0.3rem, 0.6vh, 0.55rem) 0.75rem;
+      font-size: clamp(0.7rem, 0.82vw, 0.8rem);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .header-container {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .header-center {
+        order: -1;
+        width: 100%;
+        margin-bottom: 0.35rem;
+        padding-top: 0;
+      }
+      .header-center h1 {
+        font-size: 1.15rem;
+      }
+      .header-logo-slot {
+        width: 196px;
+        height: 196px;
+        max-width: 196px;
+        margin-top: 0;
+      }
+      .header-logo-slot img {
+        max-width: 196px;
+        max-height: 196px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 620px) {
+      .header-logo-slot {
+        height: clamp(136px, 22vh, 200px);
+        width: clamp(136px, 22vh, 200px);
+        max-width: 200px;
+      }
+      .summary-card {
+        min-height: 60px;
+        padding: 0.45rem 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="dark-mode">
+
+  <!-- Header -->
+  <header>
+    <div class="header-wrap">
+      <div class="header-banner-box" id="headerBannerBox">
+        <div class="header-container">
+          <div class="header-logo-slot" id="headerLogoLeft"></div>
+
+          <div class="header-center">
+            <h1>JADWAL KEBERANGKATAN KAPAL PELABUHAN DUMAI</h1>
+            <p>Sistem Informasi Keberangkatan &amp; Kedatangan Terminal Penumpang Pelabuhan Dumai</p>
+            <div class="header-meta">
+              <span class="live-pill"><span class="pulse-dot"></span> <span id="liveClock">Memuat waktu WIB...</span></span>
+              <button type="button" class="action-btn" id="fullscreenToggleBtn">⛶ Layar Penuh</button>
+              <button type="button" class="action-btn" id="openLogoModalBtn">🖼️ Atur Logo</button>
+              <button type="button" class="action-btn" id="openVideoModalBtn">🎬 Video Harian</button>
+              <button type="button" class="action-btn" id="saveRunningTextBtn">✏️ Ubah Teks</button>
+              <button type="button" class="action-btn" id="themeToggleBtn">☀️ Mode Terang</button>
+            </div>
+          </div>
+
+          <div class="header-logo-slot" id="headerLogoRight"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <!-- Summary Cards -->
+    <section class="summary-grid">
+      <div class="summary-card static-card">
+        <div class="summary-label">Kapal Tercatat di Papan</div>
+        <div class="summary-value" id="statTableCount">0</div>
+        <div class="summary-sub">Jumlah baris jadwal aktif</div>
+      </div>
+      <div class="summary-card static-card">
+        <div class="summary-label">Status Debarkasi / Aktif</div>
+        <div class="summary-value" id="statActiveCount">0</div>
+        <div class="summary-sub">Kapal dalam proses layanan</div>
+      </div>
+      <div class="summary-card static-card">
+        <div class="summary-label">Cuaca Perairan Dumai</div>
+        <div class="summary-value" id="statWeather">⛅ 29°C</div>
+        <div class="summary-sub" id="statWeatherDesc">Cerah Berawan • Dumai (Open-Meteo)</div>
+      </div>
+    </section>
+
+    <!-- Status Sinkronisasi -->
+    <div class="sync-status-bar">
+      <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; flex: 1; min-width: 0;">
+        <div class="inline-ticker-wrap" id="inlineTickerWrap">
+          <span class="inline-ticker-badge">INFO</span>
+          <div class="inline-ticker-marquee">
+            <span class="inline-ticker-text" id="inlineTickerText">Memuat informasi pelabuhan...</span>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="refresh-btn" id="manualRefreshBtn">🔄 Refresh</button>
+    </div>
+
+    <!-- Tabel Jadwal -->
+    <section class="table-card" id="scheduleTableCard">
+      <div class="table-responsive" id="tableResponsiveWrap">
+        <table>
+          <thead id="scheduleTableHead">
+            <tr>
+              <th>Nama Kapal</th>
+              <th>Destinasi</th>
+              <th>EST. Datang</th>
+              <th>EST. Berangkat</th>
+              <th>Gate / Line</th>
+              <th>Status Keberangkatan</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleTableBody"></tbody>
+        </table>
+      </div>
+      <div class="scheduled-video-panel" id="scheduledVideoPanel">
+        <div id="scheduledVideoMount" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+        <div class="scheduled-video-caption" id="scheduledVideoCaption">🎬 Tayangan Harian Terjadwal</div>
+        <button type="button" class="scheduled-video-unmute-btn" id="scheduledVideoUnmuteBtn">🔊 Aktifkan Suara</button>
+      </div>
+      <div class="empty-msg" id="emptyMsg">Menunggu data jadwal kapal dari Google Sheets. Pastikan sheet sudah dipublikasikan ke web (Publish to web -> CSV) dan dapat diakses publik.</div>
+    </section>
+  </main>
+
+  <!-- Modal Atur Video Terjadwal Harian -->
+  <div class="modal-backdrop" id="videoScheduleModal">
+    <div class="modal-card" style="max-width: 500px;">
+      <h3>🎬 Video Terjadwal Setiap Hari (Jam Tertentu)</h3>
+      <div class="form-group">
+        <label for="videoTitleInput">Judul / Keterangan Tayangan</label>
+        <input type="text" id="videoTitleInput" placeholder="Contoh: Video Keselamatan Pelayaran / Indonesia Raya" />
+      </div>
+      <div class="form-group">
+        <label for="videoUrlInput">URL Video (MP4 / WebM / Link YouTube)</label>
+        <input type="text" id="videoUrlInput" placeholder="https://contoh.com/video.mp4 atau https://youtu.be/..." />
+      </div>
+      <div class="form-group">
+        <label for="videoFileInput">Atau Pilih File Video Lokal (MP4/WebM dari Komputer)</label>
+        <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/*" />
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+        <div class="form-group">
+          <label for="videoPlayTimeInput">Jam Tayang (Tiap Hari)</label>
+          <input type="time" id="videoPlayTimeInput" value="08:00" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
+        </div>
+        <div class="form-group">
+          <label for="videoDurationInput">Durasi Tayang (Detik, 0 = Penuh)</label>
+          <input type="number" id="videoDurationInput" min="0" max="7200" value="0" placeholder="0 = Sesuai durasi video" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
+        </div>
+      </div>
+      <div class="form-hint">Isi <strong>0</strong> pada Durasi Tayang agar video diputar <strong>penuh sampai selesai sesuai durasi asli videonya</strong> (untuk file MP4/WebM), atau masukkan angka detik tertentu (misalnya untuk link YouTube).</div>
+      <div class="modal-actions" style="justify-content: space-between; margin-top: 0.75rem;">
+        <button type="button" class="btn-primary" id="addVideoScheduleBtn">+ Simpan Jadwal Harian</button>
+        <button type="button" class="btn-secondary" id="closeVideoModalBtn">Tutup</button>
+      </div>
+      <div class="video-schedule-list" id="videoScheduleList"></div>
+    </div>
+  </div>
+
+  <!-- Modal Atur Logo Kiri & Kanan -->
+  <div class="modal-backdrop" id="logoModal">
+    <div class="modal-card">
+      <h3>Atur Logo Header (Kiri &amp; Kanan)</h3>
+      <div class="form-group">
+        <label for="leftLogoFile">Upload Logo 1 (Pojok Kiri Atas)</label>
+        <input type="file" id="leftLogoFile" accept="image/*" />
+      </div>
+      <div class="form-group">
+        <label for="leftLogoUrl">Atau Tempel URL Logo 1 (Kiri)</label>
+        <input type="text" id="leftLogoUrl" placeholder="https://contoh.com/logo-kiri.png" />
+      </div>
+      <div class="form-group">
+        <label for="rightLogoFile">Upload Logo 2 (Pojok Kanan Atas)</label>
+        <input type="file" id="rightLogoFile" accept="image/*" />
+      </div>
+      <div class="form-group">
+        <label for="rightLogoUrl">Atau Tempel URL Logo 2 (Kanan)</label>
+        <input type="text" id="rightLogoUrl" placeholder="https://contoh.com/logo-kanan.png" />
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="resetLogoBtn">Hapus Logo</button>
+        <button type="button" class="btn-secondary" id="closeLogoModalBtn">Tutup</button>
+        <button type="button" class="btn-primary" id="saveLogoBtn">Simpan Logo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ubah Running Text -->
+  <div class="modal-backdrop" id="runningTextModal">
+    <div class="modal-card">
+      <h3>Ubah Running Text Informasi</h3>
+      <div class="form-group">
+        <label for="modalRunningTextInput">Ketik Teks Berjalan (Bisa Lebih dari 1 Baris / Informasi)</label>
+        <textarea id="modalRunningTextInput" rows="4" placeholder="Baris 1: Informasi keberangkatan kapal...&#10;Baris 2: Pengumuman keselamatan pelabuhan...&#10;Baris 3: Info cuaca & pasang surut..."></textarea>
+        <div class="form-hint">Tekan <strong>Enter</strong> untuk menambah baris/informasi baru (lebih dari 1 teks). Setiap baris otomatis digabung menjadi satu <em>running text</em> berjalan.</div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="resetRunningTextBtn">Default</button>
+        <button type="button" class="btn-secondary" id="closeRunningTextModalBtn">Batal</button>
+        <button type="button" class="btn-primary" id="confirmRunningTextBtn">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Layanan Informasi Pelabuhan Dumai • Sinkronisasi Otomatis Google Sheets
+  </footer>
+
+  <script>
+    (function () {
+      function initDashboard() {
+        try {
+          var PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK/pub?gid=0&single=true&output=csv";
+          var GVIZ_JSONP_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK/gviz/tq?gid=0";
+          var SHEET_CACHE_STORAGE_KEY = "dumai_cached_sheet_rows_v3";
+
+          var state = {
+            rows: [],
+            headers: ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"],
+            totalText: "-",
+            noteText: "",
+            liveWeather: "⛅ 29°C Cerah Berawan",
+            filter: "all",
+            isFetching: false,
+            hasLiveSheetData: false,
+            lastSignature: "",
+            slidePage: 0,
+            slidePageSize: 5,
+            slideIntervalMs: 8000
+          };
+
+          var slideTimer = null;
+          var thead = document.getElementById("scheduleTableHead");
+          var tbody = document.getElementById("scheduleTableBody");
+          var tableResponsiveWrap = document.getElementById("tableResponsiveWrap");
+          var scheduledVideoPanel = document.getElementById("scheduledVideoPanel");
+          var scheduledVideoMount = document.getElementById("scheduledVideoMount");
+          var scheduledVideoCaption = document.getElementById("scheduledVideoCaption");
+          var scheduledVideoUnmuteBtn = document.getElementById("scheduledVideoUnmuteBtn");
+          var emptyMsg = document.getElementById("emptyMsg");
+          var statTableCount = document.getElementById("statTableCount");
+          var statActiveCount = document.getElementById("statActiveCount");
+          var statWeather = document.getElementById("statWeather");
+          var statWeatherDesc = document.getElementById("statWeatherDesc");
+          var manualRefreshBtn = document.getElementById("manualRefreshBtn");
+
+          // Manajemen Video Terjadwal Harian pada Jam Tertentu
+          var VIDEO_SCHEDULE_STORAGE_KEY = "dumai_daily_videos_v2";
+          var videoSchedules = [];
+          var activeVideoPlaying = false;
+          var videoHideTimeout = null;
+          var playedTodayMap = {};
+          var audioUnlocked = false;
+          var sharedAudioCtx = null;
+
+          function unlockBrowserAudioContext() {
+            try {
+              var AudioCtx = window.AudioContext || window.webkitAudioContext;
+              if (AudioCtx && !sharedAudioCtx) {
+                sharedAudioCtx = new AudioCtx();
+              }
+              if (sharedAudioCtx && sharedAudioCtx.state === "suspended") {
+                sharedAudioCtx.resume().catch(function () {});
+              }
+              audioUnlocked = true;
+            } catch (e) {
+              audioUnlocked = true;
+            }
+          }
+
+          ["pointerdown", "touchstart", "keydown", "click"].forEach(function (evt) {
+            window.addEventListener(evt, function onFirstAudioGesture() {
+              unlockBrowserAudioContext();
+              var activeVid = document.getElementById("activeScheduledVideoEl");
+              if (activeVid) {
+                activeVid.muted = false;
+                activeVid.defaultMuted = false;
+                activeVid.volume = 1.0;
+                if (activeVid.paused) activeVid.play().catch(function () {});
+              }
+              var ytFrame = scheduledVideoMount ? scheduledVideoMount.querySelector("iframe") : null;
+              if (ytFrame && ytFrame.contentWindow) {
+                ytFrame.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', "*");
+                ytFrame.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', "*");
+              }
+              if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
+            }, { passive: true });
+          });
+
+          try {
+            var savedVideos = JSON.parse(localStorage.getItem(VIDEO_SCHEDULE_STORAGE_KEY) || "[]");
+            if (Array.isArray(savedVideos)) {
+              videoSchedules = savedVideos;
+            }
+          } catch (vErr) {
+            videoSchedules = [];
+          }
+
+          function saveVideoSchedules() {
+            try {
+              var persistable = videoSchedules.filter(function (item) {
+                return !item.isBlobUrl;
+              });
+              localStorage.setItem(VIDEO_SCHEDULE_STORAGE_KEY, JSON.stringify(persistable));
+            } catch (e) {
+              // Abaikan jika localStorage penuh
+            }
+          }
+          function extractYouTubeEmbedUrl(url, isMuted) {
+            var raw = String(url || "").trim();
+            var match = raw.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            if (match && match[1]) {
+              var muteParam = isMuted ? "1" : "0";
+              return "https://www.youtube.com/embed/" + match[1] + "?autoplay=1&mute=" + muteParam + "&enablejsapi=1&rel=0&playsinline=1";
+            }
+            return "";
+          }
+
+          function getTodayDateStamp() {
+            var now = new Date();
+            var y = now.getFullYear();
+            var m = String(now.getMonth() + 1).padStart(2, "0");
+            var d = String(now.getDate()).padStart(2, "0");
+            return y + "-" + m + "-" + d;
+          }
+
+          function getCurrentHHMM() {
+            var now = new Date();
+            var hh = String(now.getHours()).padStart(2, "0");
+            var mm = String(now.getMinutes()).padStart(2, "0");
+            return hh + ":" + mm;
+          }
+
+          function findDueDailyVideo() {
+            if (!Array.isArray(videoSchedules) || videoSchedules.length === 0) return null;
+            var todayKey = getTodayDateStamp();
+            var currentHHMM = getCurrentHHMM();
+
+            for (var i = 0; i < videoSchedules.length; i++) {
+              var item = videoSchedules[i];
+              if (!item || !item.url || !item.playTime) continue;
+              var slotKey = todayKey + "_" + item.playTime + "_" + i;
+              if (item.playTime === currentHHMM && !playedTodayMap[slotKey]) {
+                playedTodayMap[slotKey] = true;
+                return item;
+              }
+            }
+            return null;
+          }
+
+          function hideScheduledVideoSlide() {
+            if (videoHideTimeout) {
+              clearTimeout(videoHideTimeout);
+              videoHideTimeout = null;
+            }
+            activeVideoPlaying = false;
+            if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
+            if (scheduledVideoPanel) scheduledVideoPanel.classList.remove("active");
+            if (scheduledVideoMount) scheduledVideoMount.innerHTML = "";
+            if (tableResponsiveWrap) tableResponsiveWrap.style.display = "flex";
+            adjustViewportFit();
+          }
+
+          if (scheduledVideoUnmuteBtn) {
+            scheduledVideoUnmuteBtn.addEventListener("click", function () {
+              unlockBrowserAudioContext();
+              var vidEl = document.getElementById("activeScheduledVideoEl");
+              if (vidEl) {
+                vidEl.muted = false;
+                vidEl.defaultMuted = false;
+                vidEl.volume = 1.0;
+                vidEl.play().catch(function () {});
+                scheduledVideoUnmuteBtn.classList.remove("visible");
+                return;
+              }
+              var ytFrame = scheduledVideoMount ? scheduledVideoMount.querySelector("iframe") : null;
+              if (ytFrame && ytFrame.contentWindow) {
+                ytFrame.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', "*");
+                ytFrame.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', "*");
+                scheduledVideoUnmuteBtn.classList.remove("visible");
+              }
+            });
+          }
+
+          function showScheduledVideoSlide(videoItem) {
+            if (!videoItem || !scheduledVideoPanel || !scheduledVideoMount) return false;
+            if (videoHideTimeout) {
+              clearTimeout(videoHideTimeout);
+              videoHideTimeout = null;
+            }
+
+            unlockBrowserAudioContext();
+            activeVideoPlaying = true;
+            if (tableResponsiveWrap) tableResponsiveWrap.style.display = "none";
+            if (emptyMsg) emptyMsg.style.display = "none";
+            scheduledVideoPanel.classList.add("active");
+
+            if (scheduledVideoCaption) {
+              scheduledVideoCaption.textContent = "🎬 " + (videoItem.title || "Tayangan Harian") + " • Pukul " + (videoItem.playTime || "");
+            }
+
+            var ytEmbedUnmuted = extractYouTubeEmbedUrl(videoItem.url, false);
+            var customSec = Number(videoItem.durationSec);
+
+            if (ytEmbedUnmuted) {
+              scheduledVideoMount.innerHTML =
+                '<iframe id="activeScheduledYtFrame" src="' + escapeHtml(ytEmbedUnmuted) + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+              var ytEl = document.getElementById("activeScheduledYtFrame");
+              if (ytEl) {
+                ytEl.onload = function () {
+                  try {
+                    ytEl.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', "*");
+                    ytEl.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', "*");
+                    ytEl.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', "*");
+                  } catch (e) {}
+                };
+              }
+              if (scheduledVideoUnmuteBtn) {
+                if (audioUnlocked) scheduledVideoUnmuteBtn.classList.remove("visible");
+                else scheduledVideoUnmuteBtn.classList.add("visible");
+              }
+              var ytDurationMs = (customSec > 0 ? customSec : 60) * 1000;
+              videoHideTimeout = setTimeout(function () {
+                hideScheduledVideoSlide();
+              }, ytDurationMs);
+            } else {
+              scheduledVideoMount.innerHTML =
+                '<video id="activeScheduledVideoEl" src="' + escapeHtml(videoItem.url) + '" autoplay playsinline></video>';
+              var vidEl = document.getElementById("activeScheduledVideoEl");
+              if (vidEl) {
+                vidEl.muted = false;
+                vidEl.defaultMuted = false;
+                vidEl.volume = 1.0;
+                vidEl.onloadedmetadata = function () {
+                  if (videoHideTimeout) {
+                    clearTimeout(videoHideTimeout);
+                    videoHideTimeout = null;
+                  }
+                  if (customSec > 0) {
+                    videoHideTimeout = setTimeout(function () {
+                      hideScheduledVideoSlide();
+                    }, customSec * 1000);
+                  } else if (isFinite(vidEl.duration) && vidEl.duration > 0) {
+                    videoHideTimeout = setTimeout(function () {
+                      hideScheduledVideoSlide();
+                    }, Math.ceil(vidEl.duration * 1000) + 1500);
+                  }
+                };
+                vidEl.onended = function () {
+                  hideScheduledVideoSlide();
+                };
+                vidEl.onerror = function () {
+                  hideScheduledVideoSlide();
+                };
+                var playPromise = vidEl.play();
+                if (playPromise && typeof playPromise.then === "function") {
+                  playPromise.then(function () {
+                    vidEl.muted = false;
+                    vidEl.volume = 1.0;
+                    if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
+                  }).catch(function () {
+                    // Jika browser memblokir autoplay bersuara sebelum ada interaksi, putar muted lalu otomatis unmute begitu ada interaksi
+                    vidEl.muted = true;
+                    if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.add("visible");
+                    vidEl.play().catch(function () {});
+                  });
+                }
+              }
+              if (customSec > 0) {
+                videoHideTimeout = setTimeout(function () {
+                  hideScheduledVideoSlide();
+                }, customSec * 1000);
+              }
+            }
+            return true;
+          }
+
+          function checkDailyVideoTrigger() {
+            if (activeVideoPlaying) return;
+            var dueVideo = findDueDailyVideo();
+            if (dueVideo) {
+              showScheduledVideoSlide(dueVideo);
+            }
+          }
+
+          // Event UI Modal Video Terjadwal Harian
+          var openVideoModalBtn = document.getElementById("openVideoModalBtn");
+          var videoScheduleModal = document.getElementById("videoScheduleModal");
+          var closeVideoModalBtn = document.getElementById("closeVideoModalBtn");
+          var addVideoScheduleBtn = document.getElementById("addVideoScheduleBtn");
+          var videoTitleInput = document.getElementById("videoTitleInput");
+          var videoUrlInput = document.getElementById("videoUrlInput");
+          var videoFileInput = document.getElementById("videoFileInput");
+          var videoPlayTimeInput = document.getElementById("videoPlayTimeInput");
+          var videoDurationInput = document.getElementById("videoDurationInput");
+          var videoScheduleList = document.getElementById("videoScheduleList");
+
+          function renderVideoScheduleList() {
+            if (!videoScheduleList) return;
+            if (!videoSchedules.length) {
+              videoScheduleList.innerHTML = '<div style="font-size:0.78rem;color:var(--text-muted);text-align:center;padding:0.6rem;">Belum ada jadwal video harian.</div>';
+              return;
+            }
+            videoScheduleList.innerHTML = videoSchedules.map(function (v, idx) {
+              var durText = Number(v.durationSec) > 0 ? (String(v.durationSec) + " dtk") : "Penuh (sesuai video)";
+              return (
+                '<div class="video-schedule-item">' +
+                  '<div class="video-schedule-item-info">' +
+                    '<div class="video-schedule-item-title">' + escapeHtml(v.title || ("Video #" + (idx + 1))) + '</div>' +
+                    '<div class="video-schedule-item-meta">⏰ Tiap Hari Pukul ' + escapeHtml(v.playTime || "08:00") + ' WIB • ⏱ ' + escapeHtml(durText) + '</div>' +
+                  '</div>' +
+                  '<button type="button" class="btn-danger-xs" data-del-video="' + idx + '">Hapus</button>' +
+                '</div>'
+              );
+            }).join("");
+
+            videoScheduleList.querySelectorAll("[data-del-video]").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                var delIdx = parseInt(btn.getAttribute("data-del-video"), 10);
+                if (!isNaN(delIdx)) {
+                  videoSchedules.splice(delIdx, 1);
+                  saveVideoSchedules();
+                  renderVideoScheduleList();
+                  if (activeVideoPlaying && videoSchedules.length === 0) {
+                    hideScheduledVideoSlide();
+                  }
+                }
+              });
+            });
+          }
+
+          if (openVideoModalBtn && videoScheduleModal) {
+            openVideoModalBtn.addEventListener("click", function () {
+              renderVideoScheduleList();
+              videoScheduleModal.classList.add("open");
+            });
+          }
+          if (closeVideoModalBtn && videoScheduleModal) {
+            closeVideoModalBtn.addEventListener("click", function () {
+              videoScheduleModal.classList.remove("open");
+            });
+          }
+          if (videoScheduleModal) {
+            videoScheduleModal.addEventListener("click", function (e) {
+              if (e.target === videoScheduleModal) videoScheduleModal.classList.remove("open");
+            });
+          }
+          if (addVideoScheduleBtn) {
+            addVideoScheduleBtn.addEventListener("click", function () {
+              var localFile = videoFileInput && videoFileInput.files && videoFileInput.files[0];
+              var rawUrl = videoUrlInput ? videoUrlInput.value.trim() : "";
+              var isBlob = false;
+
+              if (localFile) {
+                rawUrl = URL.createObjectURL(localFile);
+                isBlob = true;
+              }
+              if (!rawUrl) return;
+
+              var titleVal = (videoTitleInput && videoTitleInput.value.trim()) || (localFile ? localFile.name : "Tayangan Video Pelabuhan");
+              var playTimeVal = (videoPlayTimeInput && videoPlayTimeInput.value) || "08:00";
+              var parsedDur = parseInt(videoDurationInput && videoDurationInput.value, 10);
+              var durVal = (!isNaN(parsedDur) && parsedDur > 0) ? Math.min(7200, parsedDur) : 0;
+
+              videoSchedules.push({
+                title: titleVal,
+                url: rawUrl,
+                playTime: playTimeVal,
+                durationSec: durVal,
+                isBlobUrl: isBlob
+              });
+
+              saveVideoSchedules();
+              renderVideoScheduleList();
+              checkDailyVideoTrigger();
+
+              if (videoTitleInput) videoTitleInput.value = "";
+              if (videoUrlInput) videoUrlInput.value = "";
+              if (videoFileInput) videoFileInput.value = "";
+            });
+          }
+
+          var operationalNoteBox = document.getElementById("operationalNoteBox");
+          var tickerText = document.getElementById("tickerText");
+          var inlineTickerText = document.getElementById("inlineTickerText");
+          var runningTextInput = document.getElementById("runningTextInput");
+          var saveRunningTextBtn = document.getElementById("saveRunningTextBtn");
+          var runningTextModal = document.getElementById("runningTextModal");
+          var modalRunningTextInput = document.getElementById("modalRunningTextInput");
+          var modalRunningTextColorInput = document.getElementById("modalRunningTextColorInput");
+          var confirmRunningTextBtn = document.getElementById("confirmRunningTextBtn");
+          var closeRunningTextModalBtn = document.getElementById("closeRunningTextModalBtn");
+          var resetRunningTextBtn = document.getElementById("resetRunningTextBtn");
+          var RUNNING_TEXT_STORAGE_KEY = "dumai_custom_running_text_v1";
+          var DEFAULT_RUNNING_TEXT = "Selamat Datang di Terminal Penumpang Pelabuhan Dumai • Harap periksa kembali jadwal keberangkatan, gate boarding, dan dokumen perjalanan Anda • Utamakan keselamatan pelayaran.";
+
+          var DEFAULT_SHIP_ROWS = [
+            {
+              cells: ["MV. DUMAI EXPRESS 08", "Bengkalis - Selatpanjang - Tg. Balai - Batam", "06:30", "07:00", "Gate 1", "Boarding"],
+              ship: "MV. DUMAI EXPRESS 08",
+              dest: "Bengkalis - Selatpanjang - Tg. Balai - Batam",
+              arr: "06:30",
+              dep: "07:00",
+              gate: "Gate 1",
+              status: "Boarding"
+            }
+          ];
+
+          function escapeHtml(str) {
+            return String(str == null ? "" : str)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#39;");
+          }
+
+          async function fetchWithTimeout(url, timeoutMs) {
+            var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+            var timer = null;
+            if (controller) {
+              timer = setTimeout(function () {
+                controller.abort();
+              }, timeoutMs || 7000);
+            }
+            try {
+              var opts = { cache: "no-store" };
+              if (controller) opts.signal = controller.signal;
+              return await fetch(url, opts);
+            } finally {
+              if (timer) clearTimeout(timer);
+            }
+          }
+
+          function getStatusBadgeClass(statusText) {
+            var s = String(statusText || "").toLowerCase();
+            if (!s || s === "-") return "status-neutral";
+            if (s.indexOf("batal") !== -1 || s.indexOf("tunda") !== -1 || s.indexOf("delay") !== -1 || s.indexOf("cancel") !== -1) {
+              return "status-warn";
+            }
+            if (s.indexOf("boarding") !== -1 || s.indexOf("berangkat") !== -1 || s.indexOf("sandar") !== -1 || s.indexOf("debarkasi") !== -1 || s.indexOf("aktif") !== -1 || s.indexOf("on time") !== -1 || s.indexOf("tepat") !== -1) {
+              return "status-ok";
+            }
+            if (s.indexOf("siap") !== -1 || s.indexOf("persiapan") !== -1 || s.indexOf("menunggu") !== -1 || s.indexOf("check") !== -1) {
+              return "status-prep";
+            }
+            return "status-info";
+          }
+
+          function adjustViewportFit() {
+            var card = document.getElementById("scheduleTableCard");
+            if (!card || !thead) return;
+            var visibleRows = Math.min(state.rows.length || 5, state.slidePageSize);
+            if (visibleRows < 1) visibleRows = 5;
+            var availH = card.clientHeight - (thead.offsetHeight || 42);
+            if (availH <= 80) return;
+            var perRowH = Math.floor(availH / visibleRows);
+            var rowPy = Math.max(4, Math.min(14, Math.floor((perRowH - 20) / 2)));
+            var rowFs = Math.max(10, Math.min(13, Math.floor(perRowH * 0.2)));
+            card.style.setProperty("--fit-row-py", rowPy + "px");
+            card.style.setProperty("--fit-row-fs", rowFs + "px");
+            card.style.setProperty("--fit-ship-fs", Math.min(14, rowFs + 1) + "px");
+            card.style.setProperty("--fit-badge-fs", Math.max(9, rowFs - 1) + "px");
+          }
+
+          function renderTablePage(animate) {
+            if (!tbody) return;
+            var rows = Array.isArray(state.rows) ? state.rows : [];
+            if (rows.length === 0) {
+              tbody.innerHTML = "";
+              if (emptyMsg && !activeVideoPlaying) emptyMsg.style.display = "block";
+              return;
+            }
+            if (emptyMsg) emptyMsg.style.display = "none";
+
+            var pageSize = state.slidePageSize || 5;
+            var totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+            if (state.slidePage >= totalPages) state.slidePage = 0;
+
+            var start = rows.length > pageSize ? state.slidePage * pageSize : 0;
+            var slice = rows.length > pageSize ? rows.slice(start, start + pageSize) : rows;
+            var colCount = Math.max(1, state.headers.length);
+
+            var statusIdx = -1;
+            var gateIdx = -1;
+            state.headers.forEach(function (h, idx) {
+              var lh = String(h || "").toLowerCase();
+              if (statusIdx === -1 && (lh.indexOf("status") !== -1 || lh.indexOf("ket") !== -1)) statusIdx = idx;
+              if (gateIdx === -1 && (lh.indexOf("gate") !== -1 || lh.indexOf("line") !== -1 || lh.indexOf("dermaga") !== -1)) gateIdx = idx;
+            });
+
+            tbody.innerHTML = slice.map(function (item) {
+              var cells = Array.isArray(item.cells) && item.cells.length
+                ? item.cells
+                : [item.ship, item.dest, item.arr, item.dep, item.gate, item.status];
+
+              var tds = [];
+              for (var c = 0; c < colCount; c++) {
+                var val = cells[c] != null && String(cells[c]).trim() !== "" ? String(cells[c]).trim() : "-";
+                if (c === 0) {
+                  tds.push('<td><span class="ship-name">' + escapeHtml(val) + "</span></td>");
+                } else if (c === statusIdx || (statusIdx === -1 && c === colCount - 1 && colCount > 2)) {
+                  var badgeCls = getStatusBadgeClass(val);
+                  tds.push('<td><span class="status-badge ' + badgeCls + '">' + escapeHtml(val) + "</span></td>");
+                } else if (c === gateIdx || (gateIdx === -1 && c === colCount - 2 && colCount > 3)) {
+                  tds.push('<td><span class="gate-pill">' + escapeHtml(val) + "</span></td>");
+                } else {
+                  tds.push("<td>" + escapeHtml(val) + "</td>");
+                }
+              }
+              return "<tr>" + tds.join("") + "</tr>";
+            }).join("");
+
+            if (animate) {
+              tbody.classList.remove("slide-animate");
+              void tbody.offsetWidth;
+              tbody.classList.add("slide-animate");
+            }
+            adjustViewportFit();
+          }
+
+          function restartSlideTimer() {
+            if (slideTimer) {
+              clearInterval(slideTimer);
+              slideTimer = null;
+            }
+            if (Array.isArray(state.rows) && state.rows.length > state.slidePageSize) {
+              slideTimer = setInterval(function () {
+                if (activeVideoPlaying) return;
+                var totalPages = Math.ceil(state.rows.length / state.slidePageSize);
+                if (totalPages > 1) {
+                  state.slidePage = (state.slidePage + 1) % totalPages;
+                  renderTablePage(true);
+                }
+              }, state.slideIntervalMs || 8000);
+            }
+          }
+
+          function renderAll() {
+            var rows = Array.isArray(state.rows) ? state.rows : [];
+            if (statTableCount) statTableCount.textContent = String(rows.length);
+
+            var activeCount = rows.filter(function (r) {
+              var s = String(r.status || "").toLowerCase();
+              return s && s !== "-" && s.indexOf("batal") === -1 && s.indexOf("selesai") === -1 && s.indexOf("berangkat") === -1;
+            }).length;
+            if (statActiveCount) statActiveCount.textContent = String(activeCount);
+
+            renderTablePage(false);
+            restartSlideTimer();
+          }
+
+          window.addEventListener("resize", adjustViewportFit);
+
+          // Parser CSV yang mendukung tanda kutip ganda dan koma di dalam sel
+          function parseCsvMatrix(csvText) {
+            var matrix = [];
+            var row = [];
+            var cell = "";
+            var inQuotes = false;
+            var text = String(csvText || "").replace(/^\uFEFF/, "");
+
+            for (var i = 0; i < text.length; i++) {
+              var ch = text[i];
+              var next = text[i + 1];
+
+              if (inQuotes) {
+                if (ch === '"' && next === '"') {
+                  cell += '"';
+                  i++;
+                } else if (ch === '"') {
+                  inQuotes = false;
+                } else {
+                  cell += ch;
+                }
+              } else {
+                if (ch === '"') {
+                  inQuotes = true;
+                } else if (ch === ",") {
+                  row.push(cell.trim());
+                  cell = "";
+                } else if (ch === "\r" && next === "\n") {
+                  row.push(cell.trim());
+                  matrix.push(row);
+                  row = [];
+                  cell = "";
+                  i++;
+                } else if (ch === "\n" || ch === "\r") {
+                  row.push(cell.trim());
+                  matrix.push(row);
+                  row = [];
+                  cell = "";
+                } else {
+                  cell += ch;
+                }
+              }
+            }
+
+            if (cell.length > 0 || row.length > 0) {
+              row.push(cell.trim());
+              matrix.push(row);
+            }
+
+            return matrix;
+          }
+
+          // Konversi matriks baris/kolom dari Google Sheets menjadi daftar jadwal kapal
+          function processMatrix(matrix) {
+            if (!Array.isArray(matrix) || matrix.length === 0) return [];
+
+            var nonEmptyRows = matrix.filter(function (r) {
+              return Array.isArray(r) && r.some(function (c) { return String(c || "").trim() !== ""; });
+            });
+            if (nonEmptyRows.length === 0) return [];
+
+            var headerRowIndex = -1;
+            var headerKeywords = ["kapal", "mv", "km", "destinasi", "tujuan", "datang", "tiba", "berangkat", "gate", "line", "dermaga", "status", "waktu", "jam"];
+
+            for (var hIdx = 0; hIdx < Math.min(nonEmptyRows.length, 8); hIdx++) {
+              var rowText = nonEmptyRows[hIdx].map(function (c) { return String(c || "").trim().toLowerCase(); });
+              var nonEmptyCells = rowText.filter(function (c) { return c !== ""; });
+              if (nonEmptyCells.length < 2) continue;
+
+              var keywordHits = 0;
+              rowText.forEach(function (cellStr) {
+                if (!cellStr) return;
+                for (var k = 0; k < headerKeywords.length; k++) {
+                  if (cellStr.indexOf(headerKeywords[k]) !== -1) {
+                    keywordHits++;
+                    break;
+                  }
+                }
+              });
+
+              if (keywordHits >= 2) {
+                headerRowIndex = hIdx;
+                break;
+              }
+            }
+
+            if (headerRowIndex === -1) {
+              for (var fIdx = 0; fIdx < Math.min(nonEmptyRows.length, 6); fIdx++) {
+                var fCells = nonEmptyRows[fIdx].filter(function (c) {
+                  return String(c || "").trim() !== "";
+                });
+                if (fCells.length >= 2) {
+                  headerRowIndex = fIdx;
+                  break;
+                }
+              }
+            }
+
+            var activeIndices = [];
+            var activeHeaders = [];
+
+            if (headerRowIndex !== -1) {
+              var rawHeaderRow = nonEmptyRows[headerRowIndex];
+              rawHeaderRow.forEach(function (cell, idx) {
+                var cleanLabel = String(cell || "").trim();
+                var lowerLabel = cleanLabel.toLowerCase();
+                if (!cleanLabel) return;
+                if (lowerLabel === "no" || lowerLabel === "no.") return;
+                activeIndices.push(idx);
+                activeHeaders.push(cleanLabel);
+              });
+            }
+
+            var startIdx = headerRowIndex !== -1 ? headerRowIndex + 1 : 0;
+
+            if (activeIndices.length === 0) {
+              var sampleRow = nonEmptyRows[startIdx] || nonEmptyRows[0] || [];
+              var firstCellSample = String(sampleRow[0] || "").trim().toLowerCase();
+              var hasNumberCol = firstCellSample === "no" || firstCellSample === "no." || /^\d+$/.test(firstCellSample);
+              var startCol = hasNumberCol ? 1 : 0;
+              var fallbackTitles = ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"];
+
+              for (var c = startCol; c < sampleRow.length; c++) {
+                activeIndices.push(c);
+                activeHeaders.push(fallbackTitles[c - startCol] || ("Kolom " + (c - startCol + 1)));
+              }
+            }
+
+            if (activeHeaders.length > 0) {
+              state.headers = activeHeaders.slice();
+              if (thead) {
+                thead.innerHTML =
+                  "<tr>" +
+                  state.headers.map(function (h) {
+                    return "<th>" + escapeHtml(h) + "</th>";
+                  }).join("") +
+                  "</tr>";
+              }
+            }
+
+            var statusColPos = -1;
+            activeHeaders.forEach(function (h, pos) {
+              var lh = String(h || "").toLowerCase();
+              if (statusColPos === -1 && (lh.indexOf("status") !== -1 || lh.indexOf("ket") !== -1)) {
+                statusColPos = pos;
+              }
+            });
+
+            var parsedRows = [];
+            for (var i = startIdx; i < nonEmptyRows.length; i++) {
+              var cols = nonEmptyRows[i].map(function (c) { return String(c || "").trim(); });
+              var rowCells = activeIndices.map(function (colIdx) {
+                return cols[colIdx] || "-";
+              });
+
+              var meaningfulCount = rowCells.filter(function (v) { return v !== "" && v !== "-"; }).length;
+              if (meaningfulCount === 0) continue;
+
+              var primaryValue = rowCells[0] || "";
+              if (!primaryValue || primaryValue === "-" || /^total\b/i.test(primaryValue) || /^jumlah\b/i.test(primaryValue)) {
+                continue;
+              }
+
+              var statusVal = statusColPos !== -1
+                ? (rowCells[statusColPos] || "-")
+                : (rowCells.length > 1 ? rowCells[rowCells.length - 1] : "-");
+
+              parsedRows.push({
+                cells: rowCells,
+                ship: rowCells[0] || "-",
+                dest: rowCells[1] || "-",
+                arr: rowCells[2] || "-",
+                dep: rowCells[3] || "-",
+                gate: rowCells.length > 4 ? (rowCells[rowCells.length - 2] || "-") : "-",
+                status: statusVal
+              });
+            }
+
+            return parsedRows;
+          }
+
+          function readCachedSheetRows() {
+            try {
+              var raw = localStorage.getItem(SHEET_CACHE_STORAGE_KEY);
+              if (!raw) return [];
+              var parsed = JSON.parse(raw);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch (cacheErr) {
+              return [];
+            }
+          }
+
+          function writeCachedSheetRows(rows) {
+            try {
+              if (Array.isArray(rows) && rows.length > 0) {
+                localStorage.setItem(SHEET_CACHE_STORAGE_KEY, JSON.stringify(rows));
+              }
+            } catch (writeErr) {
+              // Abaikan error penyimpanan lokal
+            }
+          }
+
+          async function fetchCsvRows() {
+            var sep = PUBLISHED_CSV_URL.indexOf("?") === -1 ? "?" : "&";
+            var cacheBustUrl = PUBLISHED_CSV_URL + sep + "_ts=" + Date.now();
+            var res = await fetchWithTimeout(cacheBustUrl, 7000);
+            if (!res.ok) {
+              throw new Error("HTTP " + res.status);
+            }
+            var csvText = await res.text();
+            if (!csvText || /<!doctype html>|<html/i.test(csvText)) {
+              throw new Error("Respon bukan CSV");
+            }
+            return processMatrix(parseCsvMatrix(csvText));
+          }
+
+          function fetchGvizJsonpRows() {
+            return new Promise(function (resolve, reject) {
+              var cbName = "__dumaiGvizCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+              var script = document.createElement("script");
+              var done = false;
+
+              var timer = setTimeout(function () {
+                if (done) return;
+                done = true;
+                cleanup();
+                reject(new Error("GViz timeout"));
+              }, 7000);
+
+              function cleanup() {
+                clearTimeout(timer);
+                if (script && script.parentNode) {
+                  script.parentNode.removeChild(script);
+                }
+                try {
+                  delete window[cbName];
+                } catch (e) {
+                  window[cbName] = undefined;
+                }
+              }
+
+              window[cbName] = function (payload) {
+                if (done) return;
+                done = true;
+                cleanup();
+                try {
+                  var table = payload && payload.table;
+                  if (!table || !Array.isArray(table.rows)) {
+                    resolve([]);
+                    return;
+                  }
+                  var colsCount = Array.isArray(table.cols) ? table.cols.length : 0;
+                  var matrix = table.rows.map(function (r) {
+                    var cells = Array.isArray(r.c) ? r.c : [];
+                    var rowArr = [];
+                    var len = Math.max(colsCount, cells.length);
+                    for (var i = 0; i < len; i++) {
+                      var cellObj = cells[i];
+                      if (!cellObj) {
+                        rowArr.push("");
+                      } else if (cellObj.f != null && String(cellObj.f).trim() !== "") {
+                        rowArr.push(String(cellObj.f).trim());
+                      } else if (cellObj.v != null) {
+                        rowArr.push(String(cellObj.v).trim());
+                      } else {
+                        rowArr.push("");
+                      }
+                    }
+                    return rowArr;
+                  });
+                  if (Array.isArray(table.cols) && table.cols.some(function (c) { return c && c.label; })) {
+                    matrix.unshift(table.cols.map(function (c) { return (c && c.label) ? String(c.label).trim() : ""; }));
+                  }
+                  resolve(processMatrix(matrix));
+                } catch (parseErr) {
+                  reject(parseErr);
+                }
+              };
+
+              var sep = GVIZ_JSONP_BASE.indexOf("?") === -1 ? "?" : "&";
+              script.src = GVIZ_JSONP_BASE + sep + "tqx=out:json;responseHandler:" + cbName + "&_ts=" + Date.now();
+              script.onerror = function () {
+                if (done) return;
+                done = true;
+                cleanup();
+                reject(new Error("GViz script error"));
+              };
+              document.head.appendChild(script);
+            });
+          }
+
+          // Pengaturan Running Text Informasi (rotasi tiap baris)
+          var tickerLines = [];
+          var tickerLineIdx = 0;
+          var tickerRotateTimer = null;
+
+          function showNextTickerLine(animate) {
+            if (!inlineTickerText || tickerLines.length === 0) return;
+            var nextText = tickerLines[tickerLineIdx % tickerLines.length];
+            if (!animate) {
+              inlineTickerText.textContent = nextText;
+              return;
+            }
+            inlineTickerText.classList.add("is-fading");
+            setTimeout(function () {
+              inlineTickerText.textContent = nextText;
+              inlineTickerText.classList.remove("is-fading");
+            }, 320);
+          }
+
+          function applyCustomRunningText(rawText) {
+            var cleaned = String(rawText || "").trim();
+            if (!cleaned) cleaned = DEFAULT_RUNNING_TEXT;
+            try {
+              localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, cleaned);
+            } catch (e) {}
+
+            tickerLines = cleaned.split(/\r?\n/).map(function (l) {
+              return l.trim();
+            }).filter(Boolean);
+            if (tickerLines.length === 0) tickerLines = [DEFAULT_RUNNING_TEXT];
+
+            tickerLineIdx = 0;
+            showNextTickerLine(false);
+
+            if (tickerRotateTimer) {
+              clearInterval(tickerRotateTimer);
+              tickerRotateTimer = null;
+            }
+            if (tickerLines.length > 1) {
+              tickerRotateTimer = setInterval(function () {
+                tickerLineIdx = (tickerLineIdx + 1) % tickerLines.length;
+                showNextTickerLine(true);
+              }, 7000);
+            }
+          }
+
+          function closeRunningTextModal() {
+            if (runningTextModal) runningTextModal.classList.remove("open");
+          }
+
+          if (saveRunningTextBtn && runningTextModal) {
+            saveRunningTextBtn.addEventListener("click", function () {
+              if (modalRunningTextInput) {
+                modalRunningTextInput.value = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
+              }
+              runningTextModal.classList.add("open");
+            });
+          }
+          if (runningTextModal) {
+            runningTextModal.addEventListener("click", function (e) {
+              if (e.target === runningTextModal) closeRunningTextModal();
+            });
+          }
+
+          applyCustomRunningText(localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT);
+
+          // Pengaturan Logo Header Kiri & Kanan
+          var LOGO_LEFT_KEY = "dumai_header_logo_left";
+          var LOGO_RIGHT_KEY = "dumai_header_logo_right";
+          var headerLogoLeft = document.getElementById("headerLogoLeft");
+          var headerLogoRight = document.getElementById("headerLogoRight");
+          var openLogoModalBtn = document.getElementById("openLogoModalBtn");
+          var logoModal = document.getElementById("logoModal");
+          var closeLogoModalBtn = document.getElementById("closeLogoModalBtn");
+          var saveLogoBtn = document.getElementById("saveLogoBtn");
+          var resetLogoBtn = document.getElementById("resetLogoBtn");
+          var leftLogoFile = document.getElementById("leftLogoFile");
+          var leftLogoUrl = document.getElementById("leftLogoUrl");
+          var rightLogoFile = document.getElementById("rightLogoFile");
+          var rightLogoUrl = document.getElementById("rightLogoUrl");
+
+          function renderHeaderLogos() {
+            var leftSrc = localStorage.getItem(LOGO_LEFT_KEY) || "";
+            var rightSrc = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+            if (headerLogoLeft) {
+              headerLogoLeft.innerHTML = leftSrc ? '<img src="' + escapeHtml(leftSrc) + '" alt="Logo Kiri" />' : "";
+            }
+            if (headerLogoRight) {
+              headerLogoRight.innerHTML = rightSrc ? '<img src="' + escapeHtml(rightSrc) + '" alt="Logo Kanan" />' : "";
+            }
+            setTimeout(adjustViewportFit, 50);
+          }
+
+          function readFileAsDataUrl(file) {
+            return new Promise(function (resolve) {
+              if (!file) {
+                resolve("");
+                return;
+              }
+              var reader = new FileReader();
+              reader.onload = function () { resolve(String(reader.result || "")); };
+              reader.onerror = function () { resolve(""); };
+              reader.readAsDataURL(file);
+            });
+          }
+
+          if (openLogoModalBtn && logoModal) {
+            openLogoModalBtn.addEventListener("click", function () {
+              if (leftLogoUrl) {
+                var savedL = localStorage.getItem(LOGO_LEFT_KEY) || "";
+                leftLogoUrl.value = savedL.indexOf("data:") === 0 ? "" : savedL;
+              }
+              if (rightLogoUrl) {
+                var savedR = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+                rightLogoUrl.value = savedR.indexOf("data:") === 0 ? "" : savedR;
+              }
+              logoModal.classList.add("open");
+            });
+          }
+          if (closeLogoModalBtn && logoModal) {
+            closeLogoModalBtn.addEventListener("click", function () {
+              logoModal.classList.remove("open");
+            });
+          }
+          if (logoModal) {
+            logoModal.addEventListener("click", function (e) {
+              if (e.target === logoModal) logoModal.classList.remove("open");
+            });
+          }
+          if (saveLogoBtn) {
+            saveLogoBtn.addEventListener("click", async function () {
+              var lFile = leftLogoFile && leftLogoFile.files && leftLogoFile.files[0];
+              var rFile = rightLogoFile && rightLogoFile.files && rightLogoFile.files[0];
+              var lData = lFile ? await readFileAsDataUrl(lFile) : (leftLogoUrl ? leftLogoUrl.value.trim() : "");
+              var rData = rFile ? await readFileAsDataUrl(rFile) : (rightLogoUrl ? rightLogoUrl.value.trim() : "");
+
+              if (lData) localStorage.setItem(LOGO_LEFT_KEY, lData);
+              else if (leftLogoUrl && leftLogoUrl.value.trim() === "" && !lFile) localStorage.removeItem(LOGO_LEFT_KEY);
+
+              if (rData) localStorage.setItem(LOGO_RIGHT_KEY, rData);
+              else if (rightLogoUrl && rightLogoUrl.value.trim() === "" && !rFile) localStorage.removeItem(LOGO_RIGHT_KEY);
+
+              if (leftLogoFile) leftLogoFile.value = "";
+              if (rightLogoFile) rightLogoFile.value = "";
+              renderHeaderLogos();
+              if (logoModal) logoModal.classList.remove("open");
+            });
+          }
+          if (resetLogoBtn) {
+            resetLogoBtn.addEventListener("click", function () {
+              localStorage.removeItem(LOGO_LEFT_KEY);
+              localStorage.removeItem(LOGO_RIGHT_KEY);
+              if (leftLogoUrl) leftLogoUrl.value = "";
+              if (rightLogoUrl) rightLogoUrl.value = "";
+              renderHeaderLogos();
+              if (logoModal) logoModal.classList.remove("open");
+            });
+          }
+          renderHeaderLogos();
+
+          // Jam Real-time WIB + Pengecekan Video Harian
+          var liveClock = document.getElementById("liveClock");
+          function updateLiveClock() {
+            var now = new Date();
+            try {
+              var fmt = new Intl.DateTimeFormat("id-ID", {
+                weekday: "long",
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                timeZone: "Asia/Jakarta"
+              });
+              if (liveClock) liveClock.textContent = fmt.format(now) + " WIB";
+            } catch (e) {
+              if (liveClock) liveClock.textContent = now.toLocaleTimeString("id-ID") + " WIB";
+            }
+            checkDailyVideoTrigger();
+          }
+          updateLiveClock();
+          setInterval(updateLiveClock, 1000);
+
+          // Toggle Mode Gelap / Terang
+          var themeToggleBtn = document.getElementById("themeToggleBtn");
+          var THEME_STORAGE_KEY = "dumai_dashboard_theme";
+          function applyTheme(mode) {
+            var isLight = mode === "light";
+            document.body.classList.toggle("dark-mode", !isLight);
+            if (themeToggleBtn) {
+              themeToggleBtn.textContent = isLight ? "🌙 Mode Gelap" : "☀️ Mode Terang";
+            }
+          }
+          applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || "dark");
+          if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", function () {
+              var nextMode = document.body.classList.contains("dark-mode") ? "light" : "dark";
+              localStorage.setItem(THEME_STORAGE_KEY, nextMode);
+              applyTheme(nextMode);
+            });
+          }
+
+          // Toggle Layar Penuh
+          var fullscreenToggleBtn = document.getElementById("fullscreenToggleBtn");
+          function syncFullscreenBtnLabel() {
+            var isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
+            document.body.classList.toggle("is-fullscreen", isFs);
+            if (fullscreenToggleBtn) {
+              fullscreenToggleBtn.textContent = isFs ? "🗗 Keluar Layar Penuh" : "⛶ Layar Penuh";
+            }
+            setTimeout(adjustViewportFit, 80);
+          }
+          if (fullscreenToggleBtn) {
+            fullscreenToggleBtn.addEventListener("click", function () {
+              unlockBrowserAudioContext();
+              var docEl = document.documentElement;
+              var isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
+              if (!isFs) {
+                if (docEl.requestFullscreen) {
+                  docEl.requestFullscreen().catch(function () {
+                    document.body.classList.add("pseudo-fullscreen");
+                    syncFullscreenBtnLabel();
+                  });
+                } else if (docEl.webkitRequestFullscreen) {
+                  docEl.webkitRequestFullscreen();
+                } else {
+                  document.body.classList.add("pseudo-fullscreen");
+                  syncFullscreenBtnLabel();
+                }
+              } else {
+                document.body.classList.remove("pseudo-fullscreen");
+                if (document.exitFullscreen && document.fullscreenElement) {
+                  document.exitFullscreen().catch(function () {});
+                } else if (document.webkitExitFullscreen && document.webkitFullscreenElement) {
+                  document.webkitExitFullscreen();
+                }
+                syncFullscreenBtnLabel();
+              }
+            });
+          }
+          document.addEventListener("fullscreenchange", syncFullscreenBtnLabel);
+          document.addEventListener("webkitfullscreenchange", syncFullscreenBtnLabel);
+
+          if (confirmRunningTextBtn) {
+            confirmRunningTextBtn.addEventListener("click", function () {
+              applyCustomRunningText(modalRunningTextInput ? modalRunningTextInput.value : "");
+              closeRunningTextModal();
+            });
+          }
+          if (closeRunningTextModalBtn) {
+            closeRunningTextModalBtn.addEventListener("click", closeRunningTextModal);
+          }
+          if (resetRunningTextBtn) {
+            resetRunningTextBtn.addEventListener("click", function () {
+              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
+              applyCustomRunningText(DEFAULT_RUNNING_TEXT);
+              closeRunningTextModal();
+            });
+          }
+
+          async function syncGoogleSheet(isManual) {
+            if (state.isFetching) return;
+            state.isFetching = true;
+            if (manualRefreshBtn) {
+              manualRefreshBtn.disabled = true;
+              manualRefreshBtn.textContent = "⏳ Memuat...";
+            }
+
+            try {
+              var rows = [];
+              try {
+                rows = await fetchCsvRows();
+              } catch (csvErr) {
+                rows = await fetchGvizJsonpRows();
+              }
+
+              if (Array.isArray(rows) && rows.length > 0) {
+                var sig = JSON.stringify(rows);
+                state.rows = rows;
+                state.hasLiveSheetData = true;
+                writeCachedSheetRows(rows);
+                if (sig !== state.lastSignature || isManual) {
+                  state.lastSignature = sig;
+                  renderAll();
+                }
+              } else if (!state.hasLiveSheetData) {
+                var cachedEmpty = readCachedSheetRows();
+                state.rows = cachedEmpty.length > 0 ? cachedEmpty : DEFAULT_SHIP_ROWS.slice();
+                renderAll();
+              }
+            } catch (err) {
+              if (!state.hasLiveSheetData && (!state.rows || state.rows.length === 0)) {
+                var cachedErr = readCachedSheetRows();
+                state.rows = cachedErr.length > 0 ? cachedErr : DEFAULT_SHIP_ROWS.slice();
+                renderAll();
+              }
+            } finally {
+              state.isFetching = false;
+              if (manualRefreshBtn) {
+                manualRefreshBtn.disabled = false;
+                manualRefreshBtn.textContent = "🔄 Refresh";
+              }
+            }
+          }
+
+          async function syncDumaiWeather() {
+            try {
+              var url = "https://api.open-meteo.com/v1/forecast?latitude=1.6667&longitude=101.45&current=temperature_2m,weather_code&timezone=Asia%2FJakarta";
+              var res = await fetchWithTimeout(url, 5000);
+              if (!res.ok) return;
+              var data = await res.json();
+              if (!data || !data.current) return;
+
+              var temp = Math.round(data.current.temperature_2m);
+              var code = data.current.weather_code;
+              var icon = "⛅";
+              var desc = "Cerah Berawan";
+
+              if (code === 0) { icon = "☀️"; desc = "Cerah"; }
+              else if (code >= 1 && code <= 3) { icon = "⛅"; desc = "Cerah Berawan"; }
+              else if (code >= 45 && code <= 48) { icon = "🌫️"; desc = "Berkabut"; }
+              else if (code >= 51 && code <= 67) { icon = "🌦️"; desc = "Hujan Ringan"; }
+              else if (code >= 80 && code <= 82) { icon = "🌧️"; desc = "Hujan Lebat"; }
+              else if (code >= 95) { icon = "⛈️"; desc = "Hujan Petir"; }
+
+              state.liveWeather = icon + " " + temp + "°C " + desc;
+              if (statWeather) statWeather.textContent = icon + " " + temp + "°C";
+              if (statWeatherDesc) statWeatherDesc.textContent = desc + " • Dumai (Open-Meteo)";
+            } catch (errWeather) {
+              // Pertahankan nilai cuaca terakhir jika offline
+            }
+          }
+
+          if (manualRefreshBtn) {
+            manualRefreshBtn.addEventListener("click", function () {
+              syncGoogleSheet(true);
+              syncDumaiWeather();
+            });
+          }
+
+          var initialCached = readCachedSheetRows();
+          state.rows = initialCached.length > 0 ? initialCached : DEFAULT_SHIP_ROWS.slice();
+          renderAll();
+          syncGoogleSheet(false);
+          syncDumaiWeather();
+
+          setInterval(function () {
+            syncGoogleSheet(false);
+          }, 8000);
+
+          setInterval(syncDumaiWeather, 300000);
+        } catch (initErr) {
+          // Pengaman inisialisasi utama
+        }
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initDashboard);
+      } else {
+        initDashboard();
+      }
+    })();
+  </script>
+</body>
+</html>
