@@ -232,7 +232,7 @@
       flex: 1;
       overflow: hidden;
       white-space: nowrap;
-      text-align: center;
+      text-align: left;
       font-family: 'Roboto', sans-serif;
       font-size: clamp(0.84rem, 1.05vw, 1.02rem);
       font-weight: 600;
@@ -243,16 +243,20 @@
 
     .inline-ticker-text {
       display: inline-block;
-      padding-left: 0;
-      text-align: center;
+      padding-left: 100%;
+      white-space: nowrap;
       font-family: 'Roboto', sans-serif;
       color: var(--text-main);
-      transition: opacity 0.35s ease, transform 0.35s ease;
+      animation: inlineTickerScroll 28s linear infinite;
     }
 
-    .inline-ticker-text.is-fading {
-      opacity: 0;
-      transform: translateY(-6px);
+    .inline-ticker-wrap:hover .inline-ticker-text {
+      animation-play-state: paused;
+    }
+
+    @keyframes inlineTickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
     }
 
     .ticker-edit-input {
@@ -881,6 +885,28 @@
       line-height: 1.35;
     }
 
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      margin-bottom: 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
     .modal-actions {
       display: flex;
       flex-wrap: wrap;
@@ -1086,6 +1112,10 @@
   <div class="modal-backdrop" id="logoModal">
     <div class="modal-card">
       <h3>Atur Logo Header (Kiri &amp; Kanan)</h3>
+      <label class="checkbox-row" for="removeBlackBgCheckbox">
+        <input type="checkbox" id="removeBlackBgCheckbox" checked />
+        <span>Buang Background Hitam Otomatis (untuk logo Danantara / JPG)</span>
+      </label>
       <div class="form-group">
         <label for="leftLogoFile">Upload Logo 1 (Pojok Kiri Atas)</label>
         <input type="file" id="leftLogoFile" accept="image/*" />
@@ -1095,15 +1125,16 @@
         <input type="text" id="leftLogoUrl" placeholder="https://contoh.com/logo-kiri.png" />
       </div>
       <div class="form-group">
-        <label for="rightLogoFile">Upload Logo 2 (Pojok Kanan Atas)</label>
+        <label for="rightLogoFile">Upload Logo 2 (Pojok Kanan Atas - mis. Danantara)</label>
         <input type="file" id="rightLogoFile" accept="image/*" />
       </div>
       <div class="form-group">
         <label for="rightLogoUrl">Atau Tempel URL Logo 2 (Kanan)</label>
-        <input type="text" id="rightLogoUrl" placeholder="https://contoh.com/logo-kanan.png" />
+        <input type="text" id="rightLogoUrl" placeholder="https://contoh.com/logo-danantara.png" />
       </div>
       <div class="modal-actions">
         <button type="button" class="btn-secondary" id="resetLogoBtn">Hapus Logo</button>
+        <button type="button" class="btn-secondary" id="cleanExistingBlackBgBtn">✨ Bersihkan Hitam Logo Aktif</button>
         <button type="button" class="btn-secondary" id="closeLogoModalBtn">Tutup</button>
         <button type="button" class="btn-primary" id="saveLogoBtn">Simpan Logo</button>
       </div>
@@ -1384,7 +1415,6 @@
                     vidEl.volume = 1.0;
                     if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
                   }).catch(function () {
-                    // Jika browser memblokir autoplay bersuara sebelum ada interaksi, putar muted lalu otomatis unmute begitu ada interaksi
                     vidEl.muted = true;
                     if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.add("visible");
                     vidEl.play().catch(function () {});
@@ -1968,25 +1998,7 @@
             });
           }
 
-          // Pengaturan Running Text Informasi (rotasi tiap baris)
-          var tickerLines = [];
-          var tickerLineIdx = 0;
-          var tickerRotateTimer = null;
-
-          function showNextTickerLine(animate) {
-            if (!inlineTickerText || tickerLines.length === 0) return;
-            var nextText = tickerLines[tickerLineIdx % tickerLines.length];
-            if (!animate) {
-              inlineTickerText.textContent = nextText;
-              return;
-            }
-            inlineTickerText.classList.add("is-fading");
-            setTimeout(function () {
-              inlineTickerText.textContent = nextText;
-              inlineTickerText.classList.remove("is-fading");
-            }, 320);
-          }
-
+          // Pengaturan Running Text Informasi (berjalan mendatar)
           function applyCustomRunningText(rawText) {
             var cleaned = String(rawText || "").trim();
             if (!cleaned) cleaned = DEFAULT_RUNNING_TEXT;
@@ -1994,23 +2006,17 @@
               localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, cleaned);
             } catch (e) {}
 
-            tickerLines = cleaned.split(/\r?\n/).map(function (l) {
+            var lines = cleaned.split(/\r?\n/).map(function (l) {
               return l.trim();
             }).filter(Boolean);
-            if (tickerLines.length === 0) tickerLines = [DEFAULT_RUNNING_TEXT];
+            var combinedText = lines.length > 0 ? lines.join("   •   ") : DEFAULT_RUNNING_TEXT;
 
-            tickerLineIdx = 0;
-            showNextTickerLine(false);
-
-            if (tickerRotateTimer) {
-              clearInterval(tickerRotateTimer);
-              tickerRotateTimer = null;
-            }
-            if (tickerLines.length > 1) {
-              tickerRotateTimer = setInterval(function () {
-                tickerLineIdx = (tickerLineIdx + 1) % tickerLines.length;
-                showNextTickerLine(true);
-              }, 7000);
+            if (inlineTickerText) {
+              inlineTickerText.style.animation = "none";
+              inlineTickerText.textContent = combinedText;
+              var durationSec = Math.max(20, Math.min(75, Math.round(combinedText.length * 0.2)));
+              void inlineTickerText.offsetWidth;
+              inlineTickerText.style.animation = "inlineTickerScroll " + durationSec + "s linear infinite";
             }
           }
 
@@ -2034,7 +2040,7 @@
 
           applyCustomRunningText(localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT);
 
-          // Pengaturan Logo Header Kiri & Kanan
+          // Pengaturan Logo Header Kiri & Kanan (termasuk penghapus background hitam otomatis)
           var LOGO_LEFT_KEY = "dumai_header_logo_left";
           var LOGO_RIGHT_KEY = "dumai_header_logo_right";
           var headerLogoLeft = document.getElementById("headerLogoLeft");
@@ -2044,10 +2050,122 @@
           var closeLogoModalBtn = document.getElementById("closeLogoModalBtn");
           var saveLogoBtn = document.getElementById("saveLogoBtn");
           var resetLogoBtn = document.getElementById("resetLogoBtn");
+          var cleanExistingBlackBgBtn = document.getElementById("cleanExistingBlackBgBtn");
+          var removeBlackBgCheckbox = document.getElementById("removeBlackBgCheckbox");
           var leftLogoFile = document.getElementById("leftLogoFile");
           var leftLogoUrl = document.getElementById("leftLogoUrl");
           var rightLogoFile = document.getElementById("rightLogoFile");
           var rightLogoUrl = document.getElementById("rightLogoUrl");
+
+          // Fungsi menghapus background hitam/gelap menggunakan Canvas (flood-fill dari tepi + smooth edge)
+          function stripBlackBackgroundFromImage(src) {
+            return new Promise(function (resolve) {
+              if (!src) {
+                resolve("");
+                return;
+              }
+              var img = new Image();
+              img.crossOrigin = "anonymous";
+              img.onload = function () {
+                try {
+                  var w = img.naturalWidth || img.width;
+                  var h = img.naturalHeight || img.height;
+                  if (!w || !h) {
+                    resolve(src);
+                    return;
+                  }
+                  var maxDim = 900;
+                  if (w > maxDim || h > maxDim) {
+                    var scale = Math.min(maxDim / w, maxDim / h);
+                    w = Math.round(w * scale);
+                    h = Math.round(h * scale);
+                  }
+                  var canvas = document.createElement("canvas");
+                  canvas.width = w;
+                  canvas.height = h;
+                  var ctx = canvas.getContext("2d");
+                  ctx.drawImage(img, 0, 0, w, h);
+
+                  var imgData = ctx.getImageData(0, 0, w, h);
+                  var data = imgData.data;
+                  var totalPixels = w * h;
+                  var visited = new Uint8Array(totalPixels);
+                  var queue = new Int32Array(totalPixels);
+                  var head = 0;
+                  var tail = 0;
+
+                  function isDarkBgPixel(idx) {
+                    var p = idx * 4;
+                    var a = data[p + 3];
+                    if (a < 20) return true;
+                    var r = data[p];
+                    var g = data[p + 1];
+                    var b = data[p + 2];
+                    var maxC = Math.max(r, g, b);
+                    return maxC <= 58;
+                  }
+
+                  function pushIfBg(x, y) {
+                    if (x < 0 || x >= w || y < 0 || y >= h) return;
+                    var idx = y * w + x;
+                    if (visited[idx]) return;
+                    if (isDarkBgPixel(idx)) {
+                      visited[idx] = 1;
+                      queue[tail++] = idx;
+                    }
+                  }
+
+                  for (var x = 0; x < w; x++) {
+                    pushIfBg(x, 0);
+                    pushIfBg(x, h - 1);
+                  }
+                  for (var y = 0; y < h; y++) {
+                    pushIfBg(0, y);
+                    pushIfBg(w - 1, y);
+                  }
+
+                  while (head < tail) {
+                    var curr = queue[head++];
+                    var cx = curr % w;
+                    var cy = (curr - cx) / w;
+                    data[curr * 4 + 3] = 0;
+
+                    pushIfBg(cx - 1, cy);
+                    pushIfBg(cx + 1, cy);
+                    pushIfBg(cx, cy - 1);
+                    pushIfBg(cx, cy + 1);
+                  }
+
+                  // Haluskan pinggiran piksel yang berbatasan langsung dengan area transparan (anti-aliasing)
+                  for (var py = 1; py < h - 1; py++) {
+                    for (var px = 1; px < w - 1; px++) {
+                      var i = py * w + px;
+                      if (visited[i]) continue;
+                      var hasTransparentNeighbor =
+                        visited[i - 1] || visited[i + 1] || visited[i - w] || visited[i + w];
+                      if (hasTransparentNeighbor) {
+                        var off = i * 4;
+                        var lum = Math.max(data[off], data[off + 1], data[off + 2]);
+                        if (lum < 95) {
+                          data[off + 3] = Math.round((lum / 95) * data[off + 3]);
+                        }
+                      }
+                    }
+                  }
+
+                  ctx.putImageData(imgData, 0, 0);
+                  resolve(canvas.toDataURL("image/png"));
+                } catch (errCanvas) {
+                  // Jika URL eksternal memblokir CORS canvas, kembalikan URL aslinya
+                  resolve(src);
+                }
+              };
+              img.onerror = function () {
+                resolve(src);
+              };
+              img.src = src;
+            });
+          }
 
           function renderHeaderLogos() {
             var leftSrc = localStorage.getItem(LOGO_LEFT_KEY) || "";
@@ -2097,18 +2215,43 @@
               if (e.target === logoModal) logoModal.classList.remove("open");
             });
           }
+          if (cleanExistingBlackBgBtn) {
+            cleanExistingBlackBgBtn.addEventListener("click", async function () {
+              var savedL = localStorage.getItem(LOGO_LEFT_KEY) || "";
+              var savedR = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+              if (savedL) {
+                var cleanedL = await stripBlackBackgroundFromImage(savedL);
+                if (cleanedL) localStorage.setItem(LOGO_LEFT_KEY, cleanedL);
+              }
+              if (savedR) {
+                var cleanedR = await stripBlackBackgroundFromImage(savedR);
+                if (cleanedR) localStorage.setItem(LOGO_RIGHT_KEY, cleanedR);
+              }
+              renderHeaderLogos();
+              if (logoModal) logoModal.classList.remove("open");
+            });
+          }
           if (saveLogoBtn) {
             saveLogoBtn.addEventListener("click", async function () {
+              var shouldStripBlack = removeBlackBgCheckbox ? removeBlackBgCheckbox.checked : true;
               var lFile = leftLogoFile && leftLogoFile.files && leftLogoFile.files[0];
               var rFile = rightLogoFile && rightLogoFile.files && rightLogoFile.files[0];
               var lData = lFile ? await readFileAsDataUrl(lFile) : (leftLogoUrl ? leftLogoUrl.value.trim() : "");
               var rData = rFile ? await readFileAsDataUrl(rFile) : (rightLogoUrl ? rightLogoUrl.value.trim() : "");
 
-              if (lData) localStorage.setItem(LOGO_LEFT_KEY, lData);
-              else if (leftLogoUrl && leftLogoUrl.value.trim() === "" && !lFile) localStorage.removeItem(LOGO_LEFT_KEY);
+              if (lData) {
+                if (shouldStripBlack) lData = await stripBlackBackgroundFromImage(lData);
+                localStorage.setItem(LOGO_LEFT_KEY, lData);
+              } else if (leftLogoUrl && leftLogoUrl.value.trim() === "" && !lFile && !(localStorage.getItem(LOGO_LEFT_KEY) || "").startsWith("data:")) {
+                localStorage.removeItem(LOGO_LEFT_KEY);
+              }
 
-              if (rData) localStorage.setItem(LOGO_RIGHT_KEY, rData);
-              else if (rightLogoUrl && rightLogoUrl.value.trim() === "" && !rFile) localStorage.removeItem(LOGO_RIGHT_KEY);
+              if (rData) {
+                if (shouldStripBlack) rData = await stripBlackBackgroundFromImage(rData);
+                localStorage.setItem(LOGO_RIGHT_KEY, rData);
+              } else if (rightLogoUrl && rightLogoUrl.value.trim() === "" && !rFile && !(localStorage.getItem(LOGO_RIGHT_KEY) || "").startsWith("data:")) {
+                localStorage.removeItem(LOGO_RIGHT_KEY);
+              }
 
               if (leftLogoFile) leftLogoFile.value = "";
               if (rightLogoFile) rightLogoFile.value = "";
