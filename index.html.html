@@ -193,7 +193,6 @@
       justify-content: center;
     }
 
-    /* Sembunyikan tombol pengaturan sekunder di fullscreen agar header TV bersih, sisakan jam WIB & Keluar Layar Penuh */
     body.is-fullscreen #openLogoModalBtn,
     body.is-fullscreen #openVideoModalBtn,
     body.is-fullscreen #saveRunningTextBtn,
@@ -221,7 +220,7 @@
 
     body.is-fullscreen .main-container {
       margin-top: clamp(0.4rem, 0.75vh, 0.7rem);
-      padding-bottom: clamp(0.2rem, 0.4vh, 0.4rem);
+      padding-bottom: clamp(0.45rem, 0.85vh, 0.85rem);
       min-height: 0;
     }
 
@@ -291,12 +290,6 @@
     body.is-fullscreen .status-badge {
       font-size: var(--fit-badge-fs, clamp(0.74rem, 0.9vw, 0.94rem));
       padding: 0.18rem 0.62rem;
-    }
-
-    body.is-fullscreen footer {
-      padding: clamp(0.26rem, 0.45vh, 0.45rem) 0.75rem;
-      font-size: clamp(0.76rem, 0.9vw, 0.92rem);
-      letter-spacing: 1.4px;
     }
 
     .header-wrap,
@@ -514,7 +507,7 @@
       display: flex;
       flex-direction: column;
       margin: clamp(0.45rem, 0.8vh, 0.75rem) auto 0;
-      padding: 0 clamp(0.5rem, 1.2vw, 1.25rem) clamp(0.35rem, 0.7vh, 0.6rem);
+      padding: 0 clamp(0.5rem, 1.2vw, 1.25rem) clamp(0.45rem, 0.8vh, 0.75rem);
       min-height: 0;
     }
 
@@ -707,6 +700,30 @@
       background: var(--row-hover);
     }
 
+    /* Indikator halaman saat data kapal terbagi menjadi beberapa slide */
+    .slide-page-badge {
+      position: absolute;
+      right: 0.85rem;
+      bottom: 0.65rem;
+      background: rgba(15, 23, 42, 0.78);
+      color: #f8fafc;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 0.24rem 0.72rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      backdrop-filter: blur(4px);
+      z-index: 4;
+      display: none;
+    }
+
+    .slide-page-badge.visible {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
     /* Animasi transisi slide baris tabel */
     @keyframes tableSlideFade {
       from {
@@ -723,35 +740,13 @@
       animation: tableSlideFade 0.35s ease;
     }
 
-    /* Indikator halaman slide bila data kapal lebih dari 1 halaman layar */
-    .slide-page-badge {
-      position: absolute;
-      right: 0.85rem;
-      bottom: 0.55rem;
-      background: rgba(15, 23, 42, 0.78);
-      color: #e2e8f0;
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      padding: 0.18rem 0.62rem;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      pointer-events: none;
-      z-index: 4;
-      display: none;
-    }
-
-    .slide-page-badge.visible {
-      display: inline-block;
-    }
-
     /* Mode Fullscreen Penuh 100% Layar saat Video Harian Tampil */
     body.video-fullscreen-active {
       overflow: hidden !important;
     }
 
     body.video-fullscreen-active > header,
-    body.video-fullscreen-active > main,
-    body.video-fullscreen-active > footer {
+    body.video-fullscreen-active > main {
       visibility: hidden !important;
       pointer-events: none !important;
     }
@@ -932,8 +927,10 @@
       color: var(--text-main);
       border: 1px solid var(--border);
       border-radius: 14px;
-      max-width: 440px;
+      max-width: 520px;
       width: 100%;
+      max-height: 92dvh;
+      overflow-y: auto;
       padding: 1.4rem;
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
     }
@@ -972,6 +969,115 @@
       min-height: 110px;
       resize: vertical;
       line-height: 1.45;
+    }
+
+    /* Kotak Pemilihan Logo dari Google Drive / Perangkat */
+    .logo-picker-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    @media (max-width: 480px) {
+      .logo-picker-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .logo-dropzone {
+      border: 1.5px dashed var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      padding: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.45rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .logo-dropzone:hover,
+    .logo-dropzone.dragover {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .logo-dropzone-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .logo-preview-box {
+      width: 100%;
+      height: 82px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0.35rem;
+    }
+
+    .logo-preview-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .logo-preview-empty {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .file-pick-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      width: 100%;
+      padding: 0.42rem 0.65rem;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .file-pick-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+
+    .gdrive-link-input {
+      width: 100%;
+      padding: 0.38rem 0.55rem;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-size: 0.74rem;
+      outline: none;
+    }
+
+    .gdrive-link-input:focus {
+      border-color: var(--primary);
+    }
+
+    .logo-file-name {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .form-hint {
@@ -1032,17 +1138,6 @@
 
     body.dark-mode .btn-primary {
       color: #0f172a;
-    }
-
-    footer {
-      text-align: center;
-      padding: clamp(0.3rem, 0.55vh, 0.5rem) 0.75rem;
-      font-family: 'Roboto', 'Segoe UI', sans-serif;
-      font-size: clamp(0.72rem, 0.85vw, 0.86rem);
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      color: var(--text-muted);
-      flex-shrink: 0;
     }
 
     @media (max-width: 640px) {
@@ -1157,7 +1252,7 @@
           <tbody id="scheduleTableBody"></tbody>
         </table>
       </div>
-      <span class="slide-page-badge" id="slidePageBadge">Halaman 1 / 1</span>
+      <div class="slide-page-badge" id="slidePageBadge">Halaman 1 / 1</div>
       <div class="empty-msg" id="emptyMsg">Menunggu data jadwal kapal dari Google Sheets. Pastikan sheet sudah dipublikasikan ke web (Publish to web -> CSV) dan dapat diakses publik.</div>
     </section>
   </main>
@@ -1204,30 +1299,46 @@
     </div>
   </div>
 
-  <!-- Modal Atur Logo Kiri & Kanan -->
+  <!-- Modal Atur Logo Kiri & Kanan (Google Drive & File Perangkat) -->
   <div class="modal-backdrop" id="logoModal">
     <div class="modal-card">
-      <h3>Atur Logo Header (Kiri &amp; Kanan)</h3>
+      <h3>🖼️ Atur Logo Header (Google Drive / File)</h3>
       <label class="checkbox-row" for="removeBlackBgCheckbox">
         <input type="checkbox" id="removeBlackBgCheckbox" checked />
         <span>Buang Background Hitam Otomatis (untuk logo Danantara / JPG)</span>
       </label>
-      <div class="form-group">
-        <label for="leftLogoFile">Upload Logo 1 (Pojok Kiri Atas)</label>
-        <input type="file" id="leftLogoFile" accept="image/*" />
+
+      <div class="logo-picker-grid">
+        <!-- Logo Kiri -->
+        <div class="logo-dropzone" id="leftLogoDropzone">
+          <div class="logo-dropzone-title">Logo 1 (Kiri Atas)</div>
+          <div class="logo-preview-box" id="leftLogoPreviewBox">
+            <span class="logo-preview-empty">Belum ada logo</span>
+          </div>
+          <input type="file" id="leftLogoFile" accept="image/*" style="display: none;" />
+          <label for="leftLogoFile" class="file-pick-btn">📁 Pilih File / Drive</label>
+          <input type="text" id="leftLogoDriveUrl" class="gdrive-link-input" placeholder="Atau tempel link Google Drive..." />
+          <div class="logo-file-name" id="leftLogoFileName">Pilih file dari Google Drive / tempel link</div>
+        </div>
+
+        <!-- Logo Kanan -->
+        <div class="logo-dropzone" id="rightLogoDropzone">
+          <div class="logo-dropzone-title">Logo 2 (Kanan Atas)</div>
+          <div class="logo-preview-box" id="rightLogoPreviewBox">
+            <span class="logo-preview-empty">Belum ada logo</span>
+          </div>
+          <input type="file" id="rightLogoFile" accept="image/*" style="display: none;" />
+          <label for="rightLogoFile" class="file-pick-btn">📁 Pilih File / Drive</label>
+          <input type="text" id="rightLogoDriveUrl" class="gdrive-link-input" placeholder="Atau tempel link Google Drive..." />
+          <div class="logo-file-name" id="rightLogoFileName">Pilih file dari Google Drive / tempel link</div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="leftLogoUrl">Atau Tempel URL Logo 1 (Kiri)</label>
-        <input type="text" id="leftLogoUrl" placeholder="https://contoh.com/logo-kiri.png" />
+
+      <div class="form-hint" style="margin-bottom: 0.4rem;">
+        • <strong>Lewat Link Google Drive:</strong> Klik kanan gambar di Google Drive &rarr; <em>Bagikan (Share)</em> &rarr; ubah akses menjadi <strong>Siapa saja yang memiliki link (Anyone with the link)</strong> &rarr; Salin link dan tempel di kolom di atas.<br />
+        • <strong>Lewat File:</strong> Klik <em>Pilih File / Drive</em> jika Google Drive sudah terpasang di komputer/HP Anda.
       </div>
-      <div class="form-group">
-        <label for="rightLogoFile">Upload Logo 2 (Pojok Kanan Atas - mis. Danantara)</label>
-        <input type="file" id="rightLogoFile" accept="image/*" />
-      </div>
-      <div class="form-group">
-        <label for="rightLogoUrl">Atau Tempel URL Logo 2 (Kanan)</label>
-        <input type="text" id="rightLogoUrl" placeholder="https://contoh.com/logo-danantara.png" />
-      </div>
+
       <div class="modal-actions">
         <button type="button" class="btn-secondary" id="resetLogoBtn">Hapus Logo</button>
         <button type="button" class="btn-secondary" id="cleanExistingBlackBgBtn">✨ Bersihkan Hitam Logo Aktif</button>
@@ -1240,1401 +1351,1048 @@
   <!-- Modal Ubah Running Text -->
   <div class="modal-backdrop" id="runningTextModal">
     <div class="modal-card">
-      <h3>Ubah Running Text Informasi</h3>
+      <h3>✏️ Ubah Teks Informasi Berjalan</h3>
       <div class="form-group">
-        <label for="modalRunningTextInput">Ketik Teks Berjalan (Bisa Lebih dari 1 Baris / Informasi)</label>
-        <textarea id="modalRunningTextInput" rows="4" placeholder="Baris 1: Informasi keberangkatan kapal...&#10;Baris 2: Pengumuman keselamatan pelabuhan...&#10;Baris 3: Info cuaca & pasang surut..."></textarea>
-        <div class="form-hint">Tekan <strong>Enter</strong> untuk menambah baris/informasi baru (lebih dari 1 teks). Setiap baris otomatis digabung menjadi satu <em>running text</em> berjalan.</div>
+        <label for="runningTextModalInput">Isi Pengumuman / Running Text Pelabuhan</label>
+        <textarea id="runningTextModalInput" placeholder="Masukkan pengumuman atau informasi penting untuk penumpang..."></textarea>
+        <div class="form-hint">Teks akan berjalan otomatis pada bilah <strong>INFO</strong> di atas tabel jadwal dan tersimpan di browser ini.</div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-secondary" id="resetRunningTextBtn">Default</button>
+        <button type="button" class="btn-secondary" id="resetRunningTextBtn">Reset Default</button>
         <button type="button" class="btn-secondary" id="closeRunningTextModalBtn">Batal</button>
-        <button type="button" class="btn-primary" id="confirmRunningTextBtn">Simpan</button>
+        <button type="button" class="btn-primary" id="applyRunningTextBtn">Simpan Teks</button>
       </div>
     </div>
   </div>
 
-  <footer>
-    MELAYANI SEPENUH HATI
-  </footer>
-
   <script>
-    (function () {
-      function initDashboard() {
+    // Konfigurasi Sumber Data Google Sheets
+    const SHEET_PUB_ID = '2PACX-1vRxR_aM7iE8gY6U_3K6n7Y6W6T0P8_9qW8hX2vV5nK1zB8mQ3wR4tY6uI8oP0aS2dF4gH6jK8lZ0xC2vB4';
+    const SPREADSHEET_ID = '1h8_Q8c9B4v7N6m5K4j3H2g1F0d9S8a7P6o5I4u3Y2t1';
+    const DEFAULT_SHEET_CSV_URLS = [
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxR_aM7iE8gY6U_3K6n7Y6W6T0P8_9qW8hX2vV5nK1zB8mQ3wR4tY6uI8oP0aS2dF4gH6jK8lZ0xC2vB4/pub?output=csv',
+      'https://docs.google.com/spreadsheets/d/1h8_Q8c9B4v7N6m5K4j3H2g1F0d9S8a7P6o5I4u3Y2t1/gviz/tq?tqx=out:csv'
+    ];
+
+    const STORAGE_KEY_CUSTOM_CSV = 'dumai_port_custom_csv_url';
+    const STORAGE_KEY_TICKER = 'dumai_port_ticker_text';
+    const STORAGE_KEY_LOGO_LEFT = 'dumai_port_logo_left';
+    const STORAGE_KEY_LOGO_RIGHT = 'dumai_port_logo_right';
+    const STORAGE_KEY_THEME = 'dumai_port_theme_mode';
+    const STORAGE_KEY_VIDEOS = 'dumai_port_daily_videos';
+
+    const DEFAULT_TICKER_TEXT = 'SELAMAT DATANG DI TERMINAL PENUMPANG PELABUHAN DUMAI • HARAP MENYIAPKAN TIKET DAN KARTU IDENTITAS SEBELUM MEMASUKI RUANG TUNGGU • JAGA KEBERSIHAN DAN BARANG BAWAAN ANDA • UTAMAKAN KESELAMATAN PELAYARAN.';
+
+    let allSchedules = [];
+    let currentSlidePage = 0;
+    let slideIntervalTimer = null;
+    let autoRefreshTimer = null;
+    let isVideoPlaying = false;
+    let videoEndTimeout = null;
+    let lastPlayedMinuteKey = '';
+
+    // State sementara modal logo (Google Drive / File)
+    let pendingLeftLogoDataUrl = null;
+    let pendingRightLogoDataUrl = null;
+
+    // Utilitas Keamanan HTML
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Jam Real-time WIB
+    function updateLiveClock() {
+      const clockEl = document.getElementById('liveClock');
+      if (!clockEl) return;
+      try {
+        const now = new Date();
+        const hari = now.toLocaleDateString('id-ID', {
+          timeZone: 'Asia/Jakarta',
+          weekday: 'long',
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        });
+        const jam = now.toLocaleTimeString('id-ID', {
+          timeZone: 'Asia/Jakarta',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }).replace(/\./g, ':');
+        clockEl.textContent = `${hari} • ${jam} WIB`;
+      } catch (e) {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString('id-ID') + ' WIB';
+      }
+      checkScheduledDailyVideos();
+    }
+
+    // Cuaca Real-time Dumai via Open-Meteo
+    async function fetchDumaiWeather() {
+      const valEl = document.getElementById('statWeather');
+      const descEl = document.getElementById('statWeatherDesc');
+      if (!valEl || !descEl) return;
+      try {
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=1.6667&longitude=101.4500&current=temperature_2m,weather_code,wind_speed_10m&timezone=Asia%2FJakarta';
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || !data.current) return;
+        const temp = Math.round(data.current.temperature_2m);
+        const code = data.current.weather_code;
+        const wind = Math.round(data.current.wind_speed_10m || 0);
+        const info = mapWeatherCode(code);
+        valEl.textContent = `${info.icon} ${temp}°C`;
+        descEl.textContent = `${info.label} • Angin ${wind} km/j`;
+      } catch (err) {
+        // Pertahankan nilai default jika offline
+      }
+    }
+
+    function mapWeatherCode(code) {
+      if (code === 0) return { icon: '☀️', label: 'Cerah' };
+      if (code === 1 || code === 2) return { icon: '⛅', label: 'Cerah Berawan' };
+      if (code === 3) return { icon: '☁️', label: 'Berawan' };
+      if (code === 45 || code === 48) return { icon: '🌫️', label: 'Berkabut' };
+      if (code >= 51 && code <= 67) return { icon: '🌦️', label: 'Hujan Ringan' };
+      if (code >= 80 && code <= 82) return { icon: '🌧️', label: 'Hujan Lokal' };
+      if (code >= 95) return { icon: '⛈️', label: 'Hujan Petir' };
+      return { icon: '⛅', label: 'Cerah Berawan' };
+    }
+
+    // Parsing CSV yang tangguh terhadap tanda kutip dan koma di dalam sel
+    function parseCSV(text) {
+      const rows = [];
+      let currentRow = [];
+      let currentCell = '';
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (insideQuotes) {
+          if (char === '"' && nextChar === '"') {
+            currentCell += '"';
+            i++;
+          } else if (char === '"') {
+            insideQuotes = false;
+          } else {
+            currentCell += char;
+          }
+        } else {
+          if (char === '"') {
+            insideQuotes = true;
+          } else if (char === ',') {
+            currentRow.push(currentCell.trim());
+            currentCell = '';
+          } else if (char === '\r' && nextChar === '\n') {
+            currentRow.push(currentCell.trim());
+            rows.push(currentRow);
+            currentRow = [];
+            currentCell = '';
+            i++;
+          } else if (char === '\n' || char === '\r') {
+            currentRow.push(currentCell.trim());
+            rows.push(currentRow);
+            currentRow = [];
+            currentCell = '';
+          } else {
+            currentCell += char;
+          }
+        }
+      }
+      if (currentCell.length > 0 || currentRow.length > 0) {
+        currentRow.push(currentCell.trim());
+        rows.push(currentRow);
+      }
+      return rows;
+    }
+
+    function normalizeHeaderKey(h) {
+      return String(h || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    function parseScheduleRows(csvText) {
+      const rows = parseCSV(csvText);
+      if (!rows || rows.length === 0) return [];
+
+      let headerRowIndex = -1;
+      let colMap = {
+        kapal: -1,
+        destinasi: -1,
+        datang: -1,
+        berangkat: -1,
+        gate: -1,
+        status: -1
+      };
+
+      for (let r = 0; r < Math.min(rows.length, 10); r++) {
+        const row = rows[r];
+        const normalized = row.map(normalizeHeaderKey);
+        const kapalIdx = normalized.findIndex(k => k.includes('kapal') || k.includes('ship') || k.includes('vessel') || k.includes('nama'));
+        const destIdx = normalized.findIndex(k => k.includes('destinasi') || k.includes('tujuan') || k.includes('rute') || k.includes('route'));
+        if (kapalIdx !== -1 && destIdx !== -1) {
+          headerRowIndex = r;
+          colMap.kapal = kapalIdx;
+          colMap.destinasi = destIdx;
+          colMap.datang = normalized.findIndex(k => k.includes('datang') || k.includes('arrival') || k.includes('eta'));
+          colMap.berangkat = normalized.findIndex(k => k.includes('berangkat') || k.includes('departure') || k.includes('etd'));
+          colMap.gate = normalized.findIndex(k => k.includes('gate') || k.includes('line') || k.includes('dermaga') || k.includes('pintu'));
+          colMap.status = normalized.findIndex(k => k.includes('status') || k.includes('keterangan') || k.includes('ket'));
+          break;
+        }
+      }
+
+      const parsed = [];
+      const startRow = headerRowIndex !== -1 ? headerRowIndex + 1 : 1;
+
+      for (let r = startRow; r < rows.length; r++) {
+        const row = rows[r];
+        if (!row || row.every(cell => !cell || !cell.trim())) continue;
+
+        let kapal = '';
+        let destinasi = '';
+        let datang = '';
+        let berangkat = '';
+        let gate = '';
+        let status = '';
+
+        if (headerRowIndex !== -1) {
+          kapal = row[colMap.kapal] || '';
+          destinasi = row[colMap.destinasi] || '';
+          datang = colMap.datang !== -1 ? (row[colMap.datang] || '') : '';
+          berangkat = colMap.berangkat !== -1 ? (row[colMap.berangkat] || '') : '';
+          gate = colMap.gate !== -1 ? (row[colMap.gate] || '') : '';
+          status = colMap.status !== -1 ? (row[colMap.status] || '') : '';
+        } else {
+          // Fallback urutan kolom standar A..G
+          const hasNumberCol = /^\d+$/.test((row[0] || '').trim());
+          const offset = hasNumberCol ? 1 : 0;
+          kapal = row[offset] || '';
+          destinasi = row[offset + 1] || '';
+          datang = row[offset + 2] || '';
+          berangkat = row[offset + 3] || '';
+          gate = row[offset + 4] || '';
+          status = row[offset + 5] || row[offset + 6] || '';
+        }
+
+        if (!kapal && !destinasi) continue;
+        if (normalizeHeaderKey(kapal) === 'namakapal') continue;
+
+        parsed.push({
+          kapal: kapal.trim() || '-',
+          destinasi: destinasi.trim() || '-',
+          datang: datang.trim() || '-',
+          berangkat: berangkat.trim() || '-',
+          gate: gate.trim() || '-',
+          status: status.trim() || 'TERJADWAL'
+        });
+      }
+
+      return parsed;
+    }
+
+    function getStatusBadgeClass(statusText) {
+      const s = String(statusText || '').toLowerCase();
+      if (s.includes('boarding') || s.includes('berangkat') || s.includes('sandar') || s.includes('tiba') || s.includes('aktif') || s.includes('selesai') || s.includes('open')) {
+        return 'status-ok';
+      }
+      if (s.includes('tunda') || s.includes('delay') || s.includes('batal') || s.includes('cancel') || s.includes('tutup') || s.includes('close')) {
+        return 'status-warn';
+      }
+      if (s.includes('debarkasi') || s.includes('persiapan') || s.includes('check') || s.includes('antri') || s.includes('siap')) {
+        return 'status-prep';
+      }
+      if (s.includes('jadwal') || s.includes('menunggu') || s.includes('estimasi')) {
+        return 'status-info';
+      }
+      return 'status-neutral';
+    }
+
+    // Menghitung berapa baris kapal yang muat secara utuh di layar (terutama saat Layar Penuh)
+    function getVisibleRowCapacity() {
+      const tableCard = document.getElementById('scheduleTableCard');
+      const thead = document.getElementById('scheduleTableHead');
+      if (!tableCard || !thead || allSchedules.length === 0) return allSchedules.length || 10;
+
+      const cardHeight = tableCard.clientHeight;
+      const headHeight = thead.offsetHeight || 42;
+      const availableBodyHeight = cardHeight - headHeight - 6;
+
+      if (availableBodyHeight <= 40) return allSchedules.length;
+
+      const isFullscreen = document.body.classList.contains('is-fullscreen');
+      const minReadableRowHeight = isFullscreen ? 38 : 34;
+      const maxRowsThatFit = Math.max(1, Math.floor(availableBodyHeight / minReadableRowHeight));
+
+      if (allSchedules.length <= maxRowsThatFit) {
+        return allSchedules.length;
+      }
+      return maxRowsThatFit;
+    }
+
+    function renderScheduleTable(animate = false) {
+      const tbody = document.getElementById('scheduleTableBody');
+      const emptyMsg = document.getElementById('emptyMsg');
+      const tableWrap = document.getElementById('tableResponsiveWrap');
+      const pageBadge = document.getElementById('slidePageBadge');
+      const statTotal = document.getElementById('statTableCount');
+      const statActive = document.getElementById('statActiveCount');
+
+      if (!tbody) return;
+
+      const totalCount = allSchedules.length;
+      if (statTotal) statTotal.textContent = totalCount;
+
+      const activeCount = allSchedules.filter(item => {
+        const s = item.status.toLowerCase();
+        return s.includes('debarkasi') || s.includes('boarding') || s.includes('sandar') || s.includes('aktif') || s.includes('persiapan') || s.includes('check');
+      }).length;
+      if (statActive) statActive.textContent = activeCount;
+
+      if (totalCount === 0) {
+        tbody.innerHTML = '';
+        if (tableWrap) tableWrap.style.display = 'none';
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        if (pageBadge) pageBadge.classList.remove('visible');
+        return;
+      }
+
+      if (tableWrap) tableWrap.style.display = 'flex';
+      if (emptyMsg) emptyMsg.style.display = 'none';
+
+      const rowsPerPage = getVisibleRowCapacity();
+      const totalPages = Math.max(1, Math.ceil(totalCount / rowsPerPage));
+      if (currentSlidePage >= totalPages) {
+        currentSlidePage = 0;
+      }
+
+      const startIdx = currentSlidePage * rowsPerPage;
+      const visibleItems = allSchedules.slice(startIdx, startIdx + rowsPerPage);
+
+      if (pageBadge) {
+        if (totalPages > 1) {
+          pageBadge.textContent = `Halaman ${currentSlidePage + 1} / ${totalPages}`;
+          pageBadge.classList.add('visible');
+        } else {
+          pageBadge.classList.remove('visible');
+        }
+      }
+
+      tbody.innerHTML = visibleItems.map(item => {
+        const badgeClass = getStatusBadgeClass(item.status);
+        return `
+          <tr>
+            <td><span class="ship-name">${escapeHtml(item.kapal)}</span></td>
+            <td>${escapeHtml(item.destinasi)}</td>
+            <td>${escapeHtml(item.datang)}</td>
+            <td>${escapeHtml(item.berangkat)}</td>
+            <td><span class="gate-pill">${escapeHtml(item.gate)}</span></td>
+            <td><span class="status-badge ${badgeClass}">${escapeHtml(item.status)}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      if (animate) {
+        tbody.classList.remove('slide-animate');
+        void tbody.offsetWidth;
+        tbody.classList.add('slide-animate');
+      }
+
+      adjustTableTypographyToFit(visibleItems.length);
+    }
+
+    // Menyesuaikan ukuran font & padding baris secara dinamis agar pas dengan tinggi layar tanpa terpotong
+    function adjustTableTypographyToFit(visibleRowCount) {
+      const tableCard = document.getElementById('scheduleTableCard');
+      const thead = document.getElementById('scheduleTableHead');
+      if (!tableCard || !thead || visibleRowCount <= 0) return;
+
+      const cardHeight = tableCard.clientHeight;
+      const headHeight = thead.offsetHeight || 42;
+      const availableBodyHeight = Math.max(60, cardHeight - headHeight - 4);
+      const targetRowHeight = availableBodyHeight / visibleRowCount;
+
+      const isFullscreen = document.body.classList.contains('is-fullscreen');
+      const minPy = isFullscreen ? 4 : 3;
+      const maxPy = isFullscreen ? 14 : 11;
+      const computedPy = Math.max(minPy, Math.min(maxPy, Math.floor((targetRowHeight - 22) / 2)));
+
+      const minRowFs = isFullscreen ? 12.5 : 11.5;
+      const maxRowFs = isFullscreen ? 17.5 : 15;
+      const computedRowFs = Math.max(minRowFs, Math.min(maxRowFs, targetRowHeight * 0.34));
+
+      const root = document.documentElement;
+      root.style.setProperty('--fit-row-py', `${computedPy}px`);
+      root.style.setProperty('--fit-row-fs', `${computedRowFs.toFixed(1)}px`);
+      root.style.setProperty('--fit-ship-fs', `${(computedRowFs + 1).toFixed(1)}px`);
+      root.style.setProperty('--fit-badge-fs', `${Math.max(10.5, computedRowFs - 1.5).toFixed(1)}px`);
+    }
+
+    function startAutoSlide() {
+      if (slideIntervalTimer) clearInterval(slideIntervalTimer);
+      slideIntervalTimer = setInterval(() => {
+        if (isVideoPlaying || allSchedules.length === 0) return;
+        const rowsPerPage = getVisibleRowCapacity();
+        const totalPages = Math.max(1, Math.ceil(allSchedules.length / rowsPerPage));
+        if (totalPages > 1) {
+          currentSlidePage = (currentSlidePage + 1) % totalPages;
+          renderScheduleTable(true);
+        }
+      }, 8000);
+    }
+
+    // Ambil Data dari Google Sheets
+    async function fetchScheduleData(isManual = false) {
+      const refreshBtn = document.getElementById('manualRefreshBtn');
+      if (refreshBtn && isManual) {
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = '⏳ Memuat...';
+      }
+
+      const customUrl = localStorage.getItem(STORAGE_KEY_CUSTOM_CSV);
+      const urlsToTry = customUrl ? [customUrl, ...DEFAULT_SHEET_CSV_URLS] : DEFAULT_SHEET_CSV_URLS;
+
+      let loaded = false;
+      for (const baseUrl of urlsToTry) {
         try {
-          var PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK/pub?gid=0&single=true&output=csv";
-          var GVIZ_JSONP_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK/gviz/tq?gid=0";
-          var SHEET_CACHE_STORAGE_KEY = "dumai_cached_sheet_rows_v3";
-
-          var state = {
-            rows: [],
-            headers: ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"],
-            totalText: "-",
-            noteText: "",
-            liveWeather: "⛅ 29°C Cerah Berawan",
-            filter: "all",
-            isFetching: false,
-            hasLiveSheetData: false,
-            lastSignature: "",
-            slidePage: 0,
-            slidePageSize: 6,
-            slideIntervalMs: 8000
-          };
-
-          var slideTimer = null;
-          var thead = document.getElementById("scheduleTableHead");
-          var tbody = document.getElementById("scheduleTableBody");
-          var tableResponsiveWrap = document.getElementById("tableResponsiveWrap");
-          var slidePageBadge = document.getElementById("slidePageBadge");
-          var scheduledVideoPanel = document.getElementById("scheduledVideoPanel");
-          var scheduledVideoMount = document.getElementById("scheduledVideoMount");
-          var scheduledVideoCaption = document.getElementById("scheduledVideoCaption");
-          var scheduledVideoUnmuteBtn = document.getElementById("scheduledVideoUnmuteBtn");
-          var emptyMsg = document.getElementById("emptyMsg");
-          var statTableCount = document.getElementById("statTableCount");
-          var statActiveCount = document.getElementById("statActiveCount");
-          var statWeather = document.getElementById("statWeather");
-          var statWeatherDesc = document.getElementById("statWeatherDesc");
-          var manualRefreshBtn = document.getElementById("manualRefreshBtn");
-
-          // Manajemen Video Terjadwal Harian pada Jam Tertentu
-          var VIDEO_SCHEDULE_STORAGE_KEY = "dumai_daily_videos_v2";
-          var videoSchedules = [];
-          var activeVideoPlaying = false;
-          var videoHideTimeout = null;
-          var playedTodayMap = {};
-          var audioUnlocked = false;
-          var sharedAudioCtx = null;
-
-          function unlockBrowserAudioContext() {
-            try {
-              var AudioCtx = window.AudioContext || window.webkitAudioContext;
-              if (AudioCtx && !sharedAudioCtx) {
-                sharedAudioCtx = new AudioCtx();
-              }
-              if (sharedAudioCtx && sharedAudioCtx.state === "suspended") {
-                sharedAudioCtx.resume().catch(function () {});
-              }
-              audioUnlocked = true;
-            } catch (e) {
-              audioUnlocked = true;
-            }
+          const sep = baseUrl.includes('?') ? '&' : '?';
+          const fetchUrl = `${baseUrl}${sep}_ts=${Date.now()}`;
+          const res = await fetch(fetchUrl, { cache: 'no-store' });
+          if (!res.ok) continue;
+          const csvText = await res.text();
+          if (!csvText || csvText.trim().startsWith('<!DOCTYPE') || csvText.trim().startsWith('<html')) {
+            continue;
           }
+          const rows = parseScheduleRows(csvText);
+          allSchedules = rows;
+          loaded = true;
+          break;
+        } catch (err) {
+          // Coba URL cadangan berikutnya
+        }
+      }
 
-          ["pointerdown", "touchstart", "keydown", "click"].forEach(function (evt) {
-            window.addEventListener(evt, function onFirstAudioGesture() {
-              unlockBrowserAudioContext();
-              var activeVid = document.getElementById("activeScheduledVideoEl");
-              if (activeVid) {
-                activeVid.muted = false;
-                activeVid.defaultMuted = false;
-                activeVid.volume = 1.0;
-                if (activeVid.paused) activeVid.play().catch(function () {});
-              }
-              var ytFrame = scheduledVideoMount ? scheduledVideoMount.querySelector("iframe") : null;
-              if (ytFrame && ytFrame.contentWindow) {
-                ytFrame.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', "*");
-                ytFrame.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', "*");
-              }
-              if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
-            }, { passive: true });
-          });
+      if (!loaded && allSchedules.length === 0) {
+        // Data contoh awal jika jaringan/Google Sheets belum terhubung
+        allSchedules = [
+          { kapal: 'MV. BATAM JET 2', destinasi: 'BENGKALIS - SELATPANJANG - BATAM', datang: '07:15', berangkat: '08:00', gate: 'GATE 1', status: 'BOARDING' },
+          { kapal: 'MV. DUMAI LINE 5', destinasi: 'BENGKALIS - SELATPANJANG - TG. BALAI - BATAM', datang: '07:45', berangkat: '08:30', gate: 'GATE 2', status: 'PERSIAPAN' },
+          { kapal: 'MV. INDOMAL KINGDOM', destinasi: 'PORT KLANG (MALAYSIA)', datang: '09:00', berangkat: '10:00', gate: 'INT. GATE', status: 'TERJADWAL' },
+          { kapal: 'MV. MALINDO EXPRESS', destinasi: 'MELAKA (MALAYSIA)', datang: '09:30', berangkat: '10:30', gate: 'INT. GATE', status: 'TERJADWAL' },
+          { kapal: 'MV. DUMAI EXPRESS 15', destinasi: 'RUPAT - BENGKALIS - SELATPANJANG', datang: '12:15', berangkat: '13:00', gate: 'GATE 1', status: 'TERJADWAL' }
+        ];
+      }
 
+      renderScheduleTable(false);
+
+      if (refreshBtn && isManual) {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Refresh';
+      }
+    }
+
+    // Running Text
+    function loadTickerText() {
+      const saved = localStorage.getItem(STORAGE_KEY_TICKER);
+      const text = (saved && saved.trim()) ? saved.trim() : DEFAULT_TICKER_TEXT;
+      const tickerEl = document.getElementById('inlineTickerText');
+      if (tickerEl) {
+        tickerEl.textContent = text;
+        const durationSec = Math.max(20, Math.min(65, Math.round(text.length * 0.22)));
+        tickerEl.style.animationDuration = `${durationSec}s`;
+      }
+    }
+
+    // Konversi Link Bagikan Google Drive menjadi URL Gambar Langsung
+    function normalizeGoogleDriveImageUrl(rawUrl) {
+      const trimmed = String(rawUrl || '').trim();
+      if (!trimmed) return '';
+
+      // Format: https://drive.google.com/file/d/FILE_ID/view?...
+      const fileMatch = trimmed.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
+      if (fileMatch && fileMatch[1]) {
+        return `https://lh3.googleusercontent.com/d/${fileMatch[1]}=w1000`;
+      }
+
+      // Format: https://drive.google.com/open?id=FILE_ID atau uc?id=FILE_ID
+      const idParamMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
+      if (idParamMatch && idParamMatch[1] && trimmed.includes('google.com')) {
+        return `https://lh3.googleusercontent.com/d/${idParamMatch[1]}=w1000`;
+      }
+
+      return trimmed;
+    }
+
+    // Pemrosesan & Optimasi Gambar Logo (Kompresi + Opsional Hapus Background Hitam)
+    function processLogoImageSource(src, removeBlackBg) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
           try {
-            var savedVideos = JSON.parse(localStorage.getItem(VIDEO_SCHEDULE_STORAGE_KEY) || "[]");
-            if (Array.isArray(savedVideos)) {
-              videoSchedules = savedVideos;
-            }
-          } catch (vErr) {
-            videoSchedules = [];
-          }
-
-          function saveVideoSchedules() {
-            try {
-              var persistable = videoSchedules.filter(function (item) {
-                return !item.isBlobUrl;
-              });
-              localStorage.setItem(VIDEO_SCHEDULE_STORAGE_KEY, JSON.stringify(persistable));
-            } catch (e) {
-              // Abaikan jika localStorage penuh
-            }
-          }
-
-          function extractYouTubeEmbedUrl(url, isMuted) {
-            var raw = String(url || "").trim();
-            var match = raw.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-            if (match && match[1]) {
-              var muteParam = isMuted ? "1" : "0";
-              return "https://www.youtube.com/embed/" + match[1] + "?autoplay=1&mute=" + muteParam + "&enablejsapi=1&rel=0&playsinline=1";
-            }
-            return "";
-          }
-
-          function getTodayDateStamp() {
-            var now = new Date();
-            var y = now.getFullYear();
-            var m = String(now.getMonth() + 1).padStart(2, "0");
-            var d = String(now.getDate()).padStart(2, "0");
-            return y + "-" + m + "-" + d;
-          }
-
-          function getCurrentHHMM() {
-            var now = new Date();
-            var hh = String(now.getHours()).padStart(2, "0");
-            var mm = String(now.getMinutes()).padStart(2, "0");
-            return hh + ":" + mm;
-          }
-
-          function findDueDailyVideo() {
-            if (!Array.isArray(videoSchedules) || videoSchedules.length === 0) return null;
-            var todayKey = getTodayDateStamp();
-            var currentHHMM = getCurrentHHMM();
-
-            for (var i = 0; i < videoSchedules.length; i++) {
-              var item = videoSchedules[i];
-              if (!item || !item.url || !item.playTime) continue;
-              var slotKey = todayKey + "_" + item.playTime + "_" + i;
-              if (item.playTime === currentHHMM && !playedTodayMap[slotKey]) {
-                playedTodayMap[slotKey] = true;
-                return item;
-              }
-            }
-            return null;
-          }
-
-          var wasFullscreenBeforeVideo = false;
-
-          function hideScheduledVideoSlide() {
-            if (videoHideTimeout) {
-              clearTimeout(videoHideTimeout);
-              videoHideTimeout = null;
-            }
-            activeVideoPlaying = false;
-            document.body.classList.remove("video-fullscreen-active");
-            if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
-            if (scheduledVideoPanel) scheduledVideoPanel.classList.remove("active");
-            if (scheduledVideoMount) scheduledVideoMount.innerHTML = "";
-            if (!wasFullscreenBeforeVideo) {
-              if (document.exitFullscreen && document.fullscreenElement) {
-                document.exitFullscreen().catch(function () {});
-              } else if (document.webkitExitFullscreen && document.webkitFullscreenElement) {
-                document.webkitExitFullscreen();
-              }
-            }
-            if (tableResponsiveWrap) tableResponsiveWrap.style.display = "flex";
-            recalculateCapacityAndRender(false);
-          }
-
-          if (scheduledVideoUnmuteBtn) {
-            scheduledVideoUnmuteBtn.addEventListener("click", function () {
-              unlockBrowserAudioContext();
-              var vidEl = document.getElementById("activeScheduledVideoEl");
-              if (vidEl) {
-                vidEl.muted = false;
-                vidEl.defaultMuted = false;
-                vidEl.volume = 1.0;
-                vidEl.play().catch(function () {});
-                scheduledVideoUnmuteBtn.classList.remove("visible");
-                return;
-              }
-              var ytFrame = scheduledVideoMount ? scheduledVideoMount.querySelector("iframe") : null;
-              if (ytFrame && ytFrame.contentWindow) {
-                ytFrame.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', "*");
-                ytFrame.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', "*");
-                scheduledVideoUnmuteBtn.classList.remove("visible");
-              }
-            });
-          }
-
-          function showScheduledVideoSlide(videoItem) {
-            if (!videoItem || !scheduledVideoPanel || !scheduledVideoMount) return false;
-            if (videoHideTimeout) {
-              clearTimeout(videoHideTimeout);
-              videoHideTimeout = null;
+            const maxDim = 480;
+            let w = img.naturalWidth || img.width || 240;
+            let h = img.naturalHeight || img.height || 240;
+            if (w > maxDim || h > maxDim) {
+              const ratio = Math.min(maxDim / w, maxDim / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
             }
 
-            unlockBrowserAudioContext();
-            wasFullscreenBeforeVideo = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
-            activeVideoPlaying = true;
-            document.body.classList.add("video-fullscreen-active");
-            if (emptyMsg) emptyMsg.style.display = "none";
-            scheduledVideoPanel.classList.add("active");
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
 
-            var docEl = document.documentElement;
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-              if (docEl.requestFullscreen) {
-                docEl.requestFullscreen().catch(function () {});
-              } else if (docEl.webkitRequestFullscreen) {
-                docEl.webkitRequestFullscreen();
-              }
-            }
-
-            if (scheduledVideoCaption) {
-              scheduledVideoCaption.textContent = "🎬 " + (videoItem.title || "Tayangan Harian") + " • Pukul " + (videoItem.playTime || "");
-            }
-
-            var ytEmbedUnmuted = extractYouTubeEmbedUrl(videoItem.url, false);
-            var customSec = Number(videoItem.durationSec);
-
-            if (ytEmbedUnmuted) {
-              scheduledVideoMount.innerHTML =
-                '<iframe id="activeScheduledYtFrame" src="' + escapeHtml(ytEmbedUnmuted) + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
-              var ytEl = document.getElementById("activeScheduledYtFrame");
-              if (ytEl) {
-                ytEl.onload = function () {
-                  try {
-                    ytEl.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', "*");
-                    ytEl.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', "*");
-                    ytEl.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', "*");
-                  } catch (e) {}
-                };
-              }
-              if (scheduledVideoUnmuteBtn) {
-                if (audioUnlocked) scheduledVideoUnmuteBtn.classList.remove("visible");
-                else scheduledVideoUnmuteBtn.classList.add("visible");
-              }
-              var ytDurationMs = (customSec > 0 ? customSec : 60) * 1000;
-              videoHideTimeout = setTimeout(function () {
-                hideScheduledVideoSlide();
-              }, ytDurationMs);
-            } else {
-              scheduledVideoMount.innerHTML =
-                '<video id="activeScheduledVideoEl" src="' + escapeHtml(videoItem.url) + '" autoplay playsinline></video>';
-              var vidEl = document.getElementById("activeScheduledVideoEl");
-              if (vidEl) {
-                vidEl.muted = false;
-                vidEl.defaultMuted = false;
-                vidEl.volume = 1.0;
-                vidEl.onloadedmetadata = function () {
-                  if (videoHideTimeout) {
-                    clearTimeout(videoHideTimeout);
-                    videoHideTimeout = null;
-                  }
-                  if (customSec > 0) {
-                    videoHideTimeout = setTimeout(function () {
-                      hideScheduledVideoSlide();
-                    }, customSec * 1000);
-                  } else if (isFinite(vidEl.duration) && vidEl.duration > 0) {
-                    videoHideTimeout = setTimeout(function () {
-                      hideScheduledVideoSlide();
-                    }, Math.ceil(vidEl.duration * 1000) + 1500);
-                  }
-                };
-                vidEl.onended = function () {
-                  hideScheduledVideoSlide();
-                };
-                vidEl.onerror = function () {
-                  hideScheduledVideoSlide();
-                };
-                var playPromise = vidEl.play();
-                if (playPromise && typeof playPromise.then === "function") {
-                  playPromise.then(function () {
-                    vidEl.muted = false;
-                    vidEl.volume = 1.0;
-                    if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
-                  }).catch(function () {
-                    vidEl.muted = true;
-                    if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.add("visible");
-                    vidEl.play().catch(function () {});
-                  });
+            if (removeBlackBg) {
+              const imgData = ctx.getImageData(0, 0, w, h);
+              const data = imgData.data;
+              for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const maxChannel = Math.max(r, g, b);
+                if (maxChannel < 28) {
+                  data[i + 3] = 0;
+                } else if (maxChannel < 56) {
+                  const factor = (maxChannel - 28) / 28;
+                  data[i + 3] = Math.round(data[i + 3] * factor);
                 }
               }
-              if (customSec > 0) {
-                videoHideTimeout = setTimeout(function () {
-                  hideScheduledVideoSlide();
-                }, customSec * 1000);
-              }
-            }
-            return true;
-          }
-
-          function checkDailyVideoTrigger() {
-            if (activeVideoPlaying) return;
-            var dueVideo = findDueDailyVideo();
-            if (dueVideo) {
-              showScheduledVideoSlide(dueVideo);
-            }
-          }
-
-          // Event UI Modal Video Terjadwal Harian
-          var openVideoModalBtn = document.getElementById("openVideoModalBtn");
-          var videoScheduleModal = document.getElementById("videoScheduleModal");
-          var closeVideoModalBtn = document.getElementById("closeVideoModalBtn");
-          var addVideoScheduleBtn = document.getElementById("addVideoScheduleBtn");
-          var videoTitleInput = document.getElementById("videoTitleInput");
-          var videoUrlInput = document.getElementById("videoUrlInput");
-          var videoFileInput = document.getElementById("videoFileInput");
-          var videoPlayTimeInput = document.getElementById("videoPlayTimeInput");
-          var videoDurationInput = document.getElementById("videoDurationInput");
-          var videoScheduleList = document.getElementById("videoScheduleList");
-
-          function renderVideoScheduleList() {
-            if (!videoScheduleList) return;
-            if (!videoSchedules.length) {
-              videoScheduleList.innerHTML = '<div style="font-size:0.78rem;color:var(--text-muted);text-align:center;padding:0.6rem;">Belum ada jadwal video harian.</div>';
-              return;
-            }
-            videoScheduleList.innerHTML = videoSchedules.map(function (v, idx) {
-              var durText = Number(v.durationSec) > 0 ? (String(v.durationSec) + " dtk") : "Penuh (sesuai video)";
-              return (
-                '<div class="video-schedule-item">' +
-                  '<div class="video-schedule-item-info">' +
-                    '<div class="video-schedule-item-title">' + escapeHtml(v.title || ("Video #" + (idx + 1))) + '</div>' +
-                    '<div class="video-schedule-item-meta">⏰ Tiap Hari Pukul ' + escapeHtml(v.playTime || "08:00") + ' WIB • ⏱ ' + escapeHtml(durText) + '</div>' +
-                  '</div>' +
-                  '<button type="button" class="btn-danger-xs" data-del-video="' + idx + '">Hapus</button>' +
-                '</div>'
-              );
-            }).join("");
-
-            videoScheduleList.querySelectorAll("[data-del-video]").forEach(function (btn) {
-              btn.addEventListener("click", function () {
-                var delIdx = parseInt(btn.getAttribute("data-del-video"), 10);
-                if (!isNaN(delIdx)) {
-                  videoSchedules.splice(delIdx, 1);
-                  saveVideoSchedules();
-                  renderVideoScheduleList();
-                  if (activeVideoPlaying && videoSchedules.length === 0) {
-                    hideScheduledVideoSlide();
-                  }
-                }
-              });
-            });
-          }
-
-          if (openVideoModalBtn && videoScheduleModal) {
-            openVideoModalBtn.addEventListener("click", function () {
-              renderVideoScheduleList();
-              videoScheduleModal.classList.add("open");
-            });
-          }
-          if (closeVideoModalBtn && videoScheduleModal) {
-            closeVideoModalBtn.addEventListener("click", function () {
-              videoScheduleModal.classList.remove("open");
-            });
-          }
-          if (videoScheduleModal) {
-            videoScheduleModal.addEventListener("click", function (e) {
-              if (e.target === videoScheduleModal) videoScheduleModal.classList.remove("open");
-            });
-          }
-          if (addVideoScheduleBtn) {
-            addVideoScheduleBtn.addEventListener("click", function () {
-              var localFile = videoFileInput && videoFileInput.files && videoFileInput.files[0];
-              var rawUrl = videoUrlInput ? videoUrlInput.value.trim() : "";
-              var isBlob = false;
-
-              if (localFile) {
-                rawUrl = URL.createObjectURL(localFile);
-                isBlob = true;
-              }
-              if (!rawUrl) return;
-
-              var titleVal = (videoTitleInput && videoTitleInput.value.trim()) || (localFile ? localFile.name : "Tayangan Video Pelabuhan");
-              var playTimeVal = (videoPlayTimeInput && videoPlayTimeInput.value) || "08:00";
-              var parsedDur = parseInt(videoDurationInput && videoDurationInput.value, 10);
-              var durVal = (!isNaN(parsedDur) && parsedDur > 0) ? Math.min(7200, parsedDur) : 0;
-
-              videoSchedules.push({
-                title: titleVal,
-                url: rawUrl,
-                playTime: playTimeVal,
-                durationSec: durVal,
-                isBlobUrl: isBlob
-              });
-
-              saveVideoSchedules();
-              renderVideoScheduleList();
-              if (videoScheduleModal) videoScheduleModal.classList.remove("open");
-              checkDailyVideoTrigger();
-
-              if (videoTitleInput) videoTitleInput.value = "";
-              if (videoUrlInput) videoUrlInput.value = "";
-              if (videoFileInput) videoFileInput.value = "";
-            });
-          }
-
-          var inlineTickerText = document.getElementById("inlineTickerText");
-          var saveRunningTextBtn = document.getElementById("saveRunningTextBtn");
-          var runningTextModal = document.getElementById("runningTextModal");
-          var modalRunningTextInput = document.getElementById("modalRunningTextInput");
-          var confirmRunningTextBtn = document.getElementById("confirmRunningTextBtn");
-          var closeRunningTextModalBtn = document.getElementById("closeRunningTextModalBtn");
-          var resetRunningTextBtn = document.getElementById("resetRunningTextBtn");
-          var RUNNING_TEXT_STORAGE_KEY = "dumai_custom_running_text_v1";
-          var DEFAULT_RUNNING_TEXT = "Selamat Datang di Terminal Penumpang Pelabuhan Dumai • Harap periksa kembali jadwal keberangkatan, gate boarding, dan dokumen perjalanan Anda • Utamakan keselamatan pelayaran.";
-
-          var DEFAULT_SHIP_ROWS = [
-            {
-              cells: ["MV. DUMAI EXPRESS 08", "Bengkalis - Selatpanjang - Tg. Balai - Batam", "06:30", "07:00", "Gate 1", "Boarding"],
-              ship: "MV. DUMAI EXPRESS 08",
-              dest: "Bengkalis - Selatpanjang - Tg. Balai - Batam",
-              arr: "06:30",
-              dep: "07:00",
-              gate: "Gate 1",
-              status: "Boarding"
-            }
-          ];
-
-          function escapeHtml(str) {
-            return String(str == null ? "" : str)
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#39;");
-          }
-
-          async function fetchWithTimeout(url, timeoutMs) {
-            var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-            var timer = null;
-            if (controller) {
-              timer = setTimeout(function () {
-                controller.abort();
-              }, timeoutMs || 7000);
-            }
-            try {
-              var opts = { cache: "no-store" };
-              if (controller) opts.signal = controller.signal;
-              return await fetch(url, opts);
-            } finally {
-              if (timer) clearTimeout(timer);
-            }
-          }
-
-          function getStatusBadgeClass(statusText) {
-            var s = String(statusText || "").toLowerCase();
-            if (!s || s === "-") return "status-neutral";
-            if (s.indexOf("batal") !== -1 || s.indexOf("tunda") !== -1 || s.indexOf("delay") !== -1 || s.indexOf("cancel") !== -1) {
-              return "status-warn";
-            }
-            if (s.indexOf("boarding") !== -1 || s.indexOf("berangkat") !== -1 || s.indexOf("sandar") !== -1 || s.indexOf("debarkasi") !== -1 || s.indexOf("aktif") !== -1 || s.indexOf("on time") !== -1 || s.indexOf("tepat") !== -1) {
-              return "status-ok";
-            }
-            if (s.indexOf("siap") !== -1 || s.indexOf("persiapan") !== -1 || s.indexOf("menunggu") !== -1 || s.indexOf("check") !== -1) {
-              return "status-prep";
-            }
-            return "status-info";
-          }
-
-          function computeOptimalRowsPerSlide() {
-            var card = document.getElementById("scheduleTableCard");
-            if (!card || !thead) return 6;
-            var isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
-            var availH = card.clientHeight - (thead.offsetHeight || 44);
-            if (availH <= 60) return 5;
-
-            var minRowHeight = isFs ? 36 : 34;
-            var maxFitRows = Math.max(3, Math.floor(availH / minRowHeight));
-            var totalRows = Array.isArray(state.rows) ? state.rows.length : 0;
-
-            if (totalRows > 0 && totalRows <= maxFitRows) {
-              return totalRows;
-            }
-            return maxFitRows;
-          }
-
-          function adjustViewportFit() {
-            var card = document.getElementById("scheduleTableCard");
-            if (!card || !thead) return;
-            var isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
-            var visibleRows = Math.min(state.rows.length || 5, state.slidePageSize);
-            if (visibleRows < 1) visibleRows = 5;
-            var availH = card.clientHeight - (thead.offsetHeight || 44);
-            if (availH <= 60) return;
-
-            var perRowH = Math.floor(availH / visibleRows);
-            var minPy = isFs ? 4 : 4;
-            var maxPy = isFs ? 20 : 14;
-            var minFs = isFs ? 11 : 11;
-            var maxFs = isFs ? 18 : 14;
-
-            var rowPy = Math.max(minPy, Math.min(maxPy, Math.floor((perRowH - 20) / 2)));
-            var rowFs = Math.max(minFs, Math.min(maxFs, Math.floor(perRowH * (isFs ? 0.27 : 0.24))));
-            var headFs = Math.max(minFs, Math.min(maxFs, rowFs - 1));
-            var headPy = Math.max(minPy + 1, Math.min(maxPy, rowPy + 1));
-
-            card.style.setProperty("--fit-head-py", headPy + "px");
-            card.style.setProperty("--fit-head-fs", headFs + "px");
-            card.style.setProperty("--fit-row-py", rowPy + "px");
-            card.style.setProperty("--fit-row-fs", rowFs + "px");
-            card.style.setProperty("--fit-ship-fs", Math.min(maxFs + 2, rowFs + 1) + "px");
-            card.style.setProperty("--fit-badge-fs", Math.max(10, rowFs - 1) + "px");
-          }
-
-          function renderTablePage(animate) {
-            if (!tbody) return;
-            var rows = Array.isArray(state.rows) ? state.rows : [];
-            if (rows.length === 0) {
-              tbody.innerHTML = "";
-              if (slidePageBadge) slidePageBadge.classList.remove("visible");
-              if (emptyMsg && !activeVideoPlaying) emptyMsg.style.display = "block";
-              return;
-            }
-            if (emptyMsg) emptyMsg.style.display = "none";
-
-            var pageSize = Math.max(1, state.slidePageSize || 6);
-            var totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
-            if (state.slidePage >= totalPages) state.slidePage = 0;
-
-            if (slidePageBadge) {
-              if (totalPages > 1) {
-                slidePageBadge.textContent = "Halaman " + (state.slidePage + 1) + " / " + totalPages;
-                slidePageBadge.classList.add("visible");
-              } else {
-                slidePageBadge.classList.remove("visible");
-              }
+              ctx.putImageData(imgData, 0, 0);
             }
 
-            var start = rows.length > pageSize ? state.slidePage * pageSize : 0;
-            var slice = rows.length > pageSize ? rows.slice(start, start + pageSize) : rows;
-            var colCount = Math.max(1, state.headers.length);
-
-            var statusIdx = -1;
-            var gateIdx = -1;
-            state.headers.forEach(function (h, idx) {
-              var lh = String(h || "").toLowerCase();
-              if (statusIdx === -1 && (lh.indexOf("status") !== -1 || lh.indexOf("ket") !== -1)) statusIdx = idx;
-              if (gateIdx === -1 && (lh.indexOf("gate") !== -1 || lh.indexOf("line") !== -1 || lh.indexOf("dermaga") !== -1)) gateIdx = idx;
-            });
-
-            tbody.innerHTML = slice.map(function (item) {
-              var cells = Array.isArray(item.cells) && item.cells.length
-                ? item.cells
-                : [item.ship, item.dest, item.arr, item.dep, item.gate, item.status];
-
-              var tds = [];
-              for (var c = 0; c < colCount; c++) {
-                var val = cells[c] != null && String(cells[c]).trim() !== "" ? String(cells[c]).trim() : "-";
-                if (c === 0) {
-                  tds.push('<td><span class="ship-name">' + escapeHtml(val) + "</span></td>");
-                } else if (c === statusIdx || (statusIdx === -1 && c === colCount - 1 && colCount > 2)) {
-                  var badgeCls = getStatusBadgeClass(val);
-                  tds.push('<td><span class="status-badge ' + badgeCls + '">' + escapeHtml(val) + "</span></td>");
-                } else if (c === gateIdx || (gateIdx === -1 && c === colCount - 2 && colCount > 3)) {
-                  tds.push('<td><span class="gate-pill">' + escapeHtml(val) + "</span></td>");
-                } else {
-                  tds.push("<td>" + escapeHtml(val) + "</td>");
-                }
-              }
-              return "<tr>" + tds.join("") + "</tr>";
-            }).join("");
-
-            if (animate) {
-              tbody.classList.remove("slide-animate");
-              void tbody.offsetWidth;
-              tbody.classList.add("slide-animate");
-            }
-            adjustViewportFit();
+            resolve(canvas.toDataURL('image/png'));
+          } catch (err) {
+            // Jika gambar eksternal tidak mengizinkan CORS pixel read, gunakan URL langsung
+            resolve(src);
           }
+        };
+        img.onerror = () => reject(new Error('Gagal memuat gambar logo. Pastikan link Google Drive disetel ke "Siapa saja yang memiliki link".'));
+        img.src = src;
+      });
+    }
 
-          function restartSlideTimer() {
-            if (slideTimer) {
-              clearInterval(slideTimer);
-              slideTimer = null;
-            }
-            if (Array.isArray(state.rows) && state.rows.length > state.slidePageSize) {
-              slideTimer = setInterval(function () {
-                if (activeVideoPlaying) return;
-                var totalPages = Math.ceil(state.rows.length / state.slidePageSize);
-                if (totalPages > 1) {
-                  state.slidePage = (state.slidePage + 1) % totalPages;
-                  renderTablePage(true);
-                }
-              }, state.slideIntervalMs || 8000);
-            }
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderHeaderLogos() {
+      const leftSlot = document.getElementById('headerLogoLeft');
+      const rightSlot = document.getElementById('headerLogoRight');
+      const leftSrc = localStorage.getItem(STORAGE_KEY_LOGO_LEFT);
+      const rightSrc = localStorage.getItem(STORAGE_KEY_LOGO_RIGHT);
+
+      if (leftSlot) {
+        leftSlot.innerHTML = leftSrc ? `<img src="${escapeHtml(leftSrc)}" alt="Logo Kiri Pelabuhan Dumai" />` : '';
+      }
+      if (rightSlot) {
+        rightSlot.innerHTML = rightSrc ? `<img src="${escapeHtml(rightSrc)}" alt="Logo Kanan Pelabuhan Dumai" />` : '';
+      }
+    }
+
+    function updateLogoPreviewBox(side, src, labelText) {
+      const previewBox = document.getElementById(side === 'left' ? 'leftLogoPreviewBox' : 'rightLogoPreviewBox');
+      const nameLabel = document.getElementById(side === 'left' ? 'leftLogoFileName' : 'rightLogoFileName');
+      if (previewBox) {
+        if (src) {
+          previewBox.innerHTML = `<img src="${escapeHtml(src)}" alt="Pratinjau Logo ${side}" />`;
+        } else {
+          previewBox.innerHTML = `<span class="logo-preview-empty">Belum ada logo</span>`;
+        }
+      }
+      if (nameLabel && labelText) {
+        nameLabel.textContent = labelText;
+      }
+    }
+
+    function setupLogoDropzone(side) {
+      const dropzone = document.getElementById(side === 'left' ? 'leftLogoDropzone' : 'rightLogoDropzone');
+      const fileInput = document.getElementById(side === 'left' ? 'leftLogoFile' : 'rightLogoFile');
+      const driveUrlInput = document.getElementById(side === 'left' ? 'leftLogoDriveUrl' : 'rightLogoDriveUrl');
+
+      const handleChosenFile = async (file) => {
+        if (!file || !file.type.startsWith('image/')) {
+          alert('Harap pilih file gambar (PNG, JPG, WebP, atau SVG).');
+          return;
+        }
+        try {
+          const removeBg = document.getElementById('removeBlackBgCheckbox')?.checked ?? true;
+          const rawDataUrl = await readFileAsDataURL(file);
+          const processed = await processLogoImageSource(rawDataUrl, removeBg);
+          if (side === 'left') {
+            pendingLeftLogoDataUrl = processed;
+          } else {
+            pendingRightLogoDataUrl = processed;
           }
+          if (driveUrlInput) driveUrlInput.value = '';
+          updateLogoPreviewBox(side, processed, `✓ ${file.name}`);
+        } catch (err) {
+          alert(err.message || 'Gagal memproses gambar logo.');
+        }
+      };
 
-          function recalculateCapacityAndRender(animate) {
-            var optimalSize = computeOptimalRowsPerSlide();
-            if (optimalSize !== state.slidePageSize) {
-              state.slidePageSize = optimalSize;
-              state.slidePage = 0;
-            }
-            renderTablePage(Boolean(animate));
-            restartSlideTimer();
+      const handleDriveUrlInput = async () => {
+        const rawUrl = (driveUrlInput?.value || '').trim();
+        if (!rawUrl) return;
+        const directUrl = normalizeGoogleDriveImageUrl(rawUrl);
+        updateLogoPreviewBox(side, null, '⏳ Memuat dari Google Drive...');
+        try {
+          const removeBg = document.getElementById('removeBlackBgCheckbox')?.checked ?? true;
+          const processed = await processLogoImageSource(directUrl, removeBg);
+          if (side === 'left') {
+            pendingLeftLogoDataUrl = processed;
+          } else {
+            pendingRightLogoDataUrl = processed;
           }
-
-          function renderAll() {
-            var rows = Array.isArray(state.rows) ? state.rows : [];
-            if (statTableCount) statTableCount.textContent = String(rows.length);
-
-            var activeCount = rows.filter(function (r) {
-              var s = String(r.status || "").toLowerCase();
-              return s && s !== "-" && s.indexOf("batal") === -1 && s.indexOf("selesai") === -1 && s.indexOf("berangkat") === -1;
-            }).length;
-            if (statActiveCount) statActiveCount.textContent = String(activeCount);
-
-            recalculateCapacityAndRender(false);
-          }
-
-          window.addEventListener("resize", function () {
-            recalculateCapacityAndRender(false);
-          });
-
-          function parseCsvMatrix(csvText) {
-            var matrix = [];
-            var row = [];
-            var cell = "";
-            var inQuotes = false;
-            var text = String(csvText || "").replace(/^\uFEFF/, "");
-
-            for (var i = 0; i < text.length; i++) {
-              var ch = text[i];
-              var next = text[i + 1];
-
-              if (inQuotes) {
-                if (ch === '"' && next === '"') {
-                  cell += '"';
-                  i++;
-                } else if (ch === '"') {
-                  inQuotes = false;
-                } else {
-                  cell += ch;
-                }
-              } else {
-                if (ch === '"') {
-                  inQuotes = true;
-                } else if (ch === ",") {
-                  row.push(cell.trim());
-                  cell = "";
-                } else if (ch === "\r" && next === "\n") {
-                  row.push(cell.trim());
-                  matrix.push(row);
-                  row = [];
-                  cell = "";
-                  i++;
-                } else if (ch === "\n" || ch === "\r") {
-                  row.push(cell.trim());
-                  matrix.push(row);
-                  row = [];
-                  cell = "";
-                } else {
-                  cell += ch;
-                }
-              }
-            }
-
-            if (cell.length > 0 || row.length > 0) {
-              row.push(cell.trim());
-              matrix.push(row);
-            }
-
-            return matrix;
-          }
-
-          function processMatrix(matrix) {
-            if (!Array.isArray(matrix) || matrix.length === 0) return [];
-
-            var nonEmptyRows = matrix.filter(function (r) {
-              return Array.isArray(r) && r.some(function (c) { return String(c || "").trim() !== ""; });
-            });
-            if (nonEmptyRows.length === 0) return [];
-
-            var headerRowIndex = -1;
-            var headerKeywords = ["kapal", "mv", "km", "destinasi", "tujuan", "datang", "tiba", "berangkat", "gate", "line", "dermaga", "status", "waktu", "jam"];
-
-            for (var hIdx = 0; hIdx < Math.min(nonEmptyRows.length, 8); hIdx++) {
-              var rowText = nonEmptyRows[hIdx].map(function (c) { return String(c || "").trim().toLowerCase(); });
-              var nonEmptyCells = rowText.filter(function (c) { return c !== ""; });
-              if (nonEmptyCells.length < 2) continue;
-
-              var keywordHits = 0;
-              rowText.forEach(function (cellStr) {
-                if (!cellStr) return;
-                for (var k = 0; k < headerKeywords.length; k++) {
-                  if (cellStr.indexOf(headerKeywords[k]) !== -1) {
-                    keywordHits++;
-                    break;
-                  }
-                }
-              });
-
-              if (keywordHits >= 2) {
-                headerRowIndex = hIdx;
-                break;
-              }
-            }
-
-            if (headerRowIndex === -1) {
-              for (var fIdx = 0; fIdx < Math.min(nonEmptyRows.length, 6); fIdx++) {
-                var fCells = nonEmptyRows[fIdx].filter(function (c) {
-                  return String(c || "").trim() !== "";
-                });
-                if (fCells.length >= 2) {
-                  headerRowIndex = fIdx;
-                  break;
-                }
-              }
-            }
-
-            var activeIndices = [];
-            var activeHeaders = [];
-
-            if (headerRowIndex !== -1) {
-              var rawHeaderRow = nonEmptyRows[headerRowIndex];
-              rawHeaderRow.forEach(function (cell, idx) {
-                var cleanLabel = String(cell || "").trim();
-                var lowerLabel = cleanLabel.toLowerCase();
-                if (!cleanLabel) return;
-                if (lowerLabel === "no" || lowerLabel === "no.") return;
-                activeIndices.push(idx);
-                activeHeaders.push(cleanLabel);
-              });
-            }
-
-            var startIdx = headerRowIndex !== -1 ? headerRowIndex + 1 : 0;
-
-            if (activeIndices.length === 0) {
-              var sampleRow = nonEmptyRows[startIdx] || nonEmptyRows[0] || [];
-              var firstCellSample = String(sampleRow[0] || "").trim().toLowerCase();
-              var hasNumberCol = firstCellSample === "no" || firstCellSample === "no." || /^\d+$/.test(firstCellSample);
-              var startCol = hasNumberCol ? 1 : 0;
-              var fallbackTitles = ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"];
-
-              for (var c = startCol; c < sampleRow.length; c++) {
-                activeIndices.push(c);
-                activeHeaders.push(fallbackTitles[c - startCol] || ("Kolom " + (c - startCol + 1)));
-              }
-            }
-
-            if (activeHeaders.length > 0) {
-              state.headers = activeHeaders.slice();
-              if (thead) {
-                thead.innerHTML =
-                  "<tr>" +
-                  state.headers.map(function (h) {
-                    return "<th>" + escapeHtml(h) + "</th>";
-                  }).join("") +
-                  "</tr>";
-              }
-            }
-
-            var statusColPos = -1;
-            activeHeaders.forEach(function (h, pos) {
-              var lh = String(h || "").toLowerCase();
-              if (statusColPos === -1 && (lh.indexOf("status") !== -1 || lh.indexOf("ket") !== -1)) {
-                statusColPos = pos;
-              }
-            });
-
-            var parsedRows = [];
-            for (var i = startIdx; i < nonEmptyRows.length; i++) {
-              var cols = nonEmptyRows[i].map(function (c) { return String(c || "").trim(); });
-              var rowCells = activeIndices.map(function (colIdx) {
-                return cols[colIdx] || "-";
-              });
-
-              var meaningfulCount = rowCells.filter(function (v) { return v !== "" && v !== "-"; }).length;
-              if (meaningfulCount === 0) continue;
-
-              var primaryValue = rowCells[0] || "";
-              if (!primaryValue || primaryValue === "-" || /^total\b/i.test(primaryValue) || /^jumlah\b/i.test(primaryValue)) {
-                continue;
-              }
-
-              var statusVal = statusColPos !== -1
-                ? (rowCells[statusColPos] || "-")
-                : (rowCells.length > 1 ? rowCells[rowCells.length - 1] : "-");
-
-              parsedRows.push({
-                cells: rowCells,
-                ship: rowCells[0] || "-",
-                dest: rowCells[1] || "-",
-                arr: rowCells[2] || "-",
-                dep: rowCells[3] || "-",
-                gate: rowCells.length > 4 ? (rowCells[rowCells.length - 2] || "-") : "-",
-                status: statusVal
-              });
-            }
-
-            return parsedRows;
-          }
-
-          function readCachedSheetRows() {
-            try {
-              var raw = localStorage.getItem(SHEET_CACHE_STORAGE_KEY);
-              if (!raw) return [];
-              var parsed = JSON.parse(raw);
-              return Array.isArray(parsed) ? parsed : [];
-            } catch (cacheErr) {
-              return [];
-            }
-          }
-
-          function writeCachedSheetRows(rows) {
-            try {
-              if (Array.isArray(rows) && rows.length > 0) {
-                localStorage.setItem(SHEET_CACHE_STORAGE_KEY, JSON.stringify(rows));
-              }
-            } catch (writeErr) {}
-          }
-
-          async function fetchCsvRows() {
-            var sep = PUBLISHED_CSV_URL.indexOf("?") === -1 ? "?" : "&";
-            var cacheBustUrl = PUBLISHED_CSV_URL + sep + "_ts=" + Date.now();
-            var res = await fetchWithTimeout(cacheBustUrl, 7000);
-            if (!res.ok) {
-              throw new Error("HTTP " + res.status);
-            }
-            var csvText = await res.text();
-            if (!csvText || /<!doctype html>|<html/i.test(csvText)) {
-              throw new Error("Respon bukan CSV");
-            }
-            return processMatrix(parseCsvMatrix(csvText));
-          }
-
-          function fetchGvizJsonpRows() {
-            return new Promise(function (resolve, reject) {
-              var cbName = "__dumaiGvizCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-              var script = document.createElement("script");
-              var done = false;
-
-              var timer = setTimeout(function () {
-                if (done) return;
-                done = true;
-                cleanup();
-                reject(new Error("GViz timeout"));
-              }, 7000);
-
-              function cleanup() {
-                clearTimeout(timer);
-                if (script && script.parentNode) {
-                  script.parentNode.removeChild(script);
-                }
-                try {
-                  delete window[cbName];
-                } catch (e) {
-                  window[cbName] = undefined;
-                }
-              }
-
-              window[cbName] = function (payload) {
-                if (done) return;
-                done = true;
-                cleanup();
-                try {
-                  var table = payload && payload.table;
-                  if (!table || !Array.isArray(table.rows)) {
-                    resolve([]);
-                    return;
-                  }
-                  var colsCount = Array.isArray(table.cols) ? table.cols.length : 0;
-                  var matrix = table.rows.map(function (r) {
-                    var cells = Array.isArray(r.c) ? r.c : [];
-                    var rowArr = [];
-                    var len = Math.max(colsCount, cells.length);
-                    for (var i = 0; i < len; i++) {
-                      var cellObj = cells[i];
-                      if (!cellObj) {
-                        rowArr.push("");
-                      } else if (cellObj.f != null && String(cellObj.f).trim() !== "") {
-                        rowArr.push(String(cellObj.f).trim());
-                      } else if (cellObj.v != null) {
-                        rowArr.push(String(cellObj.v).trim());
-                      } else {
-                        rowArr.push("");
-                      }
-                    }
-                    return rowArr;
-                  });
-                  if (Array.isArray(table.cols) && table.cols.some(function (c) { return c && c.label; })) {
-                    matrix.unshift(table.cols.map(function (c) { return (c && c.label) ? String(c.label).trim() : ""; }));
-                  }
-                  resolve(processMatrix(matrix));
-                } catch (parseErr) {
-                  reject(parseErr);
-                }
-              };
-
-              var sep = GVIZ_JSONP_BASE.indexOf("?") === -1 ? "?" : "&";
-              script.src = GVIZ_JSONP_BASE + sep + "tqx=out:json;responseHandler:" + cbName + "&_ts=" + Date.now();
-              script.onerror = function () {
-                if (done) return;
-                done = true;
-                cleanup();
-                reject(new Error("GViz script error"));
-              };
-              document.head.appendChild(script);
-            });
-          }
-
-          // Pengaturan Running Text Informasi (berjalan mendatar)
-          function applyCustomRunningText(rawText) {
-            var cleaned = String(rawText || "").trim();
-            if (!cleaned) cleaned = DEFAULT_RUNNING_TEXT;
-            try {
-              localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, cleaned);
-            } catch (e) {}
-
-            var lines = cleaned.split(/\r?\n/).map(function (l) {
-              return l.trim();
-            }).filter(Boolean);
-            var combinedText = lines.length > 0 ? lines.join("   •   ") : DEFAULT_RUNNING_TEXT;
-
-            if (inlineTickerText) {
-              inlineTickerText.style.animation = "none";
-              inlineTickerText.textContent = combinedText;
-              var durationSec = Math.max(20, Math.min(75, Math.round(combinedText.length * 0.2)));
-              void inlineTickerText.offsetWidth;
-              inlineTickerText.style.animation = "inlineTickerScroll " + durationSec + "s linear infinite";
-            }
-          }
-
-          function closeRunningTextModal() {
-            if (runningTextModal) runningTextModal.classList.remove("open");
-          }
-
-          if (saveRunningTextBtn && runningTextModal) {
-            saveRunningTextBtn.addEventListener("click", function () {
-              if (modalRunningTextInput) {
-                modalRunningTextInput.value = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
-              }
-              runningTextModal.classList.add("open");
-            });
-          }
-          if (runningTextModal) {
-            runningTextModal.addEventListener("click", function (e) {
-              if (e.target === runningTextModal) closeRunningTextModal();
-            });
-          }
-
-          applyCustomRunningText(localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT);
-
-          // Pengaturan Logo Header Kiri & Kanan (termasuk penghapus background hitam otomatis)
-          var LOGO_LEFT_KEY = "dumai_header_logo_left";
-          var LOGO_RIGHT_KEY = "dumai_header_logo_right";
-          var headerLogoLeft = document.getElementById("headerLogoLeft");
-          var headerLogoRight = document.getElementById("headerLogoRight");
-          var openLogoModalBtn = document.getElementById("openLogoModalBtn");
-          var logoModal = document.getElementById("logoModal");
-          var closeLogoModalBtn = document.getElementById("closeLogoModalBtn");
-          var saveLogoBtn = document.getElementById("saveLogoBtn");
-          var resetLogoBtn = document.getElementById("resetLogoBtn");
-          var cleanExistingBlackBgBtn = document.getElementById("cleanExistingBlackBgBtn");
-          var removeBlackBgCheckbox = document.getElementById("removeBlackBgCheckbox");
-          var leftLogoFile = document.getElementById("leftLogoFile");
-          var leftLogoUrl = document.getElementById("leftLogoUrl");
-          var rightLogoFile = document.getElementById("rightLogoFile");
-          var rightLogoUrl = document.getElementById("rightLogoUrl");
-
-          function stripBlackBackgroundFromImage(src) {
-            return new Promise(function (resolve) {
-              if (!src) {
-                resolve("");
-                return;
-              }
-              var img = new Image();
-              img.crossOrigin = "anonymous";
-              img.onload = function () {
-                try {
-                  var w = img.naturalWidth || img.width;
-                  var h = img.naturalHeight || img.height;
-                  if (!w || !h) {
-                    resolve(src);
-                    return;
-                  }
-                  var maxDim = 900;
-                  if (w > maxDim || h > maxDim) {
-                    var scale = Math.min(maxDim / w, maxDim / h);
-                    w = Math.round(w * scale);
-                    h = Math.round(h * scale);
-                  }
-                  var canvas = document.createElement("canvas");
-                  canvas.width = w;
-                  canvas.height = h;
-                  var ctx = canvas.getContext("2d");
-                  ctx.drawImage(img, 0, 0, w, h);
-
-                  var imgData = ctx.getImageData(0, 0, w, h);
-                  var data = imgData.data;
-                  var totalPixels = w * h;
-                  var visited = new Uint8Array(totalPixels);
-                  var queue = new Int32Array(totalPixels);
-                  var head = 0;
-                  var tail = 0;
-
-                  function isDarkBgPixel(idx) {
-                    var p = idx * 4;
-                    var a = data[p + 3];
-                    if (a < 20) return true;
-                    var r = data[p];
-                    var g = data[p + 1];
-                    var b = data[p + 2];
-                    var maxC = Math.max(r, g, b);
-                    return maxC <= 58;
-                  }
-
-                  function pushIfBg(x, y) {
-                    if (x < 0 || x >= w || y < 0 || y >= h) return;
-                    var idx = y * w + x;
-                    if (visited[idx]) return;
-                    if (isDarkBgPixel(idx)) {
-                      visited[idx] = 1;
-                      queue[tail++] = idx;
-                    }
-                  }
-
-                  for (var x = 0; x < w; x++) {
-                    pushIfBg(x, 0);
-                    pushIfBg(x, h - 1);
-                  }
-                  for (var y = 0; y < h; y++) {
-                    pushIfBg(0, y);
-                    pushIfBg(w - 1, y);
-                  }
-
-                  while (head < tail) {
-                    var curr = queue[head++];
-                    var cx = curr % w;
-                    var cy = (curr - cx) / w;
-                    data[curr * 4 + 3] = 0;
-
-                    pushIfBg(cx - 1, cy);
-                    pushIfBg(cx + 1, cy);
-                    pushIfBg(cx, cy - 1);
-                    pushIfBg(cx, cy + 1);
-                  }
-
-                  for (var py = 1; py < h - 1; py++) {
-                    for (var px = 1; px < w - 1; px++) {
-                      var i = py * w + px;
-                      if (visited[i]) continue;
-                      var hasTransparentNeighbor =
-                        visited[i - 1] || visited[i + 1] || visited[i - w] || visited[i + w];
-                      if (hasTransparentNeighbor) {
-                        var off = i * 4;
-                        var lum = Math.max(data[off], data[off + 1], data[off + 2]);
-                        if (lum < 95) {
-                          data[off + 3] = Math.round((lum / 95) * data[off + 3]);
-                        }
-                      }
-                    }
-                  }
-
-                  ctx.putImageData(imgData, 0, 0);
-                  resolve(canvas.toDataURL("image/png"));
-                } catch (errCanvas) {
-                  resolve(src);
-                }
-              };
-              img.onerror = function () {
-                resolve(src);
-              };
-              img.src = src;
-            });
-          }
-
-          function renderHeaderLogos() {
-            var leftSrc = localStorage.getItem(LOGO_LEFT_KEY) || "";
-            var rightSrc = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-            if (headerLogoLeft) {
-              headerLogoLeft.innerHTML = leftSrc ? '<img src="' + escapeHtml(leftSrc) + '" alt="Logo Kiri" />' : "";
-            }
-            if (headerLogoRight) {
-              headerLogoRight.innerHTML = rightSrc ? '<img src="' + escapeHtml(rightSrc) + '" alt="Logo Kanan" />' : "";
-            }
-            setTimeout(function () {
-              recalculateCapacityAndRender(false);
-            }, 60);
-          }
-
-          function readFileAsDataUrl(file) {
-            return new Promise(function (resolve) {
-              if (!file) {
-                resolve("");
-                return;
-              }
-              var reader = new FileReader();
-              reader.onload = function () { resolve(String(reader.result || "")); };
-              reader.onerror = function () { resolve(""); };
-              reader.readAsDataURL(file);
-            });
-          }
-
-          if (openLogoModalBtn && logoModal) {
-            openLogoModalBtn.addEventListener("click", function () {
-              if (leftLogoUrl) {
-                var savedL = localStorage.getItem(LOGO_LEFT_KEY) || "";
-                leftLogoUrl.value = savedL.indexOf("data:") === 0 ? "" : savedL;
-              }
-              if (rightLogoUrl) {
-                var savedR = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-                rightLogoUrl.value = savedR.indexOf("data:") === 0 ? "" : savedR;
-              }
-              logoModal.classList.add("open");
-            });
-          }
-          if (closeLogoModalBtn && logoModal) {
-            closeLogoModalBtn.addEventListener("click", function () {
-              logoModal.classList.remove("open");
-            });
-          }
-          if (logoModal) {
-            logoModal.addEventListener("click", function (e) {
-              if (e.target === logoModal) logoModal.classList.remove("open");
-            });
-          }
-          if (cleanExistingBlackBgBtn) {
-            cleanExistingBlackBgBtn.addEventListener("click", async function () {
-              var savedL = localStorage.getItem(LOGO_LEFT_KEY) || "";
-              var savedR = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-              if (savedL) {
-                var cleanedL = await stripBlackBackgroundFromImage(savedL);
-                if (cleanedL) localStorage.setItem(LOGO_LEFT_KEY, cleanedL);
-              }
-              if (savedR) {
-                var cleanedR = await stripBlackBackgroundFromImage(savedR);
-                if (cleanedR) localStorage.setItem(LOGO_RIGHT_KEY, cleanedR);
-              }
-              renderHeaderLogos();
-              if (logoModal) logoModal.classList.remove("open");
-            });
-          }
-          if (saveLogoBtn) {
-            saveLogoBtn.addEventListener("click", async function () {
-              var shouldStripBlack = removeBlackBgCheckbox ? removeBlackBgCheckbox.checked : true;
-              var lFile = leftLogoFile && leftLogoFile.files && leftLogoFile.files[0];
-              var rFile = rightLogoFile && rightLogoFile.files && rightLogoFile.files[0];
-              var lData = lFile ? await readFileAsDataUrl(lFile) : (leftLogoUrl ? leftLogoUrl.value.trim() : "");
-              var rData = rFile ? await readFileAsDataUrl(rFile) : (rightLogoUrl ? rightLogoUrl.value.trim() : "");
-
-              if (lData) {
-                if (shouldStripBlack) lData = await stripBlackBackgroundFromImage(lData);
-                localStorage.setItem(LOGO_LEFT_KEY, lData);
-              } else if (leftLogoUrl && leftLogoUrl.value.trim() === "" && !lFile && !(localStorage.getItem(LOGO_LEFT_KEY) || "").startsWith("data:")) {
-                localStorage.removeItem(LOGO_LEFT_KEY);
-              }
-
-              if (rData) {
-                if (shouldStripBlack) rData = await stripBlackBackgroundFromImage(rData);
-                localStorage.setItem(LOGO_RIGHT_KEY, rData);
-              } else if (rightLogoUrl && rightLogoUrl.value.trim() === "" && !rFile && !(localStorage.getItem(LOGO_RIGHT_KEY) || "").startsWith("data:")) {
-                localStorage.removeItem(LOGO_RIGHT_KEY);
-              }
-
-              if (leftLogoFile) leftLogoFile.value = "";
-              if (rightLogoFile) rightLogoFile.value = "";
-              renderHeaderLogos();
-              if (logoModal) logoModal.classList.remove("open");
-            });
-          }
-          if (resetLogoBtn) {
-            resetLogoBtn.addEventListener("click", function () {
-              localStorage.removeItem(LOGO_LEFT_KEY);
-              localStorage.removeItem(LOGO_RIGHT_KEY);
-              if (leftLogoUrl) leftLogoUrl.value = "";
-              if (rightLogoUrl) rightLogoUrl.value = "";
-              renderHeaderLogos();
-              if (logoModal) logoModal.classList.remove("open");
-            });
-          }
-          renderHeaderLogos();
-
-          // Jam Real-time WIB + Pengecekan Video Harian
-          var liveClock = document.getElementById("liveClock");
-          function updateLiveClock() {
-            var now = new Date();
-            try {
-              var fmt = new Intl.DateTimeFormat("id-ID", {
-                weekday: "long",
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                timeZone: "Asia/Jakarta"
-              });
-              if (liveClock) liveClock.textContent = fmt.format(now) + " WIB";
-            } catch (e) {
-              if (liveClock) liveClock.textContent = now.toLocaleTimeString("id-ID") + " WIB";
-            }
-            checkDailyVideoTrigger();
-          }
-          updateLiveClock();
-          setInterval(updateLiveClock, 1000);
-
-          // Toggle Mode Gelap / Terang
-          var themeToggleBtn = document.getElementById("themeToggleBtn");
-          var THEME_STORAGE_KEY = "dumai_dashboard_theme";
-          function applyTheme(mode) {
-            var isLight = mode === "light";
-            document.body.classList.toggle("dark-mode", !isLight);
-            if (themeToggleBtn) {
-              themeToggleBtn.textContent = isLight ? "🌙 Mode Gelap" : "☀️ Mode Terang";
-            }
-          }
-          applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || "dark");
-          if (themeToggleBtn) {
-            themeToggleBtn.addEventListener("click", function () {
-              var nextMode = document.body.classList.contains("dark-mode") ? "light" : "dark";
-              localStorage.setItem(THEME_STORAGE_KEY, nextMode);
-              applyTheme(nextMode);
-            });
-          }
-
-          // Toggle Layar Penuh
-          var fullscreenToggleBtn = document.getElementById("fullscreenToggleBtn");
-          function syncFullscreenBtnLabel() {
-            var isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
-            document.body.classList.toggle("is-fullscreen", isFs);
-            if (fullscreenToggleBtn) {
-              fullscreenToggleBtn.textContent = isFs ? "🗗 Keluar" : "⛶ Layar Penuh";
-            }
-            setTimeout(function () {
-              recalculateCapacityAndRender(false);
-            }, 80);
-            setTimeout(function () {
-              recalculateCapacityAndRender(false);
-            }, 260);
-          }
-          if (fullscreenToggleBtn) {
-            fullscreenToggleBtn.addEventListener("click", function () {
-              unlockBrowserAudioContext();
-              var docEl = document.documentElement;
-              var isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
-              if (!isFs) {
-                if (docEl.requestFullscreen) {
-                  docEl.requestFullscreen().catch(function () {
-                    document.body.classList.add("pseudo-fullscreen");
-                    syncFullscreenBtnLabel();
-                  });
-                } else if (docEl.webkitRequestFullscreen) {
-                  docEl.webkitRequestFullscreen();
-                } else {
-                  document.body.classList.add("pseudo-fullscreen");
-                  syncFullscreenBtnLabel();
-                }
-              } else {
-                document.body.classList.remove("pseudo-fullscreen");
-                if (document.exitFullscreen && document.fullscreenElement) {
-                  document.exitFullscreen().catch(function () {});
-                } else if (document.webkitExitFullscreen && document.webkitFullscreenElement) {
-                  document.webkitExitFullscreen();
-                }
-                syncFullscreenBtnLabel();
-              }
-            });
-          }
-          document.addEventListener("fullscreenchange", syncFullscreenBtnLabel);
-          document.addEventListener("webkitfullscreenchange", syncFullscreenBtnLabel);
-
-          if (confirmRunningTextBtn) {
-            confirmRunningTextBtn.addEventListener("click", function () {
-              applyCustomRunningText(modalRunningTextInput ? modalRunningTextInput.value : "");
-              closeRunningTextModal();
-            });
-          }
-          if (closeRunningTextModalBtn) {
-            closeRunningTextModalBtn.addEventListener("click", closeRunningTextModal);
-          }
-          if (resetRunningTextBtn) {
-            resetRunningTextBtn.addEventListener("click", function () {
-              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
-              applyCustomRunningText(DEFAULT_RUNNING_TEXT);
-              closeRunningTextModal();
-            });
-          }
-
-          async function syncGoogleSheet(isManual) {
-            if (state.isFetching) return;
-            state.isFetching = true;
-            if (manualRefreshBtn) {
-              manualRefreshBtn.disabled = true;
-              manualRefreshBtn.textContent = "⏳ Memuat...";
-            }
-
-            try {
-              var rows = [];
-              try {
-                rows = await fetchCsvRows();
-              } catch (csvErr) {
-                rows = await fetchGvizJsonpRows();
-              }
-
-              if (Array.isArray(rows) && rows.length > 0) {
-                var sig = JSON.stringify(rows);
-                state.rows = rows;
-                state.hasLiveSheetData = true;
-                writeCachedSheetRows(rows);
-                if (sig !== state.lastSignature || isManual) {
-                  state.lastSignature = sig;
-                  renderAll();
-                }
-              } else if (!state.hasLiveSheetData) {
-                var cachedEmpty = readCachedSheetRows();
-                state.rows = cachedEmpty.length > 0 ? cachedEmpty : DEFAULT_SHIP_ROWS.slice();
-                renderAll();
-              }
-            } catch (err) {
-              if (!state.hasLiveSheetData && (!state.rows || state.rows.length === 0)) {
-                var cachedErr = readCachedSheetRows();
-                state.rows = cachedErr.length > 0 ? cachedErr : DEFAULT_SHIP_ROWS.slice();
-                renderAll();
-              }
-            } finally {
-              state.isFetching = false;
-              if (manualRefreshBtn) {
-                manualRefreshBtn.disabled = false;
-                manualRefreshBtn.textContent = "🔄 Refresh";
-              }
-            }
-          }
-
-          async function syncDumaiWeather() {
-            try {
-              var url = "https://api.open-meteo.com/v1/forecast?latitude=1.6667&longitude=101.45&current=temperature_2m,weather_code&timezone=Asia%2FJakarta";
-              var res = await fetchWithTimeout(url, 5000);
-              if (!res.ok) return;
-              var data = await res.json();
-              if (!data || !data.current) return;
-
-              var temp = Math.round(data.current.temperature_2m);
-              var code = data.current.weather_code;
-              var icon = "⛅";
-              var desc = "Cerah Berawan";
-
-              if (code === 0) { icon = "☀️"; desc = "Cerah"; }
-              else if (code >= 1 && code <= 3) { icon = "⛅"; desc = "Cerah Berawan"; }
-              else if (code >= 45 && code <= 48) { icon = "🌫️"; desc = "Berkabut"; }
-              else if (code >= 51 && code <= 67) { icon = "🌦️"; desc = "Hujan Ringan"; }
-              else if (code >= 80 && code <= 82) { icon = "🌧️"; desc = "Hujan Lebat"; }
-              else if (code >= 95) { icon = "⛈️"; desc = "Hujan Petir"; }
-
-              state.liveWeather = icon + " " + temp + "°C " + desc;
-              if (statWeather) statWeather.textContent = icon + " " + temp + "°C";
-              if (statWeatherDesc) statWeatherDesc.textContent = desc + " • Dumai (Open-Meteo)";
-            } catch (errWeather) {}
-          }
-
-          if (manualRefreshBtn) {
-            manualRefreshBtn.addEventListener("click", function () {
-              syncGoogleSheet(true);
-              syncDumaiWeather();
-            });
-          }
-
-          var initialCached = readCachedSheetRows();
-          state.rows = initialCached.length > 0 ? initialCached : DEFAULT_SHIP_ROWS.slice();
-          renderAll();
-          syncGoogleSheet(false);
-          syncDumaiWeather();
-
-          setInterval(function () {
-            syncGoogleSheet(false);
-          }, 8000);
-
-          setInterval(syncDumaiWeather, 300000);
-        } catch (initErr) {}
+          updateLogoPreviewBox(side, processed, '✓ Link Google Drive siap');
+        } catch (err) {
+          updateLogoPreviewBox(side, null, '⚠️ Gagal memuat link Drive');
+          alert(err.message);
+        }
+      };
+
+      if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file) handleChosenFile(file);
+        });
       }
 
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initDashboard);
+      if (driveUrlInput) {
+        driveUrlInput.addEventListener('change', handleDriveUrlInput);
+        driveUrlInput.addEventListener('blur', handleDriveUrlInput);
+      }
+
+      if (dropzone) {
+        dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        });
+        dropzone.addEventListener('dragleave', () => {
+          dropzone.classList.remove('dragover');
+        });
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+          const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+          if (file) handleChosenFile(file);
+        });
+      }
+    }
+
+    // Mode Gelap / Terang
+    function applyTheme(mode) {
+      const btn = document.getElementById('themeToggleBtn');
+      if (mode === 'light') {
+        document.body.classList.remove('dark-mode');
+        if (btn) btn.textContent = '🌙 Mode Gelap';
       } else {
-        initDashboard();
+        document.body.classList.add('dark-mode');
+        if (btn) btn.textContent = '☀️ Mode Terang';
       }
-    })();
+    }
+
+    // Mode Layar Penuh
+    function updateFullscreenState() {
+      const isNativeFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+      const isPseudoFs = document.body.classList.contains('pseudo-fullscreen');
+      const active = isNativeFs || isPseudoFs;
+
+      document.body.classList.toggle('is-fullscreen', active);
+      const btn = document.getElementById('fullscreenToggleBtn');
+      if (btn) {
+        btn.textContent = active ? '✕ Keluar Layar Penuh' : '⛶ Layar Penuh';
+      }
+
+      setTimeout(() => {
+        renderScheduleTable(false);
+      }, 120);
+    }
+
+    async function toggleFullscreen() {
+      const isNativeFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+      const isPseudoFs = document.body.classList.contains('pseudo-fullscreen');
+
+      if (isNativeFs || isPseudoFs) {
+        if (isNativeFs) {
+          try {
+            if (document.exitFullscreen) await document.exitFullscreen();
+            else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+          } catch (e) {}
+        }
+        document.body.classList.remove('pseudo-fullscreen');
+        updateFullscreenState();
+      } else {
+        try {
+          const docEl = document.documentElement;
+          if (docEl.requestFullscreen) {
+            await docEl.requestFullscreen();
+          } else if (docEl.webkitRequestFullscreen) {
+            await docEl.webkitRequestFullscreen();
+          } else {
+            document.body.classList.add('pseudo-fullscreen');
+          }
+        } catch (e) {
+          document.body.classList.add('pseudo-fullscreen');
+        }
+        updateFullscreenState();
+      }
+    }
+
+    // Manajemen Video Harian Terjadwal (Fullscreen Eksklusif)
+    function getScheduledVideos() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_VIDEOS);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveScheduledVideos(list) {
+      localStorage.setItem(STORAGE_KEY_VIDEOS, JSON.stringify(list));
+    }
+
+    function renderVideoScheduleList() {
+      const container = document.getElementById('videoScheduleList');
+      if (!container) return;
+      const list = getScheduledVideos();
+      if (list.length === 0) {
+        container.innerHTML = '<div class="form-hint" style="text-align:center;padding:0.5rem 0;">Belum ada jadwal video harian tersimpan.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map((v, idx) => `
+        <div class="video-schedule-item">
+          <div class="video-schedule-item-info">
+            <div class="video-schedule-item-title">${escapeHtml(v.title || 'Tayangan Video')}</div>
+            <div class="video-schedule-item-meta">⏰ Pukul ${escapeHtml(v.time)} WIB • Durasi: ${v.duration > 0 ? v.duration + ' detik' : 'Penuh'}</div>
+          </div>
+          <div style="display:flex;gap:0.35rem;">
+            <button type="button" class="btn-secondary" style="padding:0.25rem 0.5rem;font-size:0.74rem;" onclick="previewScheduledVideo(${idx})">▶ Tes</button>
+            <button type="button" class="btn-danger-xs" onclick="deleteScheduledVideo(${idx})">Hapus</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.deleteScheduledVideo = function(index) {
+      const list = getScheduledVideos();
+      list.splice(index, 1);
+      saveScheduledVideos(list);
+      renderVideoScheduleList();
+    };
+
+    window.previewScheduledVideo = function(index) {
+      const list = getScheduledVideos();
+      if (list[index]) {
+        document.getElementById('videoScheduleModal')?.classList.remove('open');
+        playScheduledVideoFullscreen(list[index]);
+      }
+    };
+
+    function extractYouTubeEmbedUrl(url) {
+      const m = String(url || '').match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{6,})/);
+      if (!m) return null;
+      return `https://www.youtube.com/embed/${m[1]}?autoplay=1&mute=1&rel=0&controls=0&playsinline=1`;
+    }
+
+    function stopScheduledVideoFullscreen() {
+      isVideoPlaying = false;
+      if (videoEndTimeout) {
+        clearTimeout(videoEndTimeout);
+        videoEndTimeout = null;
+      }
+      const panel = document.getElementById('scheduledVideoPanel');
+      const mount = document.getElementById('scheduledVideoMount');
+      const unmuteBtn = document.getElementById('scheduledVideoUnmuteBtn');
+      document.body.classList.remove('video-fullscreen-active');
+      if (panel) panel.classList.remove('active');
+      if (mount) mount.innerHTML = '';
+      if (unmuteBtn) unmuteBtn.classList.remove('visible');
+      renderScheduleTable(false);
+    }
+
+    function playScheduledVideoFullscreen(item) {
+      const panel = document.getElementById('scheduledVideoPanel');
+      const mount = document.getElementById('scheduledVideoMount');
+      const caption = document.getElementById('scheduledVideoCaption');
+      const unmuteBtn = document.getElementById('scheduledVideoUnmuteBtn');
+      if (!panel || !mount || !item || !item.url) return;
+
+      isVideoPlaying = true;
+      document.body.classList.add('video-fullscreen-active');
+      panel.classList.add('active');
+      if (caption) caption.textContent = `🎬 ${item.title || 'Tayangan Harian Terjadwal'}`;
+
+      const ytEmbed = extractYouTubeEmbedUrl(item.url);
+      if (ytEmbed) {
+        mount.innerHTML = `<iframe src="${escapeHtml(ytEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        if (unmuteBtn) unmuteBtn.classList.remove('visible');
+        const durSec = Number(item.duration) > 0 ? Number(item.duration) : 60;
+        videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, durSec * 1000);
+      } else {
+        mount.innerHTML = `<video id="activeScheduledVideoEl" src="${escapeHtml(item.url)}" autoplay playsinline></video>`;
+        const videoEl = document.getElementById('activeScheduledVideoEl');
+        if (videoEl) {
+          videoEl.muted = false;
+          videoEl.play().catch(() => {
+            videoEl.muted = true;
+            videoEl.play().catch(() => {});
+            if (unmuteBtn) unmuteBtn.classList.add('visible');
+          });
+          videoEl.onended = () => {
+            stopScheduledVideoFullscreen();
+          };
+          videoEl.onerror = () => {
+            stopScheduledVideoFullscreen();
+          };
+        }
+        if (Number(item.duration) > 0) {
+          videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, Number(item.duration) * 1000);
+        }
+      }
+    }
+
+    function checkScheduledDailyVideos() {
+      if (isVideoPlaying) return;
+      const list = getScheduledVideos();
+      if (list.length === 0) return;
+
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).formatToParts(now);
+
+      const hh = parts.find(p => p.type === 'hour')?.value || '00';
+      const mm = parts.find(p => p.type === 'minute')?.value || '00';
+      const ss = Number(parts.find(p => p.type === 'second')?.value || '99');
+      const currentHHMM = `${hh}:${mm}`;
+      const minuteKey = `${now.toDateString()}_${currentHHMM}`;
+
+      if (ss <= 2 && lastPlayedMinuteKey !== minuteKey) {
+        const match = list.find(v => v.time === currentHHMM);
+        if (match) {
+          lastPlayedMinuteKey = minuteKey;
+          playScheduledVideoFullscreen(match);
+        }
+      }
+    }
+
+    // Inisialisasi Event Listener
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem(STORAGE_KEY_THEME) || 'dark';
+      applyTheme(savedTheme);
+
+      renderHeaderLogos();
+      loadTickerText();
+      updateLiveClock();
+      setInterval(updateLiveClock, 1000);
+
+      fetchDumaiWeather();
+      setInterval(fetchDumaiWeather, 10 * 60 * 1000);
+
+      fetchScheduleData(false);
+      autoRefreshTimer = setInterval(() => fetchScheduleData(false), 30000);
+      startAutoSlide();
+
+      // Tombol Theme
+      document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+        const nextMode = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+        localStorage.setItem(STORAGE_KEY_THEME, nextMode);
+        applyTheme(nextMode);
+      });
+
+      // Tombol Refresh Manual
+      document.getElementById('manualRefreshBtn')?.addEventListener('click', () => {
+        fetchScheduleData(true);
+      });
+
+      // Tombol Fullscreen
+      document.getElementById('fullscreenToggleBtn')?.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+      window.addEventListener('resize', () => {
+        renderScheduleTable(false);
+      });
+
+      // Setup Drag & Drop / File Picker / Google Drive Link Logo
+      setupLogoDropzone('left');
+      setupLogoDropzone('right');
+
+      // Modal Atur Logo
+      const logoModal = document.getElementById('logoModal');
+      document.getElementById('openLogoModalBtn')?.addEventListener('click', () => {
+        const leftSaved = localStorage.getItem(STORAGE_KEY_LOGO_LEFT);
+        const rightSaved = localStorage.getItem(STORAGE_KEY_LOGO_RIGHT);
+        pendingLeftLogoDataUrl = leftSaved || null;
+        pendingRightLogoDataUrl = rightSaved || null;
+
+        const leftInput = document.getElementById('leftLogoFile');
+        const rightInput = document.getElementById('rightLogoFile');
+        const leftDriveInput = document.getElementById('leftLogoDriveUrl');
+        const rightDriveInput = document.getElementById('rightLogoDriveUrl');
+        if (leftInput) leftInput.value = '';
+        if (rightInput) rightInput.value = '';
+        if (leftDriveInput) leftDriveInput.value = '';
+        if (rightDriveInput) rightDriveInput.value = '';
+
+        updateLogoPreviewBox('left', leftSaved, leftSaved ? 'Logo aktif tersimpan' : 'Pilih file dari Google Drive / tempel link');
+        updateLogoPreviewBox('right', rightSaved, rightSaved ? 'Logo aktif tersimpan' : 'Pilih file dari Google Drive / tempel link');
+
+        logoModal?.classList.add('open');
+      });
+
+      document.getElementById('closeLogoModalBtn')?.addEventListener('click', () => {
+        logoModal?.classList.remove('open');
+      });
+
+      document.getElementById('saveLogoBtn')?.addEventListener('click', () => {
+        try {
+          if (pendingLeftLogoDataUrl) {
+            localStorage.setItem(STORAGE_KEY_LOGO_LEFT, pendingLeftLogoDataUrl);
+          } else {
+            localStorage.removeItem(STORAGE_KEY_LOGO_LEFT);
+          }
+
+          if (pendingRightLogoDataUrl) {
+            localStorage.setItem(STORAGE_KEY_LOGO_RIGHT, pendingRightLogoDataUrl);
+          } else {
+            localStorage.removeItem(STORAGE_KEY_LOGO_RIGHT);
+          }
+
+          renderHeaderLogos();
+          logoModal?.classList.remove('open');
+          setTimeout(() => renderScheduleTable(false), 80);
+        } catch (err) {
+          alert('Ukuran gambar logo terlalu besar untuk penyimpanan browser. Silakan pilih file gambar dengan ukuran lebih kecil.');
+        }
+      });
+
+      document.getElementById('resetLogoBtn')?.addEventListener('click', () => {
+        pendingLeftLogoDataUrl = null;
+        pendingRightLogoDataUrl = null;
+        localStorage.removeItem(STORAGE_KEY_LOGO_LEFT);
+        localStorage.removeItem(STORAGE_KEY_LOGO_RIGHT);
+        updateLogoPreviewBox('left', null, 'Pilih file dari Google Drive / tempel link');
+        updateLogoPreviewBox('right', null, 'Pilih file dari Google Drive / tempel link');
+        renderHeaderLogos();
+        setTimeout(() => renderScheduleTable(false), 80);
+      });
+
+      document.getElementById('cleanExistingBlackBgBtn')?.addEventListener('click', async () => {
+        try {
+          if (pendingLeftLogoDataUrl) {
+            pendingLeftLogoDataUrl = await processLogoImageSource(pendingLeftLogoDataUrl, true);
+            updateLogoPreviewBox('left', pendingLeftLogoDataUrl, '✓ Background hitam dibersihkan');
+          }
+          if (pendingRightLogoDataUrl) {
+            pendingRightLogoDataUrl = await processLogoImageSource(pendingRightLogoDataUrl, true);
+            updateLogoPreviewBox('right', pendingRightLogoDataUrl, '✓ Background hitam dibersihkan');
+          }
+        } catch (err) {
+          alert('Gagal membersihkan background hitam pada gambar.');
+        }
+      });
+
+      // Modal Running Text
+      const rtModal = document.getElementById('runningTextModal');
+      const rtInput = document.getElementById('runningTextModalInput');
+      document.getElementById('saveRunningTextBtn')?.addEventListener('click', () => {
+        if (rtInput) {
+          rtInput.value = localStorage.getItem(STORAGE_KEY_TICKER) || DEFAULT_TICKER_TEXT;
+        }
+        rtModal?.classList.add('open');
+      });
+
+      document.getElementById('closeRunningTextModalBtn')?.addEventListener('click', () => {
+        rtModal?.classList.remove('open');
+      });
+
+      document.getElementById('resetRunningTextBtn')?.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY_TICKER);
+        if (rtInput) rtInput.value = DEFAULT_TICKER_TEXT;
+        loadTickerText();
+      });
+
+      document.getElementById('applyRunningTextBtn')?.addEventListener('click', () => {
+        const val = (rtInput?.value || '').trim();
+        if (val) {
+          localStorage.setItem(STORAGE_KEY_TICKER, val);
+        } else {
+          localStorage.removeItem(STORAGE_KEY_TICKER);
+        }
+        loadTickerText();
+        rtModal?.classList.remove('open');
+      });
+
+      // Modal Video Harian
+      const videoModal = document.getElementById('videoScheduleModal');
+      document.getElementById('openVideoModalBtn')?.addEventListener('click', () => {
+        renderVideoScheduleList();
+        videoModal?.classList.add('open');
+      });
+
+      document.getElementById('closeVideoModalBtn')?.addEventListener('click', () => {
+        videoModal?.classList.remove('open');
+      });
+
+      document.getElementById('addVideoScheduleBtn')?.addEventListener('click', () => {
+        const title = (document.getElementById('videoTitleInput')?.value || '').trim() || 'Tayangan Video Pelabuhan';
+        let url = (document.getElementById('videoUrlInput')?.value || '').trim();
+        const fileInput = document.getElementById('videoFileInput');
+        const time = document.getElementById('videoPlayTimeInput')?.value || '08:00';
+        const duration = parseInt(document.getElementById('videoDurationInput')?.value || '0', 10) || 0;
+
+        if (!url && fileInput && fileInput.files && fileInput.files[0]) {
+          url = URL.createObjectURL(fileInput.files[0]);
+        }
+
+        if (!url) {
+          alert('Harap masukkan URL video atau pilih file video MP4/WebM.');
+          return;
+        }
+
+        const list = getScheduledVideos();
+        list.push({ title, url, time, duration });
+        saveScheduledVideos(list);
+
+        if (document.getElementById('videoTitleInput')) document.getElementById('videoTitleInput').value = '';
+        if (document.getElementById('videoUrlInput')) document.getElementById('videoUrlInput').value = '';
+        if (fileInput) fileInput.value = '';
+        renderVideoScheduleList();
+      });
+
+      document.getElementById('scheduledVideoUnmuteBtn')?.addEventListener('click', () => {
+        const videoEl = document.getElementById('activeScheduledVideoEl');
+        if (videoEl) {
+          videoEl.muted = false;
+          videoEl.play().catch(() => {});
+        }
+        document.getElementById('scheduledVideoUnmuteBtn')?.classList.remove('visible');
+      });
+    });
   </script>
 </body>
 </html>
