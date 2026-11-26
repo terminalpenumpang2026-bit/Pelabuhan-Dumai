@@ -85,7 +85,7 @@
       flex-direction: column;
     }
 
-    /* Mode layar penuh presisi 100vw x 100dvh tanpa scroll atau ruang kosong berlebih */
+    /* Mode layar penuh presisi 100vw x 100dvh tanpa scroll atau baris terpotong */
     :fullscreen,
     :-webkit-full-screen,
     :-moz-full-screen,
@@ -131,7 +131,7 @@
     }
 
     body.is-fullscreen .header-banner-box {
-      padding: clamp(0.5rem, 1vh, 0.95rem) clamp(0.9rem, 1.6vw, 1.75rem);
+      padding: clamp(0.45rem, 0.9vh, 0.85rem) clamp(0.9rem, 1.6vw, 1.75rem);
       border-radius: 14px;
     }
 
@@ -143,9 +143,9 @@
     }
 
     body.is-fullscreen .header-logo-slot {
-      height: clamp(86px, 13.5vh, 160px);
-      width: clamp(108px, 14vw, 215px);
-      max-width: clamp(108px, 14vw, 215px);
+      height: clamp(82px, 12.5vh, 148px);
+      width: clamp(104px, 13.5vw, 205px);
+      max-width: clamp(104px, 13.5vw, 205px);
     }
 
     body.is-fullscreen .header-center {
@@ -165,7 +165,7 @@
       letter-spacing: 0.9px;
       text-transform: uppercase;
       line-height: 1.15;
-      margin-bottom: 0.28rem;
+      margin-bottom: 0.25rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -188,7 +188,7 @@
     }
 
     body.is-fullscreen .header-meta {
-      margin-top: clamp(0.42rem, 0.8vh, 0.72rem);
+      margin-top: clamp(0.38rem, 0.72vh, 0.65rem);
       gap: 0.55rem;
       justify-content: center;
     }
@@ -204,7 +204,7 @@
 
     body.is-fullscreen .live-pill {
       font-size: clamp(0.84rem, 1vw, 1.02rem);
-      padding: 0.36rem 1.05rem;
+      padding: 0.34rem 1.05rem;
       background: rgba(15, 23, 42, 0.42);
       border: 1px solid rgba(56, 189, 248, 0.35);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -220,19 +220,19 @@
     }
 
     body.is-fullscreen .main-container {
-      margin-top: clamp(0.45rem, 0.85vh, 0.8rem);
-      padding-bottom: clamp(0.25rem, 0.5vh, 0.5rem);
+      margin-top: clamp(0.4rem, 0.75vh, 0.7rem);
+      padding-bottom: clamp(0.2rem, 0.4vh, 0.4rem);
       min-height: 0;
     }
 
     body.is-fullscreen .summary-grid {
       gap: clamp(0.6rem, 1.1vw, 1.1rem);
-      margin-bottom: clamp(0.45rem, 0.85vh, 0.8rem);
+      margin-bottom: clamp(0.4rem, 0.75vh, 0.7rem);
     }
 
     body.is-fullscreen .summary-card {
-      min-height: clamp(66px, 9.2vh, 98px);
-      padding: clamp(0.5rem, 0.95vh, 0.85rem) clamp(0.85rem, 1.4vw, 1.35rem);
+      min-height: clamp(62px, 8.6vh, 92px);
+      padding: clamp(0.45rem, 0.85vh, 0.78rem) clamp(0.85rem, 1.4vw, 1.35rem);
       border-radius: 12px;
     }
 
@@ -242,27 +242,27 @@
 
     body.is-fullscreen .summary-value {
       font-size: clamp(1.25rem, 1.8vw, 1.95rem);
-      margin-top: 0.12rem;
+      margin-top: 0.1rem;
     }
 
     body.is-fullscreen .summary-sub {
       font-size: clamp(0.72rem, 0.86vw, 0.86rem);
-      margin-top: 0.12rem;
+      margin-top: 0.1rem;
     }
 
     body.is-fullscreen .sync-status-bar {
-      margin-bottom: clamp(0.4rem, 0.75vh, 0.7rem);
+      margin-bottom: clamp(0.38rem, 0.7vh, 0.65rem);
       padding: 0;
     }
 
     body.is-fullscreen .inline-ticker-wrap {
-      padding: 0.38rem 0.95rem 0.38rem 0.48rem;
+      padding: 0.36rem 0.95rem 0.36rem 0.48rem;
       border-radius: 11px;
     }
 
     body.is-fullscreen .inline-ticker-badge {
       font-size: clamp(0.78rem, 0.95vw, 0.92rem);
-      padding: 0.24rem 0.75rem;
+      padding: 0.22rem 0.75rem;
     }
 
     body.is-fullscreen .inline-ticker-marquee {
@@ -275,12 +275,12 @@
 
     body.is-fullscreen th {
       font-size: var(--fit-head-fs, clamp(0.78rem, 0.95vw, 0.98rem));
-      padding: var(--fit-head-py, 0.65rem) clamp(0.75rem, 1.1vw, 1.2rem);
+      padding: var(--fit-head-py, 0.6rem) clamp(0.75rem, 1.1vw, 1.2rem);
     }
 
     body.is-fullscreen td {
       font-size: var(--fit-row-fs, clamp(0.8rem, 1vw, 1.04rem));
-      padding: var(--fit-row-py, 0.55rem) clamp(0.75rem, 1.1vw, 1.2rem);
+      padding: var(--fit-row-py, 0.48rem) clamp(0.75rem, 1.1vw, 1.2rem);
     }
 
     body.is-fullscreen .ship-name {
@@ -290,11 +290,11 @@
     body.is-fullscreen .gate-pill,
     body.is-fullscreen .status-badge {
       font-size: var(--fit-badge-fs, clamp(0.74rem, 0.9vw, 0.94rem));
-      padding: 0.2rem 0.62rem;
+      padding: 0.18rem 0.62rem;
     }
 
     body.is-fullscreen footer {
-      padding: clamp(0.28rem, 0.5vh, 0.48rem) 0.75rem;
+      padding: clamp(0.26rem, 0.45vh, 0.45rem) 0.75rem;
       font-size: clamp(0.76rem, 0.9vw, 0.92rem);
       letter-spacing: 1.4px;
     }
@@ -723,6 +723,27 @@
       animation: tableSlideFade 0.35s ease;
     }
 
+    /* Indikator halaman slide bila data kapal lebih dari 1 halaman layar */
+    .slide-page-badge {
+      position: absolute;
+      right: 0.85rem;
+      bottom: 0.55rem;
+      background: rgba(15, 23, 42, 0.78);
+      color: #e2e8f0;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 0.18rem 0.62rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      pointer-events: none;
+      z-index: 4;
+      display: none;
+    }
+
+    .slide-page-badge.visible {
+      display: inline-block;
+    }
+
     /* Mode Fullscreen Penuh 100% Layar saat Video Harian Tampil */
     body.video-fullscreen-active {
       overflow: hidden !important;
@@ -1136,6 +1157,7 @@
           <tbody id="scheduleTableBody"></tbody>
         </table>
       </div>
+      <span class="slide-page-badge" id="slidePageBadge">Halaman 1 / 1</span>
       <div class="empty-msg" id="emptyMsg">Menunggu data jadwal kapal dari Google Sheets. Pastikan sheet sudah dipublikasikan ke web (Publish to web -> CSV) dan dapat diakses publik.</div>
     </section>
   </main>
@@ -1255,7 +1277,7 @@
             hasLiveSheetData: false,
             lastSignature: "",
             slidePage: 0,
-            slidePageSize: 5,
+            slidePageSize: 6,
             slideIntervalMs: 8000
           };
 
@@ -1263,6 +1285,7 @@
           var thead = document.getElementById("scheduleTableHead");
           var tbody = document.getElementById("scheduleTableBody");
           var tableResponsiveWrap = document.getElementById("tableResponsiveWrap");
+          var slidePageBadge = document.getElementById("slidePageBadge");
           var scheduledVideoPanel = document.getElementById("scheduledVideoPanel");
           var scheduledVideoMount = document.getElementById("scheduledVideoMount");
           var scheduledVideoCaption = document.getElementById("scheduledVideoCaption");
@@ -1399,7 +1422,7 @@
               }
             }
             if (tableResponsiveWrap) tableResponsiveWrap.style.display = "flex";
-            adjustViewportFit();
+            recalculateCapacityAndRender(false);
           }
 
           if (scheduledVideoUnmuteBtn) {
@@ -1437,7 +1460,6 @@
             if (emptyMsg) emptyMsg.style.display = "none";
             scheduledVideoPanel.classList.add("active");
 
-            // Upayakan browser otomatis masuk ke fullscreen asli layar penuh saat video tampil
             var docEl = document.documentElement;
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
               if (docEl.requestFullscreen) {
@@ -1695,6 +1717,23 @@
             return "status-info";
           }
 
+          function computeOptimalRowsPerSlide() {
+            var card = document.getElementById("scheduleTableCard");
+            if (!card || !thead) return 6;
+            var isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains("pseudo-fullscreen"));
+            var availH = card.clientHeight - (thead.offsetHeight || 44);
+            if (availH <= 60) return 5;
+
+            var minRowHeight = isFs ? 36 : 34;
+            var maxFitRows = Math.max(3, Math.floor(availH / minRowHeight));
+            var totalRows = Array.isArray(state.rows) ? state.rows.length : 0;
+
+            if (totalRows > 0 && totalRows <= maxFitRows) {
+              return totalRows;
+            }
+            return maxFitRows;
+          }
+
           function adjustViewportFit() {
             var card = document.getElementById("scheduleTableCard");
             if (!card || !thead) return;
@@ -1702,18 +1741,18 @@
             var visibleRows = Math.min(state.rows.length || 5, state.slidePageSize);
             if (visibleRows < 1) visibleRows = 5;
             var availH = card.clientHeight - (thead.offsetHeight || 44);
-            if (availH <= 70) return;
+            if (availH <= 60) return;
 
             var perRowH = Math.floor(availH / visibleRows);
-            var minPy = isFs ? 6 : 4;
-            var maxPy = isFs ? 22 : 14;
-            var minFs = isFs ? 12 : 11;
+            var minPy = isFs ? 4 : 4;
+            var maxPy = isFs ? 20 : 14;
+            var minFs = isFs ? 11 : 11;
             var maxFs = isFs ? 18 : 14;
 
-            var rowPy = Math.max(minPy, Math.min(maxPy, Math.floor((perRowH - 22) / 2)));
-            var rowFs = Math.max(minFs, Math.min(maxFs, Math.floor(perRowH * (isFs ? 0.25 : 0.22))));
+            var rowPy = Math.max(minPy, Math.min(maxPy, Math.floor((perRowH - 20) / 2)));
+            var rowFs = Math.max(minFs, Math.min(maxFs, Math.floor(perRowH * (isFs ? 0.27 : 0.24))));
             var headFs = Math.max(minFs, Math.min(maxFs, rowFs - 1));
-            var headPy = Math.max(minPy + 2, Math.min(maxPy, rowPy + 2));
+            var headPy = Math.max(minPy + 1, Math.min(maxPy, rowPy + 1));
 
             card.style.setProperty("--fit-head-py", headPy + "px");
             card.style.setProperty("--fit-head-fs", headFs + "px");
@@ -1728,14 +1767,24 @@
             var rows = Array.isArray(state.rows) ? state.rows : [];
             if (rows.length === 0) {
               tbody.innerHTML = "";
+              if (slidePageBadge) slidePageBadge.classList.remove("visible");
               if (emptyMsg && !activeVideoPlaying) emptyMsg.style.display = "block";
               return;
             }
             if (emptyMsg) emptyMsg.style.display = "none";
 
-            var pageSize = state.slidePageSize || 5;
+            var pageSize = Math.max(1, state.slidePageSize || 6);
             var totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
             if (state.slidePage >= totalPages) state.slidePage = 0;
+
+            if (slidePageBadge) {
+              if (totalPages > 1) {
+                slidePageBadge.textContent = "Halaman " + (state.slidePage + 1) + " / " + totalPages;
+                slidePageBadge.classList.add("visible");
+              } else {
+                slidePageBadge.classList.remove("visible");
+              }
+            }
 
             var start = rows.length > pageSize ? state.slidePage * pageSize : 0;
             var slice = rows.length > pageSize ? rows.slice(start, start + pageSize) : rows;
@@ -1796,6 +1845,16 @@
             }
           }
 
+          function recalculateCapacityAndRender(animate) {
+            var optimalSize = computeOptimalRowsPerSlide();
+            if (optimalSize !== state.slidePageSize) {
+              state.slidePageSize = optimalSize;
+              state.slidePage = 0;
+            }
+            renderTablePage(Boolean(animate));
+            restartSlideTimer();
+          }
+
           function renderAll() {
             var rows = Array.isArray(state.rows) ? state.rows : [];
             if (statTableCount) statTableCount.textContent = String(rows.length);
@@ -1806,11 +1865,12 @@
             }).length;
             if (statActiveCount) statActiveCount.textContent = String(activeCount);
 
-            renderTablePage(false);
-            restartSlideTimer();
+            recalculateCapacityAndRender(false);
           }
 
-          window.addEventListener("resize", adjustViewportFit);
+          window.addEventListener("resize", function () {
+            recalculateCapacityAndRender(false);
+          });
 
           function parseCsvMatrix(csvText) {
             var matrix = [];
@@ -2274,7 +2334,9 @@
             if (headerLogoRight) {
               headerLogoRight.innerHTML = rightSrc ? '<img src="' + escapeHtml(rightSrc) + '" alt="Logo Kanan" />' : "";
             }
-            setTimeout(adjustViewportFit, 50);
+            setTimeout(function () {
+              recalculateCapacityAndRender(false);
+            }, 60);
           }
 
           function readFileAsDataUrl(file) {
@@ -2420,8 +2482,12 @@
             if (fullscreenToggleBtn) {
               fullscreenToggleBtn.textContent = isFs ? "🗗 Keluar" : "⛶ Layar Penuh";
             }
-            setTimeout(adjustViewportFit, 80);
-            setTimeout(adjustViewportFit, 260);
+            setTimeout(function () {
+              recalculateCapacityAndRender(false);
+            }, 80);
+            setTimeout(function () {
+              recalculateCapacityAndRender(false);
+            }, 260);
           }
           if (fullscreenToggleBtn) {
             fullscreenToggleBtn.addEventListener("click", function () {
