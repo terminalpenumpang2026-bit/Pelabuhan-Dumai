@@ -795,10 +795,17 @@
       z-index: 99997;
     }
 
-    .scheduled-video-unmute-btn {
+    .scheduled-video-controls-bar {
       position: fixed;
       right: 1.25rem;
       bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 99998;
+    }
+
+    .scheduled-video-unmute-btn {
       background: #eab308;
       color: #0f172a;
       border: none;
@@ -808,7 +815,6 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-      z-index: 99998;
       display: none;
     }
 
@@ -816,6 +822,23 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
+    }
+
+    .scheduled-video-close-btn {
+      background: rgba(15, 23, 42, 0.72);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.38rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+    }
+
+    .scheduled-video-close-btn:hover {
+      opacity: 1;
     }
 
     .video-schedule-list {
@@ -971,7 +994,7 @@
       line-height: 1.45;
     }
 
-    /* Kotak Pemilihan Logo dari Google Drive / Perangkat */
+    /* Kotak Pemilihan Logo & Video dari Google Drive / Perangkat */
     .logo-picker-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1078,6 +1101,24 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .gdrive-source-box {
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(56, 189, 248, 0.06);
+      border-radius: 10px;
+      padding: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .gdrive-source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.4rem;
     }
 
     .form-hint {
@@ -1261,36 +1302,48 @@
   <div class="scheduled-video-panel" id="scheduledVideoPanel">
     <div id="scheduledVideoMount" style="width: 100vw; height: 100dvh; display: flex; align-items: center; justify-content: center;"></div>
     <div class="scheduled-video-caption" id="scheduledVideoCaption">🎬 Tayangan Harian Terjadwal</div>
-    <button type="button" class="scheduled-video-unmute-btn" id="scheduledVideoUnmuteBtn">🔊 Aktifkan Suara</button>
+    <div class="scheduled-video-controls-bar">
+      <button type="button" class="scheduled-video-unmute-btn" id="scheduledVideoUnmuteBtn">🔊 Aktifkan Suara</button>
+      <button type="button" class="scheduled-video-close-btn" id="scheduledVideoCloseBtn">✕ Tutup Video</button>
+    </div>
   </div>
 
-  <!-- Modal Atur Video Terjadwal Harian -->
+  <!-- Modal Atur Video Terjadwal Harian (Google Drive / File) -->
   <div class="modal-backdrop" id="videoScheduleModal">
-    <div class="modal-card" style="max-width: 500px;">
-      <h3>🎬 Video Terjadwal Setiap Hari (Jam Tertentu)</h3>
+    <div class="modal-card" style="max-width: 520px;">
+      <h3>🎬 Video Harian dari Google Drive (Jam Tertentu)</h3>
       <div class="form-group">
         <label for="videoTitleInput">Judul / Keterangan Tayangan</label>
         <input type="text" id="videoTitleInput" placeholder="Contoh: Video Keselamatan Pelayaran / Indonesia Raya" />
       </div>
-      <div class="form-group">
-        <label for="videoUrlInput">URL Video (MP4 / WebM / Link YouTube)</label>
-        <input type="text" id="videoUrlInput" placeholder="https://contoh.com/video.mp4 atau https://youtu.be/..." />
+
+      <div class="gdrive-source-box">
+        <div class="gdrive-source-badge">☁️ Sumber Video Google Drive</div>
+        <div class="form-group" style="margin-bottom: 0.6rem;">
+          <label for="videoUrlInput">1. Tempel Link Bagikan (Share) Google Drive</label>
+          <input type="text" id="videoUrlInput" placeholder="https://drive.google.com/file/d/1AbCdEfGh.../view?usp=sharing" />
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="videoFileInput" class="file-pick-btn" style="margin-bottom: 0;">📁 2. Atau Pilih File Video dari Folder Google Drive / Perangkat</label>
+          <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/*" style="display: none;" />
+          <div class="logo-file-name" id="videoSelectedFileName" style="margin-top: 0.35rem; text-align: center;">Belum ada file video dipilih</div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="videoFileInput">Atau Pilih File Video Lokal (MP4/WebM dari Komputer)</label>
-        <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/*" />
-      </div>
+
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
         <div class="form-group">
           <label for="videoPlayTimeInput">Jam Tayang (Tiap Hari)</label>
           <input type="time" id="videoPlayTimeInput" value="08:00" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
         </div>
         <div class="form-group">
-          <label for="videoDurationInput">Durasi Tayang (Detik, 0 = Penuh)</label>
-          <input type="number" id="videoDurationInput" min="0" max="7200" value="0" placeholder="0 = Sesuai durasi video" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
+          <label for="videoDurationInput">Durasi Tayang (Detik)</label>
+          <input type="number" id="videoDurationInput" min="0" max="7200" value="60" placeholder="Contoh: 60 (1 menit)" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
         </div>
       </div>
-      <div class="form-hint">Isi <strong>0</strong> pada Durasi Tayang agar video diputar <strong>penuh sampai selesai sesuai durasi asli videonya</strong> (untuk file MP4/WebM), atau masukkan angka detik tertentu (misalnya untuk link YouTube).</div>
+      <div class="form-hint">
+        • <strong>Cara pakai link Google Drive:</strong> Klik kanan video di Google Drive &rarr; <em>Bagikan (Share)</em> &rarr; ubah akses menjadi <strong>Siapa saja yang memiliki link</strong> &rarr; Salin link lalu tempel di kolom atas.<br />
+        • Untuk link Google Drive, isi <strong>Durasi Tayang (Detik)</strong> sesuai lama video (misal <code>180</code> untuk 3 menit) agar papan jadwal otomatis muncul kembali setelah video selesai.
+      </div>
       <div class="modal-actions" style="justify-content: space-between; margin-top: 0.75rem;">
         <button type="button" class="btn-primary" id="addVideoScheduleBtn">+ Simpan Jadwal Harian</button>
         <button type="button" class="btn-secondary" id="closeVideoModalBtn">Tutup</button>
@@ -1367,8 +1420,6 @@
 
   <script>
     // Konfigurasi Sumber Data Google Sheets
-    const SHEET_PUB_ID = '2PACX-1vRxR_aM7iE8gY6U_3K6n7Y6W6T0P8_9qW8hX2vV5nK1zB8mQ3wR4tY6uI8oP0aS2dF4gH6jK8lZ0xC2vB4';
-    const SPREADSHEET_ID = '1h8_Q8c9B4v7N6m5K4j3H2g1F0d9S8a7P6o5I4u3Y2t1';
     const DEFAULT_SHEET_CSV_URLS = [
       'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxR_aM7iE8gY6U_3K6n7Y6W6T0P8_9qW8hX2vV5nK1zB8mQ3wR4tY6uI8oP0aS2dF4gH6jK8lZ0xC2vB4/pub?output=csv',
       'https://docs.google.com/spreadsheets/d/1h8_Q8c9B4v7N6m5K4j3H2g1F0d9S8a7P6o5I4u3Y2t1/gviz/tq?tqx=out:csv'
@@ -1573,7 +1624,6 @@
           gate = colMap.gate !== -1 ? (row[colMap.gate] || '') : '';
           status = colMap.status !== -1 ? (row[colMap.status] || '') : '';
         } else {
-          // Fallback urutan kolom standar A..G
           const hasNumberCol = /^\d+$/.test((row[0] || '').trim());
           const offset = hasNumberCol ? 1 : 0;
           kapal = row[offset] || '';
@@ -1782,7 +1832,6 @@
       }
 
       if (!loaded && allSchedules.length === 0) {
-        // Data contoh awal jika jaringan/Google Sheets belum terhubung
         allSchedules = [
           { kapal: 'MV. BATAM JET 2', destinasi: 'BENGKALIS - SELATPANJANG - BATAM', datang: '07:15', berangkat: '08:00', gate: 'GATE 1', status: 'BOARDING' },
           { kapal: 'MV. DUMAI LINE 5', destinasi: 'BENGKALIS - SELATPANJANG - TG. BALAI - BATAM', datang: '07:45', berangkat: '08:30', gate: 'GATE 2', status: 'PERSIAPAN' },
@@ -1812,24 +1861,36 @@
       }
     }
 
+    // Ekstrak File ID Google Drive dari berbagai format link
+    function extractGoogleDriveFileId(rawUrl) {
+      const trimmed = String(rawUrl || '').trim();
+      if (!trimmed) return null;
+      const fileMatch = trimmed.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
+      if (fileMatch && fileMatch[1]) return fileMatch[1];
+
+      const idParamMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
+      if (idParamMatch && idParamMatch[1] && trimmed.includes('google.com')) {
+        return idParamMatch[1];
+      }
+      return null;
+    }
+
     // Konversi Link Bagikan Google Drive menjadi URL Gambar Langsung
     function normalizeGoogleDriveImageUrl(rawUrl) {
       const trimmed = String(rawUrl || '').trim();
       if (!trimmed) return '';
-
-      // Format: https://drive.google.com/file/d/FILE_ID/view?...
-      const fileMatch = trimmed.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
-      if (fileMatch && fileMatch[1]) {
-        return `https://lh3.googleusercontent.com/d/${fileMatch[1]}=w1000`;
+      const fileId = extractGoogleDriveFileId(trimmed);
+      if (fileId) {
+        return `https://lh3.googleusercontent.com/d/${fileId}=w1000`;
       }
-
-      // Format: https://drive.google.com/open?id=FILE_ID atau uc?id=FILE_ID
-      const idParamMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
-      if (idParamMatch && idParamMatch[1] && trimmed.includes('google.com')) {
-        return `https://lh3.googleusercontent.com/d/${idParamMatch[1]}=w1000`;
-      }
-
       return trimmed;
+    }
+
+    // Konversi Link Bagikan Google Drive menjadi URL Preview Embed Video
+    function extractGoogleDriveVideoEmbedUrl(rawUrl) {
+      const fileId = extractGoogleDriveFileId(rawUrl);
+      if (!fileId) return null;
+      return `https://drive.google.com/file/d/${fileId}/preview`;
     }
 
     // Pemrosesan & Optimasi Gambar Logo (Kompresi + Opsional Hapus Background Hitam)
@@ -1874,7 +1935,6 @@
 
             resolve(canvas.toDataURL('image/png'));
           } catch (err) {
-            // Jika gambar eksternal tidak mengizinkan CORS pixel read, gunakan URL langsung
             resolve(src);
           }
         };
@@ -2055,7 +2115,7 @@
       }
     }
 
-    // Manajemen Video Harian Terjadwal (Fullscreen Eksklusif)
+    // Manajemen Video Harian Terjadwal (Fullscreen Eksklusif dari Google Drive / Perangkat)
     function getScheduledVideos() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY_VIDEOS);
@@ -2068,6 +2128,13 @@
 
     function saveScheduledVideos(list) {
       localStorage.setItem(STORAGE_KEY_VIDEOS, JSON.stringify(list));
+    }
+
+    function detectVideoSourceLabel(url) {
+      if (extractGoogleDriveFileId(url)) return '☁️ Google Drive';
+      if (extractYouTubeEmbedUrl(url)) return '▶️ YouTube';
+      if (String(url).startsWith('blob:')) return '📁 File Lokal/Drive';
+      return '🎬 Video URL';
     }
 
     function renderVideoScheduleList() {
@@ -2083,7 +2150,7 @@
         <div class="video-schedule-item">
           <div class="video-schedule-item-info">
             <div class="video-schedule-item-title">${escapeHtml(v.title || 'Tayangan Video')}</div>
-            <div class="video-schedule-item-meta">⏰ Pukul ${escapeHtml(v.time)} WIB • Durasi: ${v.duration > 0 ? v.duration + ' detik' : 'Penuh'}</div>
+            <div class="video-schedule-item-meta">⏰ ${escapeHtml(v.time)} WIB • ${detectVideoSourceLabel(v.url)} • ${v.duration > 0 ? v.duration + ' dtk' : 'Penuh'}</div>
           </div>
           <div style="display:flex;gap:0.35rem;">
             <button type="button" class="btn-secondary" style="padding:0.25rem 0.5rem;font-size:0.74rem;" onclick="previewScheduledVideo(${idx})">▶ Tes</button>
@@ -2142,8 +2209,15 @@
       panel.classList.add('active');
       if (caption) caption.textContent = `🎬 ${item.title || 'Tayangan Harian Terjadwal'}`;
 
+      const gdriveEmbed = extractGoogleDriveVideoEmbedUrl(item.url);
       const ytEmbed = extractYouTubeEmbedUrl(item.url);
-      if (ytEmbed) {
+
+      if (gdriveEmbed) {
+        mount.innerHTML = `<iframe src="${escapeHtml(gdriveEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        if (unmuteBtn) unmuteBtn.classList.remove('visible');
+        const durSec = Number(item.duration) > 0 ? Number(item.duration) : 60;
+        videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, durSec * 1000);
+      } else if (ytEmbed) {
         mount.innerHTML = `<iframe src="${escapeHtml(ytEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
         if (unmuteBtn) unmuteBtn.classList.remove('visible');
         const durSec = Number(item.duration) > 0 ? Number(item.duration) : 60;
@@ -2347,8 +2421,20 @@
         rtModal?.classList.remove('open');
       });
 
-      // Modal Video Harian
+      // Modal Video Harian (Google Drive / File)
       const videoModal = document.getElementById('videoScheduleModal');
+      const videoFileInput = document.getElementById('videoFileInput');
+      const videoSelectedFileName = document.getElementById('videoSelectedFileName');
+
+      if (videoFileInput) {
+        videoFileInput.addEventListener('change', (e) => {
+          const f = e.target.files && e.target.files[0];
+          if (videoSelectedFileName) {
+            videoSelectedFileName.textContent = f ? `✓ ${f.name}` : 'Belum ada file video dipilih';
+          }
+        });
+      }
+
       document.getElementById('openVideoModalBtn')?.addEventListener('click', () => {
         renderVideoScheduleList();
         videoModal?.classList.add('open');
@@ -2361,16 +2447,15 @@
       document.getElementById('addVideoScheduleBtn')?.addEventListener('click', () => {
         const title = (document.getElementById('videoTitleInput')?.value || '').trim() || 'Tayangan Video Pelabuhan';
         let url = (document.getElementById('videoUrlInput')?.value || '').trim();
-        const fileInput = document.getElementById('videoFileInput');
         const time = document.getElementById('videoPlayTimeInput')?.value || '08:00';
-        const duration = parseInt(document.getElementById('videoDurationInput')?.value || '0', 10) || 0;
+        const duration = parseInt(document.getElementById('videoDurationInput')?.value || '60', 10) || 0;
 
-        if (!url && fileInput && fileInput.files && fileInput.files[0]) {
-          url = URL.createObjectURL(fileInput.files[0]);
+        if (!url && videoFileInput && videoFileInput.files && videoFileInput.files[0]) {
+          url = URL.createObjectURL(videoFileInput.files[0]);
         }
 
         if (!url) {
-          alert('Harap masukkan URL video atau pilih file video MP4/WebM.');
+          alert('Harap tempel link Google Drive video atau pilih file video MP4/WebM.');
           return;
         }
 
@@ -2380,7 +2465,8 @@
 
         if (document.getElementById('videoTitleInput')) document.getElementById('videoTitleInput').value = '';
         if (document.getElementById('videoUrlInput')) document.getElementById('videoUrlInput').value = '';
-        if (fileInput) fileInput.value = '';
+        if (videoFileInput) videoFileInput.value = '';
+        if (videoSelectedFileName) videoSelectedFileName.textContent = 'Belum ada file video dipilih';
         renderVideoScheduleList();
       });
 
@@ -2391,6 +2477,10 @@
           videoEl.play().catch(() => {});
         }
         document.getElementById('scheduledVideoUnmuteBtn')?.classList.remove('visible');
+      });
+
+      document.getElementById('scheduledVideoCloseBtn')?.addEventListener('click', () => {
+        stopScheduledVideoFullscreen();
       });
     });
   </script>
