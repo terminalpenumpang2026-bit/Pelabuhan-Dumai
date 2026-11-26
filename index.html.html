@@ -1376,14 +1376,15 @@
           <input type="time" id="videoPlayTimeInput" value="08:00" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
         </div>
         <div class="form-group" style="margin-bottom: 0.5rem;">
-          <label for="videoDurationInput">Durasi Tayang (Detik)</label>
-          <input type="number" id="videoDurationInput" min="0" max="7200" value="60" placeholder="Contoh: 60 (1 menit)" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
+          <label for="videoDurationInput">Durasi Tayang (0 = Penuh sesuai video)</label>
+          <input type="number" id="videoDurationInput" min="0" max="7200" value="0" placeholder="0 = Penuh sesuai durasi video" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
         </div>
       </div>
 
       <div class="form-hint">
-        <strong>1. Tempel Link Google Drive:</strong> Salin link video dari Google Drive (<em>Bagikan &rarr; Siapa saja yang memiliki link</em>) lalu tempel pada kolom <strong>"Atau tempel link Google Drive..."</strong>. Link otomatis dikonversi menjadi URL video langsung dan tampil pratinjaunya.<br />
-        <strong>2. Pilih File dari Google Drive Desktop / Perangkat:</strong> Klik tombol <strong>📁 Pilih File / Drive</strong> untuk memilih video langsung dari folder Google Drive yang terpasang di komputer/HP Anda.
+        • <strong>Durasi Otomatis Penuh (`0`):</strong> Video akan diputar utuh sesuai durasi asli video yang ditampilkan sampai selesai, lalu otomatis kembali ke papan jadwal.<br />
+        <strong>1. Tempel Link Google Drive:</strong> Salin link video dari Google Drive (<em>Bagikan &rarr; Siapa saja yang memiliki link</em>) lalu tempel pada kolom <strong>"Atau tempel link Google Drive..."</strong>.<br />
+        <strong>2. Pilih File dari Google Drive Desktop / Perangkat:</strong> Klik tombol <strong>📁 Pilih File / Drive</strong> untuk memilih video langsung dari folder Google Drive di komputer/HP Anda.
       </div>
 
       <div class="modal-actions" style="justify-content: space-between; margin-top: 0.85rem;">
@@ -1497,6 +1498,7 @@
     let pendingLeftLogoDataUrl = null;
     let pendingRightLogoDataUrl = null;
     let pendingVideoSourceUrl = '';
+    let detectedVideoDurationSec = 0;
 
     // Utilitas Keamanan HTML
     function escapeHtml(str) {
@@ -2130,13 +2132,26 @@
       }
     }
 
-    // Pratinjau Langsung Video (Google Drive Link maupun File Lokal/Drive Desktop)
+    // Format detik ke teks menit/detik yang mudah dibaca
+    function formatDurationLabel(sec) {
+      const total = Math.round(Number(sec) || 0);
+      if (total <= 0) return 'Penuh sesuai video';
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      if (m > 0 && s > 0) return `${m} mnt ${s} dtk (${total} dtk)`;
+      if (m > 0) return `${m} menit (${total} dtk)`;
+      return `${s} detik`;
+    }
+
+    // Pratinjau Langsung Video (Google Drive Link maupun File Lokal/Drive Desktop) & Deteksi Durasi Asli
     function updateVideoPreviewBox(sourceUrl, labelText) {
       const previewBox = document.getElementById('videoPreviewBox');
       const nameLabel = document.getElementById('videoSelectedFileName');
+      const durationInput = document.getElementById('videoDurationInput');
       if (!previewBox) return;
 
       if (!sourceUrl) {
+        detectedVideoDurationSec = 0;
         previewBox.innerHTML = `<span class="logo-preview-empty">Belum ada video dipilih — tempel link Google Drive atau pilih file</span>`;
         if (nameLabel) nameLabel.textContent = labelText || 'Pilih file / tempel link Google Drive';
         return;
@@ -2146,15 +2161,30 @@
       const ytEmbed = extractYouTubeEmbedUrl(sourceUrl);
 
       if (gdriveEmbed) {
+        detectedVideoDurationSec = 0;
         previewBox.innerHTML = `<iframe src="${escapeHtml(gdriveEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        if (nameLabel && labelText) nameLabel.textContent = labelText;
       } else if (ytEmbed) {
+        detectedVideoDurationSec = 0;
         previewBox.innerHTML = `<iframe src="${escapeHtml(ytEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        if (nameLabel && labelText) nameLabel.textContent = labelText;
       } else {
-        previewBox.innerHTML = `<video src="${escapeHtml(sourceUrl)}" controls muted playsinline></video>`;
-      }
-
-      if (nameLabel && labelText) {
-        nameLabel.textContent = labelText;
+        previewBox.innerHTML = `<video id="previewModalVideoEl" src="${escapeHtml(sourceUrl)}" controls muted playsinline preload="metadata"></video>`;
+        const prevVid = document.getElementById('previewModalVideoEl');
+        if (prevVid) {
+          prevVid.onloadedmetadata = () => {
+            if (isFinite(prevVid.duration) && prevVid.duration > 0) {
+              detectedVideoDurationSec = Math.ceil(prevVid.duration);
+              if (durationInput && (!durationInput.value || Number(durationInput.value) === 0)) {
+                durationInput.placeholder = `Otomatis penuh (${formatDurationLabel(detectedVideoDurationSec)})`;
+              }
+              if (nameLabel && labelText) {
+                nameLabel.textContent = `${labelText} • Durasi asli: ${formatDurationLabel(detectedVideoDurationSec)}`;
+              }
+            }
+          };
+        }
+        if (nameLabel && labelText) nameLabel.textContent = labelText;
       }
     }
 
@@ -2325,7 +2355,7 @@
         <div class="video-schedule-item">
           <div class="video-schedule-item-info">
             <div class="video-schedule-item-title">${escapeHtml(v.title || 'Tayangan Video')}</div>
-            <div class="video-schedule-item-meta">⏰ ${escapeHtml(v.time)} WIB • ${detectVideoSourceLabel(v.url)} • ${v.duration > 0 ? v.duration + ' dtk' : 'Penuh'}</div>
+            <div class="video-schedule-item-meta">⏰ ${escapeHtml(v.time)} WIB • ${detectVideoSourceLabel(v.url)} • ${v.duration > 0 ? formatDurationLabel(v.duration) : 'Sesuai durasi video'}</div>
           </div>
           <div style="display:flex;gap:0.35rem;">
             <button type="button" class="btn-secondary" style="padding:0.25rem 0.5rem;font-size:0.74rem;" onclick="previewScheduledVideo(${idx})">▶ Tes</button>
@@ -2350,10 +2380,15 @@
       }
     };
 
-    function extractYouTubeEmbedUrl(url) {
+    function extractYouTubeVideoId(url) {
       const m = String(url || '').match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{6,})/);
-      if (!m) return null;
-      return `https://www.youtube.com/embed/${m[1]}?autoplay=1&mute=1&rel=0&controls=0&playsinline=1`;
+      return m ? m[1] : null;
+    }
+
+    function extractYouTubeEmbedUrl(url) {
+      const vidId = extractYouTubeVideoId(url);
+      if (!vidId) return null;
+      return `https://www.youtube.com/embed/${vidId}?autoplay=1&mute=1&rel=0&controls=0&playsinline=1&enablejsapi=1`;
     }
 
     function stopScheduledVideoFullscreen() {
@@ -2390,23 +2425,42 @@
       if (gdriveEmbed) {
         mount.innerHTML = `<iframe src="${escapeHtml(gdriveEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
         if (unmuteBtn) unmuteBtn.classList.remove('visible');
-        const durSec = Number(item.duration) > 0 ? Number(item.duration) : 60;
-        videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, durSec * 1000);
+        if (Number(item.duration) > 0) {
+          videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, Number(item.duration) * 1000);
+        }
       } else if (ytEmbed) {
-        mount.innerHTML = `<iframe src="${escapeHtml(ytEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        mount.innerHTML = `<iframe id="activeScheduledYoutubeEl" src="${escapeHtml(ytEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
         if (unmuteBtn) unmuteBtn.classList.remove('visible');
-        const durSec = Number(item.duration) > 0 ? Number(item.duration) : 60;
-        videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, durSec * 1000);
+        const ytIframe = document.getElementById('activeScheduledYoutubeEl');
+        if (ytIframe) {
+          ytIframe.onload = () => {
+            try {
+              ytIframe.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 1 }), '*');
+            } catch (e) {}
+          };
+        }
+        if (Number(item.duration) > 0) {
+          videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, Number(item.duration) * 1000);
+        }
       } else {
-        mount.innerHTML = `<video id="activeScheduledVideoEl" src="${escapeHtml(item.url)}" autoplay playsinline></video>`;
+        mount.innerHTML = `<video id="activeScheduledVideoEl" src="${escapeHtml(item.url)}" autoplay playsinline preload="auto"></video>`;
         const videoEl = document.getElementById('activeScheduledVideoEl');
         if (videoEl) {
           videoEl.muted = false;
+          videoEl.onloadedmetadata = () => {
+            if (Number(item.duration) > 0) {
+              videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, Number(item.duration) * 1000);
+            } else if (isFinite(videoEl.duration) && videoEl.duration > 0) {
+              // Cadangan pengaman berdasarkan durasi asli video (+1.5 detik) jika event onended terlewat
+              videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, Math.ceil((videoEl.duration + 1.5) * 1000));
+            }
+          };
           videoEl.play().catch(() => {
             videoEl.muted = true;
             videoEl.play().catch(() => {});
             if (unmuteBtn) unmuteBtn.classList.add('visible');
           });
+          // Kembali otomatis ke papan jadwal tepat saat video selesai diputar
           videoEl.onended = () => {
             stopScheduledVideoFullscreen();
           };
@@ -2414,11 +2468,19 @@
             stopScheduledVideoFullscreen();
           };
         }
-        if (Number(item.duration) > 0) {
-          videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, Number(item.duration) * 1000);
-        }
       }
     }
+
+    // Dengarkan event selesai pemutaran dari YouTube IFrame API (playerState === 0)
+    window.addEventListener('message', (event) => {
+      if (!isVideoPlaying) return;
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (data && data.event === 'infoDelivery' && data.info && data.info.playerState === 0) {
+          stopScheduledVideoFullscreen();
+        }
+      } catch (e) {}
+    });
 
     function checkScheduledDailyVideos() {
       if (isVideoPlaying) return;
@@ -2613,8 +2675,11 @@
 
       document.getElementById('openVideoModalBtn')?.addEventListener('click', () => {
         pendingVideoSourceUrl = '';
+        detectedVideoDurationSec = 0;
         if (videoUrlInput) videoUrlInput.value = '';
         if (videoFileInput) videoFileInput.value = '';
+        const durEl = document.getElementById('videoDurationInput');
+        if (durEl) durEl.value = '0';
         updateVideoPreviewBox('', 'Pilih file / tempel link Google Drive');
         renderVideoScheduleList();
         videoModal?.classList.add('open');
@@ -2637,7 +2702,9 @@
         }
 
         const time = document.getElementById('videoPlayTimeInput')?.value || '08:00';
-        const duration = parseInt(document.getElementById('videoDurationInput')?.value || '60', 10) || 0;
+        const rawDuration = document.getElementById('videoDurationInput')?.value;
+        // 0 = otomatis menyesuaikan durasi asli video sampai selesai
+        const duration = rawDuration === '' || rawDuration === null ? 0 : (parseInt(rawDuration, 10) || 0);
 
         if (!finalUrl) {
           alert('Harap tempel link Google Drive video atau pilih file melalui tombol "📁 Pilih File / Drive".');
@@ -2649,9 +2716,11 @@
         saveScheduledVideos(list);
 
         pendingVideoSourceUrl = '';
+        detectedVideoDurationSec = 0;
         if (document.getElementById('videoTitleInput')) document.getElementById('videoTitleInput').value = '';
         if (videoUrlInput) videoUrlInput.value = '';
         if (videoFileInput) videoFileInput.value = '';
+        if (document.getElementById('videoDurationInput')) document.getElementById('videoDurationInput').value = '0';
         updateVideoPreviewBox('', 'Pilih file / tempel link Google Drive');
         renderVideoScheduleList();
       });
