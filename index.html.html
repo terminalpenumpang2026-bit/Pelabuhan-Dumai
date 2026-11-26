@@ -1405,7 +1405,7 @@
           1. Buka file Google Sheet jadwal kapal Anda di browser.<br />
           2. Klik tombol <strong>Bagikan (Share)</strong> di kanan atas &rarr; ubah akses menjadi <strong>Siapa saja yang memiliki link (Anyone with the link)</strong>.<br />
           3. Salin link Google Sheet tersebut lalu tempel ke kolom di atas dan klik <strong>Simpan &amp; Hubungkan</strong>.<br />
-          <em>(Sistem otomatis mengonversi link Google Sheet biasa maupun link "Publikasikan ke web / CSV").</em>
+          <em>(Sistem otomatis mengonversi link Google Sheet biasa maupun link "Publikasikan ke web / CSV" dan mengecek perubahan setiap 3 detik).</em>
         </div>
       </div>
 
@@ -1563,6 +1563,8 @@
     let currentSlidePage = 0;
     let slideIntervalTimer = null;
     let autoRefreshTimer = null;
+    let isFetchingSheet = false;
+    let lastScheduleSignature = '';
     let isVideoPlaying = false;
     let videoEndTimeout = null;
     let lastPlayedMinuteKey = '';
@@ -1967,15 +1969,24 @@
       const modalStatus = document.getElementById('sheetModalStatusBox');
       if (modalStatus) {
         if (connected) {
-          modalStatus.innerHTML = `<strong style="color:#22c55e;">🟢 Terhubung ke Google Sheet</strong><br/>Data otomatis diperbarui setiap 15 detik dari spreadsheet Anda.`;
+          modalStatus.innerHTML = `<strong style="color:#22c55e;">🟢 Terhubung ke Google Sheet</strong><br/>Data otomatis diperiksa &amp; direfresh setiap 3 detik dari spreadsheet Anda.`;
         } else {
           modalStatus.innerHTML = `<strong style="color:#eab308;">⚠️ Belum Terhubung ke Google Sheet</strong><br/>Tempelkan link Google Sheet Anda pada kolom di bawah dan pastikan akses berbagi disetel ke <em>"Siapa saja yang memiliki link"</em>.`;
         }
       }
     }
 
-    // Ambil Data dari Google Sheets
+    function computeScheduleSignature(rows) {
+      return JSON.stringify(rows || []);
+    }
+
+    // Ambil Data dari Google Sheets secara real-time tiap 3 detik
     async function fetchScheduleData(isManual = false) {
+      if (isFetchingSheet && !isManual) {
+        return isSheetConnected;
+      }
+      isFetchingSheet = true;
+
       const refreshBtn = document.getElementById('manualRefreshBtn');
       if (refreshBtn && isManual) {
         refreshBtn.disabled = true;
@@ -1994,16 +2005,33 @@
       for (const baseUrl of urlsToTry) {
         try {
           const sep = baseUrl.includes('?') ? '&' : '?';
-          const fetchUrl = `${baseUrl}${sep}_ts=${Date.now()}`;
-          const res = await fetch(fetchUrl, { cache: 'no-store' });
+          const nonce = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+          const fetchUrl = `${baseUrl}${sep}_ts=${nonce}`;
+          const res = await fetch(fetchUrl, {
+            cache: 'no-store',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache'
+            }
+          });
           if (!res.ok) continue;
           const csvText = await res.text();
           if (!csvText || csvText.trim().startsWith('<!DOCTYPE') || csvText.trim().startsWith('<html')) {
             continue;
           }
           const rows = parseScheduleRows(csvText);
+          const nextSignature = computeScheduleSignature(rows);
+          const dataChanged = nextSignature !== lastScheduleSignature;
+
           allSchedules = rows;
+          lastScheduleSignature = nextSignature;
           loaded = true;
+
+          if (dataChanged || isManual) {
+            currentSlidePage = 0;
+            renderScheduleTable(dataChanged);
+          }
+
           const nowJam = new Date().toLocaleTimeString('id-ID', {
             timeZone: 'Asia/Jakarta',
             hour: '2-digit',
@@ -2026,10 +2054,13 @@
             { kapal: 'MV. MALINDO EXPRESS', destinasi: 'MELAKA (MALAYSIA)', datang: '09:30', berangkat: '10:30', gate: 'INT. GATE', status: 'TERJADWAL' },
             { kapal: 'MV. DUMAI EXPRESS 15', destinasi: 'RUPAT - BENGKALIS - SELATPANJANG', datang: '12:15', berangkat: '13:00', gate: 'GATE 1', status: 'TERJADWAL' }
           ];
+          renderScheduleTable(false);
         }
+      } else if (allSchedules.length > 0 && document.getElementById('scheduleTableBody')?.children.length === 0) {
+        renderScheduleTable(false);
       }
 
-      renderScheduleTable(false);
+      isFetchingSheet = false;
 
       if (refreshBtn && isManual) {
         refreshBtn.disabled = false;
@@ -2662,8 +2693,15 @@
       setInterval(fetchDumaiWeather, 10 * 60 * 1000);
 
       fetchScheduleData(false);
-      autoRefreshTimer = setInterval(() => fetchScheduleData(false), 15000);
+      autoRefreshTimer = setInterval(() => fetchScheduleData(false), 3000);
       startAutoSlide();
+
+      // Sinkronkan ulang seketika saat tab/halaman kembali aktif dilihat
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          fetchScheduleData(false);
+        }
+      });
 
       // Tombol Theme
       document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
