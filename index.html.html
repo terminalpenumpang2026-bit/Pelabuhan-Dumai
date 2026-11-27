@@ -70,22 +70,19 @@
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    html, body {
-      width: 100%;
-      min-height: 100dvh;
-      overflow-x: hidden;
-    }
-
     body {
       background-color: var(--bg);
       color: var(--text-main);
       line-height: 1.4;
       transition: background-color 0.25s, color 0.25s;
+      overflow-x: hidden;
+      min-height: 100dvh;
+      width: 100vw;
+      max-width: 100vw;
       display: flex;
       flex-direction: column;
     }
 
-    /* Mode layar penuh presisi 100vw x 100dvh tanpa scroll atau baris terpotong */
     :fullscreen,
     :-webkit-full-screen,
     :-moz-full-screen,
@@ -95,9 +92,12 @@
       color: var(--text-main);
       width: 100vw;
       height: 100dvh;
+      min-height: 100dvh;
       max-width: 100vw;
       opacity: 1 !important;
       visibility: visible !important;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     body.pseudo-fullscreen {
@@ -105,194 +105,22 @@
       inset: 0;
       width: 100vw;
       height: 100dvh;
+      min-height: 100dvh;
       max-width: 100vw;
       opacity: 1 !important;
       visibility: visible !important;
       z-index: 99990;
+      overflow-y: auto;
     }
 
     body.is-fullscreen {
-      height: 100dvh;
-      max-height: 100dvh;
-      overflow: hidden;
       opacity: 1 !important;
       visibility: visible !important;
       background-color: var(--bg) !important;
     }
 
-    body.is-fullscreen header {
-      padding: clamp(0.35rem, 0.65vh, 0.65rem) 0 0;
-    }
-
     body.is-fullscreen .header-wrap,
-    body.is-fullscreen .main-container {
-      padding-left: clamp(0.75rem, 1.4vw, 1.6rem);
-      padding-right: clamp(0.75rem, 1.4vw, 1.6rem);
-    }
-
-    body.is-fullscreen .header-banner-box {
-      padding: clamp(0.45rem, 0.9vh, 0.85rem) clamp(0.9rem, 1.6vw, 1.75rem);
-      border-radius: 14px;
-    }
-
-    body.is-fullscreen .header-container {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      align-items: center;
-      gap: clamp(0.75rem, 1.5vw, 1.75rem);
-    }
-
-    body.is-fullscreen .header-logo-slot {
-      height: clamp(82px, 12.5vh, 148px);
-      width: clamp(104px, 13.5vw, 205px);
-      max-width: clamp(104px, 13.5vw, 205px);
-    }
-
-    body.is-fullscreen .header-center {
-      padding: 0 0.25rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-width: 0;
-    }
-
-    body.is-fullscreen .header-center h1 {
-      font-family: 'Roboto', 'Segoe UI', sans-serif;
-      font-size: clamp(1.22rem, 2.05vw, 2.3rem);
-      font-weight: 900;
-      letter-spacing: 0.9px;
-      text-transform: uppercase;
-      line-height: 1.15;
-      margin-bottom: 0.25rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      color: #ffffff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-    }
-
-    body.is-fullscreen .header-center p {
-      font-size: clamp(0.8rem, 1.02vw, 1.06rem);
-      font-weight: 500;
-      letter-spacing: 0.35px;
-      color: #e2e8f0;
-      opacity: 0.96;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-
-    body.is-fullscreen .header-meta {
-      margin-top: clamp(0.38rem, 0.72vh, 0.65rem);
-      gap: 0.55rem;
-      justify-content: center;
-    }
-
-    body.is-fullscreen #openLogoModalBtn,
-    body.is-fullscreen #openVideoModalBtn,
-    body.is-fullscreen #openAdVideoModalBtn,
-    body.is-fullscreen #saveRunningTextBtn,
-    body.is-fullscreen #themeToggleBtn,
-    body.is-fullscreen #manualRefreshBtn {
-      display: none;
-    }
-
-    body.is-fullscreen .live-pill {
-      font-size: clamp(0.84rem, 1vw, 1.02rem);
-      padding: 0.34rem 1.05rem;
-      background: rgba(15, 23, 42, 0.42);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    body.is-fullscreen #fullscreenToggleBtn {
-      opacity: 0.42;
-      transition: opacity 0.25s ease, background 0.2s ease;
-    }
-
-    body.is-fullscreen #fullscreenToggleBtn:hover {
-      opacity: 1;
-    }
-
-    body.is-fullscreen .main-container {
-      margin-top: clamp(0.4rem, 0.75vh, 0.7rem);
-      padding-bottom: clamp(0.45rem, 0.85vh, 0.85rem);
-      min-height: 0;
-    }
-
-    body.is-fullscreen .summary-grid {
-      gap: clamp(0.6rem, 1.1vw, 1.1rem);
-      margin-bottom: clamp(0.4rem, 0.75vh, 0.7rem);
-    }
-
-    body.is-fullscreen .summary-card {
-      min-height: clamp(62px, 8.6vh, 92px);
-      padding: clamp(0.45rem, 0.85vh, 0.78rem) clamp(0.85rem, 1.4vw, 1.35rem);
-      border-radius: 12px;
-    }
-
-    body.is-fullscreen .summary-label {
-      font-size: clamp(0.72rem, 0.88vw, 0.88rem);
-    }
-
-    body.is-fullscreen .summary-value {
-      font-size: clamp(1.25rem, 1.8vw, 1.95rem);
-      margin-top: 0.1rem;
-    }
-
-    body.is-fullscreen .summary-sub {
-      font-size: clamp(0.72rem, 0.86vw, 0.86rem);
-      margin-top: 0.1rem;
-    }
-
-    body.is-fullscreen .sync-status-bar {
-      margin-bottom: clamp(0.38rem, 0.7vh, 0.65rem);
-      padding: 0;
-    }
-
-    body.is-fullscreen .inline-ticker-wrap {
-      padding: 0.36rem 0.95rem 0.36rem 0.48rem;
-      border-radius: 11px;
-    }
-
-    body.is-fullscreen .inline-ticker-badge {
-      font-size: clamp(0.78rem, 0.95vw, 0.92rem);
-      padding: 0.22rem 0.75rem;
-    }
-
-    body.is-fullscreen .inline-ticker-marquee {
-      font-size: clamp(0.9rem, 1.15vw, 1.18rem);
-    }
-
-    body.is-fullscreen .table-card {
-      border-radius: 12px;
-    }
-
-    body.is-fullscreen th {
-      font-size: var(--fit-head-fs, clamp(0.78rem, 0.95vw, 0.98rem));
-      padding: var(--fit-head-py, 0.6rem) clamp(0.75rem, 1.1vw, 1.2rem);
-    }
-
-    body.is-fullscreen td {
-      font-size: var(--fit-row-fs, clamp(0.8rem, 1vw, 1.04rem));
-      padding: var(--fit-row-py, 0.48rem) clamp(0.75rem, 1.1vw, 1.2rem);
-    }
-
-    body.is-fullscreen .ship-name {
-      font-size: var(--fit-ship-fs, clamp(0.86rem, 1.08vw, 1.12rem));
-    }
-
-    body.is-fullscreen .gate-pill,
-    body.is-fullscreen .status-badge {
-      font-size: var(--fit-badge-fs, clamp(0.74rem, 0.9vw, 0.94rem));
-      padding: 0.18rem 0.62rem;
-    }
-
+    body.is-fullscreen .main-container,
     .header-wrap,
     .main-container {
       max-width: 100vw;
@@ -301,10 +129,10 @@
 
     @media (min-width: 1536px) {
       .header-center h1 {
-        font-size: clamp(1.5rem, 2.1vw, 2.25rem);
+        font-size: clamp(1.5rem, 2.1vw, 2.2rem);
       }
       .summary-value {
-        font-size: clamp(1.35rem, 1.75vw, 1.85rem);
+        font-size: clamp(1.35rem, 1.75vw, 1.8rem);
       }
     }
 
@@ -367,7 +195,6 @@
       100% { transform: translateX(-100%); }
     }
 
-    /* Header Penuh Lebar Layar */
     header {
       background: transparent;
       padding: clamp(0.45rem, 0.9vh, 0.85rem) 0 0;
@@ -386,7 +213,7 @@
       color: #ffffff;
       border-radius: 12px;
       border: 1px solid var(--border);
-      padding: clamp(0.45rem, 0.85vh, 0.75rem) clamp(0.75rem, 1.5vw, 1.5rem);
+      padding: clamp(0.35rem, 0.7vh, 0.55rem) clamp(0.75rem, 1.5vw, 1.5rem) clamp(0.75rem, 1.4vh, 1.25rem);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
       position: relative;
       overflow: hidden;
@@ -397,22 +224,21 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: clamp(0.6rem, 1.4vw, 1.5rem);
+      gap: clamp(0.5rem, 1.2vw, 1.25rem);
       position: relative;
     }
 
     .header-center {
       text-align: center;
       flex: 1;
-      min-width: 0;
+      padding-top: 0.25rem;
     }
 
     .header-center h1 {
       font-size: clamp(1.15rem, 1.9vw, 1.85rem);
-      font-weight: 800;
-      letter-spacing: 0.35px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
       margin-bottom: 0.15rem;
-      line-height: 1.2;
     }
 
     .header-center p {
@@ -434,7 +260,7 @@
       padding: 0.32rem 0.85rem;
       border-radius: 999px;
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 500;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
@@ -471,9 +297,9 @@
     }
 
     .header-logo-slot {
-      height: clamp(110px, 17vh, 210px);
-      max-width: clamp(130px, 18vw, 260px);
-      width: clamp(130px, 18vw, 260px);
+      height: clamp(190px, 28vh, 380px);
+      max-width: clamp(190px, 31vw, 440px);
+      width: clamp(190px, 31vw, 440px);
       margin-top: 0;
       padding: 0;
       border-radius: 0;
@@ -502,17 +328,14 @@
       display: block;
     }
 
-    /* Main Layout memenuhi ruang vertikal & horizontal layar */
     .main-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       margin: clamp(0.45rem, 0.8vh, 0.75rem) auto 0;
-      padding: 0 clamp(0.5rem, 1.2vw, 1.25rem) clamp(0.45rem, 0.8vh, 0.75rem);
-      min-height: 0;
+      padding: 0 clamp(0.5rem, 1.2vw, 1.25rem) clamp(0.35rem, 0.7vh, 0.6rem);
     }
 
-    /* Summary Grid */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -526,12 +349,12 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: clamp(0.55rem, 1vh, 0.9rem) clamp(0.8rem, 1.3vw, 1.15rem);
+      padding: clamp(0.6rem, 1.1vh, 0.95rem) clamp(0.8rem, 1.3vw, 1.15rem);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: clamp(70px, 9.5vh, 102px);
+      min-height: clamp(74px, 10vh, 106px);
       opacity: 1 !important;
       visibility: visible !important;
       transition: border-color 0.2s ease;
@@ -558,23 +381,38 @@
       color: var(--text-muted);
       font-weight: 700;
       line-height: 1.3;
+      white-space: normal;
+      overflow: visible;
+      opacity: 1;
+      visibility: visible;
+      display: block;
     }
 
     .summary-value {
       font-size: clamp(1.1rem, 1.55vw, 1.55rem);
-      font-weight: 800;
+      font-weight: 700;
       color: var(--primary);
-      margin-top: 0.15rem;
+      margin-top: 0.2rem;
       line-height: 1.2;
       font-variant-numeric: tabular-nums;
+      white-space: normal;
+      overflow: visible;
+      opacity: 1;
+      visibility: visible;
+      display: block;
     }
 
     .summary-sub {
       font-size: clamp(0.7rem, 0.85vw, 0.8rem);
       color: var(--text-muted);
-      margin-top: 0.15rem;
+      margin-top: 0.2rem;
       line-height: 1.3;
+      opacity: 0.95;
+      visibility: visible;
+      display: block;
       font-weight: 500;
+      white-space: normal;
+      overflow: visible;
     }
 
     @media (max-width: 640px) {
@@ -586,7 +424,6 @@
       }
     }
 
-    /* Sync Info Bar */
     .sync-status-bar {
       display: flex;
       flex-wrap: wrap;
@@ -595,16 +432,23 @@
       font-size: clamp(0.72rem, 0.85vw, 0.82rem);
       color: var(--text-muted);
       margin-bottom: clamp(0.35rem, 0.65vh, 0.55rem);
-      padding: 0;
+      padding: 0 0.25rem;
       gap: 0.5rem;
       flex-shrink: 0;
+    }
+
+    .sync-meta-text {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
     }
 
     .refresh-btn {
       background: var(--card-bg);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 0.34rem 0.8rem;
+      padding: 0.3rem 0.75rem;
       border-radius: 8px;
       font-size: 0.78rem;
       font-weight: 600;
@@ -625,7 +469,6 @@
       cursor: not-allowed;
     }
 
-    /* Table memenuhi sisa tinggi layar agar seluruh baris terlihat utuh dalam satu layar */
     .table-card {
       position: relative;
       background-color: var(--card-bg);
@@ -641,20 +484,17 @@
 
     .table-responsive {
       overflow-x: auto;
-      overflow-y: hidden;
+      overflow-y: auto;
       flex: 1;
       display: flex;
       flex-direction: column;
-      min-height: 0;
     }
 
     table {
       width: 100%;
-      height: 100%;
       border-collapse: collapse;
       text-align: left;
       background: transparent;
-      table-layout: auto;
     }
 
     thead {
@@ -671,10 +511,10 @@
     }
 
     th {
-      padding: var(--fit-head-py, 0.56rem) clamp(0.65rem, 1vw, 1.05rem);
-      font-size: var(--fit-head-fs, clamp(0.72rem, 0.86vw, 0.86rem));
+      padding: 0.56rem clamp(0.6rem, 0.9vw, 0.95rem);
+      font-size: clamp(0.68rem, 0.82vw, 0.8rem);
       text-transform: uppercase;
-      letter-spacing: 0.55px;
+      letter-spacing: 0.5px;
       color: #f8fafc;
       font-weight: 700;
       white-space: nowrap;
@@ -685,47 +525,18 @@
     }
 
     td {
-      padding: var(--fit-row-py, 0.44rem) clamp(0.65rem, 1vw, 1.05rem);
+      padding: 0.46rem clamp(0.55rem, 0.85vw, 0.85rem);
       border-bottom: 1px solid var(--border);
-      font-size: var(--fit-row-fs, clamp(0.74rem, 0.88vw, 0.9rem));
+      font-size: clamp(0.72rem, 0.84vw, 0.88rem);
       font-weight: 600;
       color: var(--text-main);
       vertical-align: middle;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
     }
 
     tbody tr:hover {
       background: var(--row-hover);
     }
 
-    /* Indikator halaman saat data kapal terbagi menjadi beberapa slide */
-    .slide-page-badge {
-      position: absolute;
-      right: 0.85rem;
-      bottom: 0.65rem;
-      background: rgba(15, 23, 42, 0.78);
-      color: #f8fafc;
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      padding: 0.24rem 0.72rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      backdrop-filter: blur(4px);
-      z-index: 4;
-      display: none;
-    }
-
-    .slide-page-badge.visible {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    /* Animasi transisi slide baris tabel */
     @keyframes tableSlideFade {
       from {
         opacity: 0;
@@ -737,33 +548,17 @@
       }
     }
 
-    tbody.slide-animate tr {
-      animation: tableSlideFade 0.35s ease;
-    }
-
-    /* Mode Fullscreen Penuh 100% Layar saat Video Harian / Iklan Tampil */
-    body.video-fullscreen-active {
-      overflow: hidden !important;
-    }
-
-    body.video-fullscreen-active > header,
-    body.video-fullscreen-active > main {
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-
     .scheduled-video-panel {
       display: none;
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100dvh;
-      min-height: 100dvh;
-      background: #000000;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      background: #020617;
+      position: relative;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      z-index: 99995;
     }
 
     .scheduled-video-panel.active {
@@ -773,49 +568,42 @@
 
     .scheduled-video-panel video,
     .scheduled-video-panel iframe {
-      width: 100vw;
-      height: 100dvh;
+      width: 100%;
+      height: 100%;
       border: 0;
       object-fit: contain;
       background: #000000;
     }
 
     .scheduled-video-caption {
-      position: fixed;
-      left: 1.25rem;
-      bottom: 1.1rem;
-      background: rgba(15, 23, 42, 0.72);
+      position: absolute;
+      left: 1rem;
+      bottom: 0.85rem;
+      background: rgba(15, 23, 42, 0.78);
       color: #f8fafc;
       border: 1px solid rgba(255, 255, 255, 0.22);
-      padding: 0.36rem 0.85rem;
+      padding: 0.32rem 0.75rem;
       border-radius: 999px;
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 600;
       pointer-events: none;
       backdrop-filter: blur(4px);
-      z-index: 99997;
-    }
-
-    .scheduled-video-controls-bar {
-      position: fixed;
-      right: 1.25rem;
-      bottom: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      z-index: 99998;
     }
 
     .scheduled-video-unmute-btn {
+      position: absolute;
+      right: 1rem;
+      bottom: 0.85rem;
       background: #eab308;
       color: #0f172a;
       border: none;
-      padding: 0.42rem 0.95rem;
+      padding: 0.38rem 0.9rem;
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      z-index: 5;
       display: none;
     }
 
@@ -825,30 +613,13 @@
       gap: 0.35rem;
     }
 
-    .scheduled-video-close-btn {
-      background: rgba(15, 23, 42, 0.72);
-      color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      padding: 0.38rem 0.85rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      opacity: 0.45;
-      transition: opacity 0.2s;
-    }
-
-    .scheduled-video-close-btn:hover {
-      opacity: 1;
-    }
-
     .video-schedule-list {
-      max-height: 190px;
+      max-height: 220px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 0.45rem;
-      margin-top: 0.55rem;
+      margin-top: 0.45rem;
     }
 
     .video-schedule-item {
@@ -892,61 +663,27 @@
       cursor: pointer;
     }
 
-    /* Tab Menu di dalam Modal Video Harian */
-    .daily-modal-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.45rem;
-      background: var(--bg);
-      padding: 0.32rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      margin-bottom: 0.85rem;
-    }
-
-    .daily-tab-btn {
-      padding: 0.45rem 0.65rem;
-      border-radius: 7px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .daily-tab-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    body.dark-mode .daily-tab-btn.active {
-      color: #0f172a;
-    }
-
     .ship-name {
       font-weight: 700;
       color: var(--primary);
-      font-size: var(--fit-ship-fs, clamp(0.78rem, 0.94vw, 0.96rem));
+      font-size: clamp(0.76rem, 0.9vw, 0.92rem);
     }
 
     .gate-pill {
       display: inline-block;
-      padding: 0.16rem 0.52rem;
+      padding: 0.14rem 0.48rem;
       border-radius: 6px;
       font-weight: 700;
-      font-size: var(--fit-badge-fs, clamp(0.68rem, 0.8vw, 0.82rem));
+      font-size: clamp(0.66rem, 0.76vw, 0.8rem);
       background: var(--badge-info-bg);
       color: var(--badge-info-text);
-      white-space: nowrap;
     }
 
     .status-badge {
       display: inline-block;
-      padding: 0.18rem 0.58rem;
+      padding: 0.16rem 0.52rem;
       border-radius: 999px;
-      font-size: var(--fit-badge-fs, clamp(0.68rem, 0.8vw, 0.82rem));
+      font-size: clamp(0.66rem, 0.76vw, 0.8rem);
       font-weight: 700;
       white-space: nowrap;
     }
@@ -963,7 +700,6 @@
       display: none;
     }
 
-    /* Modal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -984,12 +720,12 @@
       color: var(--text-main);
       border: 1px solid var(--border);
       border-radius: 14px;
-      max-width: 540px;
+      max-width: 460px;
       width: 100%;
-      max-height: 92dvh;
-      overflow-y: auto;
       padding: 1.4rem;
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
+      max-height: 92dvh;
+      overflow-y: auto;
     }
 
     .modal-card h3 {
@@ -1011,6 +747,8 @@
 
     .form-group input[type="text"],
     .form-group input[type="file"],
+    .form-group input[type="time"],
+    .form-group input[type="number"],
     .form-group textarea {
       width: 100%;
       padding: 0.5rem 0.7rem;
@@ -1028,172 +766,33 @@
       line-height: 1.45;
     }
 
-    /* Kotak Pemilihan Logo & Video dari Google Drive / Perangkat */
-    .logo-picker-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 0.85rem;
-    }
-
-    @media (max-width: 480px) {
-      .logo-picker-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .logo-dropzone {
-      border: 1.5px dashed var(--border);
-      border-radius: 12px;
-      background: var(--bg);
-      padding: 0.7rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 0.45rem;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .logo-dropzone:hover,
-    .logo-dropzone.dragover {
-      border-color: var(--primary);
-      background: rgba(56, 189, 248, 0.08);
-    }
-
-    .logo-dropzone-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .logo-preview-box {
-      width: 100%;
-      height: 82px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 0.35rem;
-    }
-
-    .logo-preview-box img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    .video-preview-box {
-      width: 100%;
-      height: 138px;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .video-preview-box video,
-    .video-preview-box iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      object-fit: contain;
-      background: #000000;
-      display: block;
-    }
-
-    .logo-preview-empty {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      padding: 0 0.5rem;
-    }
-
-    .drive-action-row {
-      display: flex;
-      gap: 0.4rem;
-      width: 100%;
-    }
-
-    .file-pick-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-      flex: 1;
-      padding: 0.44rem 0.6rem;
-      border-radius: 8px;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: var(--primary);
-      font-size: 0.76rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-      text-decoration: none;
-    }
-
-    .file-pick-btn:hover {
-      background: rgba(56, 189, 248, 0.26);
-    }
-
-    .gdrive-open-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-      padding: 0.44rem 0.68rem;
-      border-radius: 8px;
-      background: rgba(34, 197, 94, 0.16);
-      border: 1px solid rgba(34, 197, 94, 0.42);
-      color: #22c55e;
-      font-size: 0.76rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-      white-space: nowrap;
-    }
-
-    .gdrive-open-btn:hover {
-      background: rgba(34, 197, 94, 0.28);
-    }
-
-    .gdrive-link-input {
-      width: 100%;
-      padding: 0.42rem 0.6rem;
-      border-radius: 7px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      color: var(--text-main);
-      font-size: 0.76rem;
-      outline: none;
-    }
-
-    .gdrive-link-input:focus {
-      border-color: var(--primary);
-    }
-
-    .logo-file-name {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
     .form-hint {
       margin-top: 0.35rem;
       font-size: 0.75rem;
       color: var(--text-muted);
-      line-height: 1.38;
+      line-height: 1.35;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      margin-bottom: 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
     }
 
     .modal-actions {
@@ -1227,6 +826,14 @@
       color: #0f172a;
     }
 
+    footer {
+      text-align: center;
+      padding: clamp(0.3rem, 0.6vh, 0.55rem) 0.75rem;
+      font-size: clamp(0.7rem, 0.82vw, 0.8rem);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
     @media (max-width: 640px) {
       .header-container {
         flex-wrap: wrap;
@@ -1236,33 +843,38 @@
         order: -1;
         width: 100%;
         margin-bottom: 0.35rem;
+        padding-top: 0;
       }
       .header-center h1 {
         font-size: 1.15rem;
       }
       .header-logo-slot {
-        width: 136px;
-        height: 110px;
-        max-width: 136px;
+        width: 196px;
+        height: 196px;
+        max-width: 196px;
+        margin-top: 0;
+      }
+      .header-logo-slot img {
+        max-width: 196px;
+        max-height: 196px;
       }
     }
 
     @media (orientation: landscape) and (max-height: 620px) {
       .header-logo-slot {
-        height: clamp(82px, 14vh, 130px);
-        width: clamp(100px, 15vw, 170px);
-        max-width: 170px;
+        height: clamp(136px, 22vh, 200px);
+        width: clamp(136px, 22vh, 200px);
+        max-width: 200px;
       }
       .summary-card {
-        min-height: 58px;
-        padding: 0.42rem 0.8rem;
+        min-height: 60px;
+        padding: 0.45rem 0.8rem;
       }
     }
   </style>
 </head>
 <body class="dark-mode">
 
-  <!-- Header -->
   <header>
     <div class="header-wrap">
       <div class="header-banner-box" id="headerBannerBox">
@@ -1273,16 +885,12 @@
             <h1>JADWAL KEBERANGKATAN KAPAL PELABUHAN DUMAI</h1>
             <p>Sistem Informasi Keberangkatan &amp; Kedatangan Terminal Penumpang Pelabuhan Dumai</p>
             <div class="header-meta">
-              <span class="live-pill">
-                <span class="pulse-dot"></span>
-                <span id="liveClock">Memuat waktu...</span>
-              </span>
-              <button class="action-btn" id="openLogoModalBtn" title="Atur Logo Kiri & Kanan">🖼️ Atur Logo</button>
-              <button class="action-btn" id="openVideoModalBtn" title="Atur Video Harian Tayang Otomatis">🎬 Video Harian</button>
-              <button class="action-btn" id="openAdVideoModalBtn" title="Atur Video Iklan Sesuai Jadwal & Tanggal">📺 Video Iklan</button>
-              <button class="action-btn" id="saveRunningTextBtn" title="Simpan & Ubah Teks Berjalan">💾 Teks Berjalan</button>
-              <button class="action-btn" id="themeToggleBtn" title="Ganti Tema Terang/Gelap">☀️ Mode Terang</button>
-              <button class="action-btn" id="fullscreenToggleBtn" title="Tampilkan Layar Penuh">⛶ Layar Penuh</button>
+              <span class="live-pill"><span class="pulse-dot"></span> <span id="liveClock">Memuat waktu WIB...</span></span>
+              <button type="button" class="action-btn" id="fullscreenToggleBtn">⛶ Layar Penuh</button>
+              <button type="button" class="action-btn" id="openLogoModalBtn">🖼️ Atur Logo</button>
+              <button type="button" class="action-btn" id="openVideoModalBtn">🎬 Video Harian</button>
+              <button type="button" class="action-btn" id="saveRunningTextBtn">✏️ Ubah Teks</button>
+              <button type="button" class="action-btn" id="themeToggleBtn">☀️ Mode Terang</button>
             </div>
           </div>
 
@@ -1292,1719 +900,1034 @@
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="main-container">
-    <!-- Summary Cards -->
-    <section class="summary-grid" id="summaryGrid">
+    <section class="summary-grid">
       <div class="summary-card static-card">
-        <div class="summary-label">Total Keberangkatan Hari Ini</div>
-        <div class="summary-value" id="totalShips">0</div>
-        <div class="summary-sub" id="totalShipsSub">Jadwal terjadwal hari ini</div>
+        <div class="summary-label">Kapal Tercatat di Papan</div>
+        <div class="summary-value" id="statTableCount">0</div>
+        <div class="summary-sub">Jumlah baris jadwal aktif</div>
       </div>
       <div class="summary-card static-card">
-        <div class="summary-label">Keberangkatan Berikutnya</div>
-        <div class="summary-value" id="nextDepartureTime">--:--</div>
-        <div class="summary-sub" id="nextDepartureShip">Memuat data...</div>
+        <div class="summary-label">Status Debarkasi / Aktif</div>
+        <div class="summary-value" id="statActiveCount">0</div>
+        <div class="summary-sub">Kapal dalam proses layanan</div>
       </div>
       <div class="summary-card static-card">
-        <div class="summary-label">Dalam Persiapan</div>
-        <div class="summary-value" id="boardingCount">0</div>
-        <div class="summary-sub">Kapal sedang proses persiapan</div>
+        <div class="summary-label">Cuaca Perairan Dumai</div>
+        <div class="summary-value" id="statWeather">⛅ 29°C</div>
+        <div class="summary-sub" id="statWeatherDesc">Cerah Berawan • Dumai (Open-Meteo)</div>
       </div>
     </section>
 
-    <!-- Running Text & Refresh Bar -->
     <div class="sync-status-bar">
-      <div class="inline-ticker-wrap" title="Informasi & Pengumuman Terminal Penumpang Pelabuhan Dumai">
-        <span class="inline-ticker-badge">INFO</span>
-        <div class="inline-ticker-marquee">
-          <div class="inline-ticker-text" id="inlineTickerText">
-            Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba di terminal minimal 60 menit sebelum jadwal keberangkatan kapal • Siapkan tiket dan dokumen perjalanan Anda • Utamakan keselamatan dan ketertiban selama berada di area pelabuhan.
+      <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; flex: 1; min-width: 0;">
+        <div class="inline-ticker-wrap" id="inlineTickerWrap">
+          <span class="inline-ticker-badge">INFO</span>
+          <div class="inline-ticker-marquee">
+            <span class="inline-ticker-text" id="inlineTickerText">Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba 60 menit sebelum keberangkatan</span>
           </div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:0.45rem;flex-shrink:0;">
-        <button class="refresh-btn" id="manualRefreshBtn" title="Sinkronkan ulang data dari Google Sheet sekarang">🔄 Refresh</button>
-      </div>
+      <span class="sync-meta-text" id="sheetSyncStatus">Sinkronisasi Sheet...</span>
+      <button type="button" class="refresh-btn" id="manualRefreshBtn">🔄 Refresh</button>
     </div>
 
-    <!-- Schedule Table -->
-    <div class="table-card" id="scheduleTableCard">
-      <div class="table-responsive">
+    <section class="table-card" id="scheduleTableCard">
+      <div class="table-responsive" id="tableResponsiveWrap">
         <table>
-          <thead>
+          <thead id="scheduleTableHead">
             <tr>
-              <th>Jam</th>
               <th>Nama Kapal</th>
-              <th>Tujuan</th>
-              <th>Dermaga</th>
-              <th>Status</th>
+              <th>Destinasi</th>
+              <th>EST. Datang</th>
+              <th>EST. Berangkat</th>
+              <th>Gate / Line</th>
+              <th>Status Keberangkatan</th>
             </tr>
           </thead>
           <tbody id="scheduleTableBody"></tbody>
         </table>
       </div>
-      <div class="slide-page-badge" id="slidePageBadge">Halaman 1 / 1</div>
-      <div class="empty-msg" id="emptyMessage">Belum ada data jadwal kapal dari Google Sheet.</div>
-    </div>
+      <div class="scheduled-video-panel" id="scheduledVideoPanel">
+        <div id="scheduledVideoMount" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+        <div class="scheduled-video-caption" id="scheduledVideoCaption">🎬 Tayangan Harian Terjadwal</div>
+        <button type="button" class="scheduled-video-unmute-btn" id="scheduledVideoUnmuteBtn">🔊 Aktifkan Suara</button>
+      </div>
+      <div class="empty-msg" id="emptyMsg">Menunggu data jadwal kapal dari Google Sheets. Pastikan sheet sudah dipublikasikan ke web (Publish to web -&gt; CSV) dan dapat diakses publik.</div>
+    </section>
   </main>
 
-  <!-- Panel Pemutar Video Harian / Iklan Layar Penuh -->
-  <div class="scheduled-video-panel" id="scheduledVideoPanel">
-    <div id="scheduledVideoPlayerHost" style="width:100vw;height:100dvh;display:flex;align-items:center;justify-content:center;"></div>
-    <div class="scheduled-video-caption" id="scheduledVideoCaption">Tayangan Video Terjadwal</div>
-    <div class="scheduled-video-controls-bar">
-      <button class="scheduled-video-unmute-btn" id="scheduledVideoUnmuteBtn" title="Aktifkan Suara Video">🔊 Aktifkan Suara</button>
-      <button class="scheduled-video-close-btn" id="closeScheduledVideoBtn" title="Tutup tayangan video dan kembali ke jadwal">✕ Tutup Video</button>
+  <!-- Modal Atur Video Terjadwal Harian -->
+  <div class="modal-backdrop" id="videoScheduleModal">
+    <div class="modal-card" style="max-width: 500px;">
+      <h3>🎬 Video Terjadwal Setiap Hari (Jam Tertentu)</h3>
+      <div class="form-group">
+        <label for="videoTitleInput">Judul / Keterangan Tayangan</label>
+        <input type="text" id="videoTitleInput" placeholder="Contoh: Video Keselamatan Pelayaran / Indonesia Raya" />
+      </div>
+      <div class="form-group">
+        <label for="videoUrlInput">URL Video (MP4 / WebM / Link YouTube)</label>
+        <input type="text" id="videoUrlInput" placeholder="https://contoh.com/video.mp4 atau https://youtu.be/..." />
+      </div>
+      <div class="form-group">
+        <label for="videoFileInput">Atau Pilih File Video Lokal (MP4/WebM dari Perangkat)</label>
+        <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/*" />
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+        <div class="form-group">
+          <label for="videoPlayTimeInput">Jam Tayang (Tiap Hari)</label>
+          <input type="time" id="videoPlayTimeInput" value="08:00" />
+        </div>
+        <div class="form-group">
+          <label for="videoDurationInput">Durasi Tayang (Detik, 0 = Penuh)</label>
+          <input type="number" id="videoDurationInput" min="0" max="7200" value="0" placeholder="0 = Sesuai durasi video" />
+        </div>
+      </div>
+      <div class="form-hint">Isi <strong>0</strong> pada Durasi Tayang agar video diputar <strong>penuh sampai selesai sesuai durasi asli videonya</strong> (untuk file MP4/WebM), atau masukkan angka detik tertentu (misalnya untuk link YouTube).</div>
+      <div class="modal-actions" style="justify-content: space-between; margin-top: 0.75rem;">
+        <button type="button" class="btn-primary" id="addVideoScheduleBtn">+ Simpan Jadwal Harian</button>
+        <button type="button" class="btn-secondary" id="closeVideoModalBtn">Tutup</button>
+      </div>
+      <div class="video-schedule-list" id="videoScheduleList"></div>
     </div>
   </div>
 
-  <!-- Modal Pengaturan Logo Kiri & Kanan -->
-  <div class="modal-backdrop" id="logoSettingsModal">
+  <!-- Modal Atur Logo Kiri & Kanan -->
+  <div class="modal-backdrop" id="logoModal">
     <div class="modal-card">
-      <h3>🖼️ Pengaturan Logo Header</h3>
-      <div class="logo-picker-grid">
-        <div class="logo-dropzone" id="leftLogoDropzone">
-          <div class="logo-dropzone-title">Logo Kiri Header</div>
-          <div class="logo-preview-box" id="leftLogoPreviewBox">
-            <span class="logo-preview-empty">Belum ada logo</span>
-          </div>
-          <div class="drive-action-row">
-            <label for="leftLogoFileInput" class="file-pick-btn">📁 File / Drive</label>
-            <button type="button" class="gdrive-open-btn" id="openDriveForLeftLogoBtn" title="Buka Google Drive untuk menyalin link logo">🌐 Drive</button>
-          </div>
-          <input type="file" id="leftLogoFileInput" accept="image/*" style="display:none;" />
-          <input type="text" id="leftLogoUrlInput" class="gdrive-link-input" placeholder="Tempel link Google Drive / URL logo..." />
-          <div class="logo-file-name" id="leftLogoFileName">Tidak ada file dipilih</div>
-        </div>
-
-        <div class="logo-dropzone" id="rightLogoDropzone">
-          <div class="logo-dropzone-title">Logo Kanan Header</div>
-          <div class="logo-preview-box" id="rightLogoPreviewBox">
-            <span class="logo-preview-empty">Belum ada logo</span>
-          </div>
-          <div class="drive-action-row">
-            <label for="rightLogoFileInput" class="file-pick-btn">📁 File / Drive</label>
-            <button type="button" class="gdrive-open-btn" id="openDriveForRightLogoBtn" title="Buka Google Drive untuk menyalin link logo">🌐 Drive</button>
-          </div>
-          <input type="file" id="rightLogoFileInput" accept="image/*" style="display:none;" />
-          <input type="text" id="rightLogoUrlInput" class="gdrive-link-input" placeholder="Tempel link Google Drive / URL logo..." />
-          <div class="logo-file-name" id="rightLogoFileName">Tidak ada file dipilih</div>
-        </div>
+      <h3>Atur Logo Header (Kiri &amp; Kanan)</h3>
+      <label class="checkbox-row" for="removeBlackBgCheckbox">
+        <input type="checkbox" id="removeBlackBgCheckbox" checked />
+        <span>Buang Background Hitam Otomatis (untuk logo Danantara / JPG)</span>
+      </label>
+      <div class="form-group">
+        <label for="leftLogoFile">Upload Logo 1 (Pojok Kiri Atas)</label>
+        <input type="file" id="leftLogoFile" accept="image/*" />
       </div>
-      <div class="form-hint">
-        • Klik <strong>📁 File / Drive</strong> untuk memilih gambar langsung dari penyimpanan perangkat/Google Drive Desktop, atau klik <strong>🌐 Drive</strong> untuk menyalin link berbagi Google Drive lalu tempel pada kolom link.<br />
-        • Gunakan format <strong>PNG transparan</strong> agar logo menyatu rapi dengan banner header.
+      <div class="form-group">
+        <label for="leftLogoUrl">Atau Tempel URL Logo 1 (Kiri)</label>
+        <input type="text" id="leftLogoUrl" placeholder="https://contoh.com/logo-kiri.png" />
+      </div>
+      <div class="form-group">
+        <label for="rightLogoFile">Upload Logo 2 (Pojok Kanan Atas - mis. Danantara)</label>
+        <input type="file" id="rightLogoFile" accept="image/*" />
+      </div>
+      <div class="form-group">
+        <label for="rightLogoUrl">Atau Tempel URL Logo 2 (Kanan)</label>
+        <input type="text" id="rightLogoUrl" placeholder="https://contoh.com/logo-danantara.png" />
       </div>
       <div class="modal-actions">
-        <button class="btn-secondary" id="resetLogoBtn">Hapus Semua Logo</button>
-        <button class="btn-secondary" id="closeLogoModalBtn">Batal</button>
-        <button class="btn-primary" id="saveLogoBtn">Simpan Logo</button>
+        <button type="button" class="btn-secondary" id="resetLogoBtn">Hapus Logo</button>
+        <button type="button" class="btn-secondary" id="cleanExistingBlackBgBtn">✨ Bersihkan Hitam Logo Aktif</button>
+        <button type="button" class="btn-secondary" id="closeLogoModalBtn">Tutup</button>
+        <button type="button" class="btn-primary" id="saveLogoBtn">Simpan Logo</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal Pengaturan Teks Berjalan -->
+  <!-- Modal Ubah Running Text -->
   <div class="modal-backdrop" id="runningTextModal">
     <div class="modal-card">
-      <h3>💾 Pengaturan Teks Berjalan (Info)</h3>
+      <h3>Ubah Running Text Informasi</h3>
       <div class="form-group">
-        <label for="runningTextInput">Isi Pengumuman Teks Berjalan</label>
-        <textarea id="runningTextInput" placeholder="Masukkan pengumuman atau informasi penting untuk penumpang..."></textarea>
-        <div class="form-hint">Gunakan tanda <strong>•</strong> untuk memisahkan beberapa pengumuman agar mudah dibaca penumpang.</div>
+        <label for="modalRunningTextInput">Ketik Teks Berjalan (Bisa Lebih dari 1 Baris / Informasi)</label>
+        <textarea id="modalRunningTextInput" rows="4" placeholder="Baris 1: Informasi keberangkatan kapal...&#10;Baris 2: Pengumuman keselamatan pelabuhan...&#10;Baris 3: Info cuaca & pasang surut..."></textarea>
+        <div class="form-hint">Tekan <strong>Enter</strong> untuk menambah baris/informasi baru (lebih dari 1 teks). Setiap baris otomatis digabung menjadi satu <em>running text</em> berjalan.</div>
       </div>
       <div class="modal-actions">
-        <button class="btn-secondary" id="resetRunningTextBtn">Reset Default</button>
-        <button class="btn-secondary" id="closeRunningTextModalBtn">Batal</button>
-        <button class="btn-primary" id="applyRunningTextBtn">Simpan Teks Berjalan</button>
+        <button type="button" class="btn-secondary" id="resetRunningTextBtn">Default</button>
+        <button type="button" class="btn-secondary" id="closeRunningTextModalBtn">Batal</button>
+        <button type="button" class="btn-primary" id="confirmRunningTextBtn">Simpan</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal Pengaturan Video Harian -->
-  <div class="modal-backdrop" id="videoScheduleModal">
-    <div class="modal-card">
-      <h3>🎬 Jadwal Video Harian &amp; Video Terjadwal</h3>
-
-      <div class="daily-modal-tabs" role="tablist">
-        <button type="button" class="daily-tab-btn active" id="tabDailyRoutineBtn">🔁 Tayangan Harian</button>
-        <button type="button" class="daily-tab-btn" id="tabScheduledVideoBtn">📅 Tambah Video Terjadwal</button>
-      </div>
-
-      <!-- Sub-menu 1: Tayangan Harian -->
-      <div id="dailyRoutinePanel">
-        <div class="form-group" style="margin-bottom: 0.65rem;">
-          <label for="videoTitleInput">Judul Tayangan Video Harian</label>
-          <input type="text" id="videoTitleInput" placeholder="Contoh: Profil & Keselamatan Pelayaran Pelabuhan Dumai" />
-        </div>
-
-        <div class="logo-dropzone" id="videoDropzone" style="margin-bottom: 0.75rem;">
-          <div class="logo-dropzone-title">Pilih Sumber Video (Google Drive / Perangkat)</div>
-          <div class="video-preview-box" id="videoPreviewBox">
-            <span class="logo-preview-empty">Belum ada video dipilih</span>
-          </div>
-          <div class="drive-action-row">
-            <label for="videoFileInput" class="file-pick-btn">📁 Pilih File / Drive</label>
-            <button type="button" class="gdrive-open-btn" id="openDriveForVideoBtn" title="Buka Google Drive untuk memilih & menyalin link video">🌐 Buka Google Drive</button>
-          </div>
-          <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/ogg,video/*" style="display:none;" />
-          <input type="text" id="videoUrlInput" class="gdrive-link-input" placeholder="Tempel link Google Drive video (https://drive.google.com/file/d/...)..." />
-          <div class="logo-file-name" id="videoFileName">Pilih file video atau tempel link Google Drive</div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
-          <div class="form-group" style="margin-bottom: 0.5rem;">
-            <label for="videoPlayTimeInput">Jam Tayang Harian</label>
-            <input type="time" id="videoPlayTimeInput" value="08:00" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-          </div>
-          <div class="form-group" style="margin-bottom: 0.5rem;">
-            <label for="videoDurationInput">Durasi (0 = Penuh sesuai video)</label>
-            <input type="number" id="videoDurationInput" min="0" max="7200" value="0" placeholder="0 = Penuh sesuai durasi video" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-          </div>
-        </div>
-        <div class="form-hint">
-          • Jadwal &amp; file video tersimpan <strong>permanen di perangkat</strong> sehingga tetap otomatis diputar setiap hari meskipun TV sempat dimatikan lalu dihidupkan kembali.<br />
-          • Isi durasi <strong>0</strong> agar video diputar <strong>penuh sampai selesai</strong>, atau isi jumlah detik tertentu (misal <code>180</code> = 3 menit).
-        </div>
-        <div class="modal-actions" style="justify-content: space-between;">
-          <button type="button" class="btn-secondary" id="testPlayVideoNowBtn">▶ Putar Sekarang</button>
-          <div style="display:flex;gap:0.45rem;">
-            <button type="button" class="btn-secondary" id="closeVideoModalBtn">Tutup</button>
-            <button type="button" class="btn-primary" id="addVideoScheduleBtn">+ Simpan Jadwal</button>
-          </div>
-        </div>
-        <div class="video-schedule-list" id="videoScheduleList"></div>
-      </div>
-
-      <!-- Sub-menu 2: Penambahan Video yang Dijadwalkan -->
-      <div id="scheduledVideoSubPanel" style="display:none;">
-        <div class="form-group" style="margin-bottom: 0.65rem;">
-          <label for="subSchedVideoTitleInput">Judul Video Terjadwal</label>
-          <input type="text" id="subSchedVideoTitleInput" placeholder="Contoh: Pengumuman Khusus / Tayangan Event Pelabuhan" />
-        </div>
-
-        <div class="logo-dropzone" style="margin-bottom: 0.75rem;">
-          <div class="logo-dropzone-title">Pilih Sumber Video Terjadwal (Google Drive / Perangkat)</div>
-          <div class="video-preview-box" id="subSchedVideoPreviewBox">
-            <span class="logo-preview-empty">Belum ada video terjadwal dipilih</span>
-          </div>
-          <div class="drive-action-row">
-            <label for="subSchedVideoFileInput" class="file-pick-btn">📁 Pilih File / Drive</label>
-            <button type="button" class="gdrive-open-btn" id="openDriveForSubSchedBtn" title="Buka Google Drive untuk memilih & menyalin link video">🌐 Buka Google Drive</button>
-          </div>
-          <input type="file" id="subSchedVideoFileInput" accept="video/mp4,video/webm,video/ogg,video/*" style="display:none;" />
-          <input type="text" id="subSchedVideoUrlInput" class="gdrive-link-input" placeholder="Tempel link Google Drive video terjadwal..." />
-          <div class="logo-file-name" id="subSchedVideoFileName">Pilih file video atau tempel link Google Drive</div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
-          <div class="form-group" style="margin-bottom: 0.5rem;">
-            <label for="subSchedModeSelect">Aturan Tanggal</label>
-            <select id="subSchedModeSelect" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);">
-              <option value="date_range">📅 Sesuai Tanggal (Mulai - Selesai)</option>
-              <option value="daily">🔁 Setiap Hari (Tanpa Tanggal)</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom: 0.5rem;">
-            <label for="subSchedTimeInput">Jam Tayang</label>
-            <input type="time" id="subSchedTimeInput" value="09:30" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-          </div>
-        </div>
-
-        <div id="subSchedDateRangeRow" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
-          <div class="form-group" style="margin-bottom: 0.5rem;">
-            <label for="subSchedStartDateInput">Tanggal Mulai Tayang</label>
-            <input type="date" id="subSchedStartDateInput" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-          </div>
-          <div class="form-group" style="margin-bottom: 0.5rem;">
-            <label for="subSchedEndDateInput">Tanggal Selesai</label>
-            <input type="date" id="subSchedEndDateInput" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 0.5rem;">
-          <label for="subSchedDurationInput">Durasi Tayang (0 = Penuh sesuai video)</label>
-          <input type="number" id="subSchedDurationInput" min="0" max="7200" value="0" placeholder="0 = Penuh sesuai durasi video" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-        </div>
-
-        <div class="form-hint">
-          • Tambahkan video terjadwal khusus berdasarkan <strong>rentang tanggal &amp; jam</strong> atau pilih <strong>Setiap Hari (Tanpa Tanggal)</strong>.
-        </div>
-
-        <div class="modal-actions" style="justify-content: space-between;">
-          <button type="button" class="btn-secondary" id="testPlaySubSchedNowBtn">▶ Putar Sekarang</button>
-          <div style="display:flex;gap:0.45rem;">
-            <button type="button" class="btn-secondary" id="closeVideoModalFromSubBtn">Tutup</button>
-            <button type="button" class="btn-primary" id="saveSubSchedVideoBtn">+ Simpan Video Terjadwal</button>
-          </div>
-        </div>
-        <div class="video-schedule-list" id="subSchedVideoList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Pengaturan Video Iklan (Sesuai Tanggal & Jam atau Setiap Hari) -->
-  <div class="modal-backdrop" id="adVideoScheduleModal">
-    <div class="modal-card">
-      <h3>📺 Jadwal Video Iklan (Tanggal / Setiap Hari)</h3>
-      <div class="form-group" style="margin-bottom: 0.65rem;">
-        <label for="adVideoTitleInput">Nama / Judul Video Iklan</label>
-        <input type="text" id="adVideoTitleInput" placeholder="Contoh: Iklan Layanan Masyarakat / Promo Mitra" />
-      </div>
-
-      <div class="logo-dropzone" id="adVideoDropzone" style="margin-bottom: 0.75rem;">
-        <div class="logo-dropzone-title">Pilih Sumber Video Iklan (Google Drive / Perangkat)</div>
-        <div class="video-preview-box" id="adVideoPreviewBox">
-          <span class="logo-preview-empty">Belum ada video iklan dipilih</span>
-        </div>
-        <div class="drive-action-row">
-          <label for="adVideoFileInput" class="file-pick-btn">📁 Pilih File / Drive</label>
-          <button type="button" class="gdrive-open-btn" id="openDriveForAdVideoBtn" title="Buka Google Drive untuk memilih & menyalin link video iklan">🌐 Buka Google Drive</button>
-        </div>
-        <input type="file" id="adVideoFileInput" accept="video/mp4,video/webm,video/ogg,video/*" style="display:none;" />
-        <input type="text" id="adVideoUrlInput" class="gdrive-link-input" placeholder="Tempel link Google Drive video iklan (https://drive.google.com/file/d/...)..." />
-        <div class="logo-file-name" id="adVideoFileName">Pilih file video iklan atau tempel link Google Drive</div>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
-        <div class="form-group" style="margin-bottom: 0.5rem;">
-          <label for="adScheduleModeSelect">Mode Jadwal Tayang</label>
-          <select id="adScheduleModeSelect" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);">
-            <option value="date_range">📅 Sesuai Tanggal (Mulai - Selesai)</option>
-            <option value="daily">🔁 Setiap Hari (Tanpa Tanggal)</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin-bottom: 0.5rem;">
-          <label for="adPlayTimeInput">Jam Tayang</label>
-          <input type="time" id="adPlayTimeInput" value="10:00" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-        </div>
-      </div>
-
-      <div id="adDateRangeFields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
-        <div class="form-group" style="margin-bottom: 0.5rem;">
-          <label for="adStartDateInput">Tanggal Mulai Tayang</label>
-          <input type="date" id="adStartDateInput" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-        </div>
-        <div class="form-group" style="margin-bottom: 0.5rem;">
-          <label for="adEndDateInput">Tanggal Selesai (Opsional)</label>
-          <input type="date" id="adEndDateInput" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-bottom: 0.5rem;">
-        <label for="adDurationInput">Durasi Tayang (0 = Penuh sesuai video)</label>
-        <input type="number" id="adDurationInput" min="0" max="7200" value="0" placeholder="0 = Penuh sesuai durasi video" style="width:100%;padding:0.48rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-main);" />
-      </div>
-
-      <div class="form-hint">
-        • <strong>Sesuai Tanggal:</strong> Atur <em>Tanggal Mulai</em> dan <em>Tanggal Selesai</em> untuk iklan pada tanggal/periode tertentu.<br />
-        • <strong>Setiap Hari (Tanpa Tanggal):</strong> Kolom tanggal otomatis dinonaktifkan dan video iklan tayang rutin setiap hari pada jam yang ditentukan.
-      </div>
-      <div class="modal-actions" style="justify-content: space-between;">
-        <button type="button" class="btn-secondary" id="testPlayAdVideoNowBtn">▶ Putar Iklan Sekarang</button>
-        <div style="display:flex;gap:0.45rem;">
-          <button type="button" class="btn-secondary" id="closeAdVideoModalBtn">Tutup</button>
-          <button type="button" class="btn-primary" id="addAdVideoScheduleBtn">+ Simpan Jadwal Iklan</button>
-        </div>
-      </div>
-      <div class="video-schedule-list" id="adVideoScheduleList"></div>
-    </div>
-  </div>
-
-  <!-- Toast Notifikasi -->
-  <div id="toastNotice" style="position:fixed;bottom:1rem;right:1rem;background:#0f172a;color:#f8fafc;border:1px solid rgba(56,189,248,0.4);padding:0.65rem 1rem;border-radius:10px;font-size:0.84rem;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,0.3);z-index:100001;display:none;max-width:360px;"></div>
+  <footer>
+    &copy; 2026 Layanan Informasi Pelabuhan Dumai • Sinkronisasi Otomatis Google Sheets
+  </footer>
 
   <script>
-    // Konfigurasi Google Sheet Default
-    const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/160wC-8v74c2B2W604_W8372L28S0L_8S0L_8S0L_8S0/edit?usp=sharing';
-    const STORAGE_KEYS = {
-      sheetUrl: 'dumai_sheet_url_v1',
-      cachedShips: 'dumai_cached_ships_v1',
-      theme: 'dumai_theme_mode_v1',
-      logoLeft: 'dumai_logo_left_v1',
-      logoRight: 'dumai_logo_right_v1',
-      runningText: 'dumai_running_text_v1',
-      dailyVideos: 'dumai_daily_videos_v2',
-      adVideos: 'dumai_ad_videos_v1',
-      wasFullscreen: 'dumai_auto_restore_fs_v1'
-    };
-
-    const DEFAULT_RUNNING_TEXT = 'Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba di terminal minimal 60 menit sebelum jadwal keberangkatan kapal • Siapkan tiket dan dokumen perjalanan Anda • Utamakan keselamatan dan ketertiban selama berada di area pelabuhan.';
-
-    // Data Cadangan apabila Google Sheet belum diisi atau offline
-    const FALLBACK_SHIPS = [
-      { time: '07:30', name: 'MV. DUMAI EXPRESS 08', destination: 'BENGKALIS - SELATPANJANG - TANJUNG BALAI KARIMUN - BATAM', gate: 'DERMAGA A', status: 'BOARDING' },
-      { time: '08:00', name: 'MV. BATAM JET 03', destination: 'BENGKALIS - SELATPANJANG - BATAM', gate: 'DERMAGA B', status: 'PERSIAPAN' },
-      { time: '09:15', name: 'KM. INDOMAL KINGDOM', destination: 'PORT DICKSON (MALAYSIA)', gate: 'DERMAGA INTERNASIONAL', status: 'CHECK-IN' },
-      { time: '10:00', name: 'MV. DUMAI LINE 05', destination: 'RUPAT - BENGKALIS - SELATPANJANG - TANJUNG PINANG', gate: 'DERMAGA A', status: 'SESUAI JADWAL' },
-      { time: '11:30', name: 'KM. MALINDO EXPRESS', destination: 'MELAKA (MALAYSIA)', gate: 'DERMAGA INTERNASIONAL', status: 'SESUAI JADWAL' },
-      { time: '13:00', name: 'MV. DUMAI EXPRESS 12', destination: 'BENGKALIS - SELATPANJANG - BATAM', gate: 'DERMAGA B', status: 'SESUAI JADWAL' },
-      { time: '14:30', name: 'KM. PELNI KELUD', destination: 'TANJUNG BALAI KARIMUN - BATAM - TANJUNG PRIOK', gate: 'DERMAGA C', status: 'SESUAI JADWAL' }
-    ];
-
-    let allShips = [];
-    let currentSlidePage = 0;
-    const ROWS_PER_SLIDE = 5;
-    let lastDataFingerprint = '';
-    let isFetchingSheet = false;
-    let activeScheduledVideoKey = '';
-    let activeVideoTimeout = null;
-    let activeObjectUrls = [];
-    let initialAppHtmlSignature = null;
-
-    // IndexedDB untuk penyimpanan video permanen tahan restart TV/perangkat
-    const VIDEO_DB_NAME = 'DumaiPortVideosDB';
-    const VIDEO_STORE_NAME = 'videos';
-
-    function openVideoDatabase() {
-      return new Promise((resolve, reject) => {
-        if (!window.indexedDB) {
-          reject(new Error('IndexedDB tidak didukung browser ini'));
-          return;
-        }
-        const request = indexedDB.open(VIDEO_DB_NAME, 1);
-        request.onupgradeneeded = (event) => {
-          const db = event.target.result;
-          if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
-            db.createObjectStore(VIDEO_STORE_NAME, { keyPath: 'id' });
-          }
-        };
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-    }
-
-    async function saveVideoBlobToDB(id, blob) {
-      const db = await openVideoDatabase();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
-        tx.objectStore(VIDEO_STORE_NAME).put({ id, blob, savedAt: Date.now() });
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    }
-
-    async function getVideoBlobFromDB(id) {
-      const db = await openVideoDatabase();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
-        const req = tx.objectStore(VIDEO_STORE_NAME).get(id);
-        req.onsuccess = () => resolve(req.result ? req.result.blob : null);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    async function deleteVideoBlobFromDB(id) {
-      try {
-        const db = await openVideoDatabase();
-        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
-        tx.objectStore(VIDEO_STORE_NAME).delete(id);
-      } catch (e) {}
-    }
-
-    function showToastMessage(msg) {
-      const el = document.getElementById('toastNotice');
-      if (!el) return;
-      el.textContent = msg;
-      el.style.display = 'block';
-      clearTimeout(el._timer);
-      el._timer = setTimeout(() => {
-        el.style.display = 'none';
-      }, 4200);
-    }
-
-    function escapeHtml(str) {
-      return String(str ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    // Waktu Real-Time WIB (Asia/Jakarta)
-    function getJakartaNowParts() {
-      const now = new Date();
-      const fmtDate = new Intl.DateTimeFormat('id-ID', {
-        timeZone: 'Asia/Jakarta',
-        weekday: 'long',
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      }).format(now);
-      const fmtTime = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Asia/Jakarta',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }).format(now);
-      const isoParts = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'Asia/Jakarta',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      }).format(now);
-      return {
-        dateLabel: fmtDate,
-        timeFull: fmtTime,
-        hhmm: fmtTime.slice(0, 5),
-        isoDate: isoParts
-      };
-    }
-
-    function getTodayJakartaISO() {
-      return getJakartaNowParts().isoDate;
-    }
-
-    function formatDateIndo(isoStr) {
-      if (!isoStr || !/^\d{4}-\d{2}-\d{2}$/.test(isoStr)) return isoStr || '';
-      const [y, m, d] = isoStr.split('-');
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-      return `${d} ${months[parseInt(m, 10) - 1] || m} ${y}`;
-    }
-
-    function updateLiveClock() {
-      const clockEl = document.getElementById('liveClock');
-      if (!clockEl) return;
-      const p = getJakartaNowParts();
-      clockEl.textContent = `${p.dateLabel} • ${p.timeFull} WIB`;
-    }
-
-    // Konversi URL Google Sheet ke endpoint CSV / GViz
-    function buildGoogleSheetCsvUrls(rawUrl) {
-      const url = (rawUrl || DEFAULT_SHEET_URL).trim();
-      const idMatch = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-      const gidMatch = url.match(/[?#&]gid=([0-9]+)/);
-      const gid = gidMatch ? gidMatch[1] : '0';
-      if (!idMatch) return [url];
-      const sheetId = idMatch[1];
-      const ts = Date.now();
-      return [
-        `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}&_cb=${ts}`,
-        `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}&_cb=${ts}`
-      ];
-    }
-
-    function parseCsvRows(csvText) {
-      const rows = [];
-      let row = [];
-      let field = '';
-      let inQuotes = false;
-
-      for (let i = 0; i < csvText.length; i++) {
-        const ch = csvText[i];
-        const next = csvText[i + 1];
-        if (inQuotes) {
-          if (ch === '"' && next === '"') {
-            field += '"';
-            i++;
-          } else if (ch === '"') {
-            inQuotes = false;
-          } else {
-            field += ch;
-          }
-        } else {
-          if (ch === '"') {
-            inQuotes = true;
-          } else if (ch === ',') {
-            row.push(field.trim());
-            field = '';
-          } else if (ch === '\r' && next === '\n') {
-            row.push(field.trim());
-            rows.push(row);
-            row = [];
-            field = '';
-            i++;
-          } else if (ch === '\n' || ch === '\r') {
-            row.push(field.trim());
-            rows.push(row);
-            row = [];
-            field = '';
-          } else {
-            field += ch;
-          }
-        }
-      }
-      if (field.length > 0 || row.length > 0) {
-        row.push(field.trim());
-        rows.push(row);
-      }
-      return rows.filter(r => r.some(cell => cell !== ''));
-    }
-
-    function mapSheetRowsToShips(rows) {
-      if (!rows || rows.length === 0) return [];
-      const firstRowLower = rows[0].map(c => c.toLowerCase());
-      const hasHeader = firstRowLower.some(c =>
-        c.includes('jam') || c.includes('waktu') || c.includes('kapal') || c.includes('tujuan') || c.includes('dermaga') || c.includes('status')
-      );
-
-      let colIdx = { time: 0, name: 1, destination: 2, gate: 3, status: 4 };
-      let startRow = 0;
-
-      if (hasHeader) {
-        startRow = 1;
-        firstRowLower.forEach((h, idx) => {
-          if (h.includes('jam') || h.includes('waktu') || h.includes('berangkat')) colIdx.time = idx;
-          else if (h.includes('kapal') || h.includes('nama')) colIdx.name = idx;
-          else if (h.includes('tujuan') || h.includes('rute')) colIdx.destination = idx;
-          else if (h.includes('dermaga') || h.includes('gate') || h.includes('pintu')) colIdx.gate = idx;
-          else if (h.includes('status') || h.includes('ket')) colIdx.status = idx;
-        });
-      }
-
-      const mapped = [];
-      for (let i = startRow; i < rows.length; i++) {
-        const r = rows[i];
-        const time = (r[colIdx.time] || '').trim();
-        const name = (r[colIdx.name] || '').trim();
-        const destination = (r[colIdx.destination] || '').trim();
-        const gate = (r[colIdx.gate] || '-').trim();
-        const status = (r[colIdx.status] || 'SESUAI JADWAL').trim();
-        if (!time && !name) continue;
-        mapped.push({
-          time: time || '--:--',
-          name: name || '-',
-          destination: destination || '-',
-          gate: gate || '-',
-          status: status || 'SESUAI JADWAL'
-        });
-      }
-      return mapped;
-    }
-
-    function getStatusBadgeClass(statusText) {
-      const s = (statusText || '').toUpperCase();
-      if (s.includes('BOARDING') || s.includes('BERANGKAT') || s.includes('ON TIME') || s.includes('SESUAI') || s.includes('BUKA')) {
-        return 'status-ok';
-      }
-      if (s.includes('TUNDA') || s.includes('DELAY') || s.includes('BATAL') || s.includes('TUTUP')) {
-        return 'status-warn';
-      }
-      if (s.includes('PERSIAPAN') || s.includes('CHECK') || s.includes('SIAP')) {
-        return 'status-prep';
-      }
-      if (s.includes('SANDAR') || s.includes('TIBA')) {
-        return 'status-info';
-      }
-      return 'status-neutral';
-    }
-
-    function updateSummaryCards(ships) {
-      const totalEl = document.getElementById('totalShips');
-      const totalSubEl = document.getElementById('totalShipsSub');
-      const nextTimeEl = document.getElementById('nextDepartureTime');
-      const nextShipEl = document.getElementById('nextDepartureShip');
-      const boardingEl = document.getElementById('boardingCount');
-
-      if (totalEl) totalEl.textContent = String(ships.length);
-      if (totalSubEl) {
-        totalSubEl.textContent = ships.length > 0 ? `${ships.length} pelayaran terjadwal hari ini` : 'Belum ada jadwal hari ini';
-      }
-
-      const prepCount = ships.filter(s => {
-        const st = (s.status || '').toUpperCase();
-        return st.includes('PERSIAPAN') || st.includes('BOARDING') || st.includes('CHECK');
-      }).length;
-      if (boardingEl) boardingEl.textContent = String(prepCount);
-
-      const nowHHMM = getJakartaNowParts().hhmm;
-      const upcoming = ships.find(s => /^\d{1,2}[:.]\d{2}/.test(s.time) && s.time.replace('.', ':').padStart(5, '0') >= nowHHMM) || ships[0];
-
-      if (upcoming) {
-        if (nextTimeEl) nextTimeEl.textContent = upcoming.time;
-        if (nextShipEl) nextShipEl.textContent = `${upcoming.name} → ${upcoming.destination}`;
-      } else {
-        if (nextTimeEl) nextTimeEl.textContent = '--:--';
-        if (nextShipEl) nextShipEl.textContent = 'Tidak ada jadwal berikutnya';
-      }
-    }
-
-    function renderScheduleSlide(animate = false) {
-      const tbody = document.getElementById('scheduleTableBody');
-      const emptyMsg = document.getElementById('emptyMessage');
-      const badge = document.getElementById('slidePageBadge');
-      if (!tbody) return;
-
-      if (!allShips || allShips.length === 0) {
-        tbody.innerHTML = '';
-        if (emptyMsg) emptyMsg.style.display = 'block';
-        if (badge) badge.classList.remove('visible');
-        return;
-      }
-
-      if (emptyMsg) emptyMsg.style.display = 'none';
-
-      const totalPages = Math.max(1, Math.ceil(allShips.length / ROWS_PER_SLIDE));
-      if (currentSlidePage >= totalPages) currentSlidePage = 0;
-
-      const startIdx = currentSlidePage * ROWS_PER_SLIDE;
-      const pageItems = allShips.slice(startIdx, startIdx + ROWS_PER_SLIDE);
-
-      tbody.innerHTML = pageItems.map(ship => `
-        <tr>
-          <td style="font-weight:800;white-space:nowrap;">${escapeHtml(ship.time)}</td>
-          <td><span class="ship-name">${escapeHtml(ship.name)}</span></td>
-          <td>${escapeHtml(ship.destination)}</td>
-          <td><span class="gate-pill">${escapeHtml(ship.gate)}</span></td>
-          <td><span class="status-badge ${getStatusBadgeClass(ship.status)}">${escapeHtml(ship.status)}</span></td>
-        </tr>
-      `).join('');
-
-      if (animate) {
-        tbody.classList.remove('slide-animate');
-        void tbody.offsetWidth;
-        tbody.classList.add('slide-animate');
-      }
-
-      if (badge) {
-        if (totalPages > 1) {
-          badge.textContent = `Halaman ${currentSlidePage + 1} / ${totalPages}`;
-          badge.classList.add('visible');
-        } else {
-          badge.classList.remove('visible');
-        }
-      }
-    }
-
-    function applyShipsData(newShips) {
-      const fingerprint = JSON.stringify(newShips);
-      allShips = newShips;
-      updateSummaryCards(allShips);
-      if (fingerprint !== lastDataFingerprint) {
-        lastDataFingerprint = fingerprint;
-        renderScheduleSlide(true);
-      }
-    }
-
-    // Sinkronisasi Otomatis Google Sheet setiap 3 detik
-    // Normalisasi Link Gambar & Video (Google Drive, YouTube, dan Link Video Langsung)
-    function normalizeGoogleDriveImageUrl(input) {
-      const val = (input || '').trim();
-      if (!val) return '';
-      const idMatch = val.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || val.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (idMatch) {
-        return `https://lh3.googleusercontent.com/d/${idMatch[1]}`;
-      }
-      return val;
-    }
-
-    function extractYouTubeVideoId(input) {
-      const val = (input || '').trim();
-      if (!val) return '';
-      const ytMatch = val.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
-      return ytMatch ? ytMatch[1] : '';
-    }
-
-    function normalizeGoogleDriveVideoDirectUrl(input) {
-      const val = (input || '').trim();
-      if (!val) return '';
-
-      // 1. Cek link Google Drive
-      const driveMatch = val.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || val.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (driveMatch) {
-        return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
-      }
-
-      // 2. Cek link YouTube
-      const ytId = extractYouTubeVideoId(val);
-      if (ytId) {
-        return `https://www.youtube.com/embed/${ytId}`;
-      }
-
-      // 3. Link langsung (.mp4, .webm, .ogg, .m3u8, dsb.) atau URL lainnya
-      return val;
-    }
-
-    function isEmbedVideoUrl(url) {
-      const u = (url || '').trim().toLowerCase();
-      if (!u) return false;
-      return (
-        u.includes('drive.google.com') ||
-        u.includes('youtube.com/embed/') ||
-        u.includes('player.vimeo.com')
-      );
-    }
-
-    function renderVideoPreviewElement(src, labelText, boxId, labelId, emptyText) {
-      const box = document.getElementById(boxId);
-      const label = document.getElementById(labelId);
-      if (box) {
-        if (!src) {
-          box.innerHTML = `<span class="logo-preview-empty">${escapeHtml(emptyText)}</span>`;
-        } else if (isEmbedVideoUrl(src)) {
-          box.innerHTML = `<iframe src="${escapeHtml(src)}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-        } else {
-          box.innerHTML = `<video src="${escapeHtml(src)}" muted controls playsinline></video>`;
-        }
-      }
-      if (label && labelText) {
-        label.textContent = labelText;
-      }
-    }
-
-    function renderHeaderLogos() {
-      const leftSlot = document.getElementById('headerLogoLeft');
-      const rightSlot = document.getElementById('headerLogoRight');
-      const leftSrc = localStorage.getItem(STORAGE_KEYS.logoLeft) || '';
-      const rightSrc = localStorage.getItem(STORAGE_KEYS.logoRight) || '';
-
-      if (leftSlot) {
-        leftSlot.innerHTML = leftSrc ? `<img src="${escapeHtml(leftSrc)}" alt="Logo Kiri" onerror="this.remove()" />` : '';
-      }
-      if (rightSlot) {
-        rightSlot.innerHTML = rightSrc ? `<img src="${escapeHtml(rightSrc)}" alt="Logo Kanan" onerror="this.remove()" />` : '';
-      }
-    }
-
-    function applyRunningText() {
-      const el = document.getElementById('inlineTickerText');
-      if (!el) return;
-      const saved = localStorage.getItem(STORAGE_KEYS.runningText);
-      el.textContent = saved && saved.trim() ? saved.trim() : DEFAULT_RUNNING_TEXT;
-    }
-
-    function applyThemeMode() {
-      const savedTheme = localStorage.getItem(STORAGE_KEYS.theme);
-      const isDark = savedTheme ? savedTheme === 'dark' : true;
-      document.body.classList.toggle('dark-mode', isDark);
-      const btn = document.getElementById('themeToggleBtn');
-      if (btn) {
-        btn.textContent = isDark ? '☀️ Mode Terang' : '🌙 Mode Gelap';
-      }
-    }
-
-    // Pengelolaan Video Harian & Video Iklan
-    function getScheduledVideos() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEYS.dailyVideos);
-        const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        return [];
-      }
-    }
-
-    function saveScheduledVideos(list) {
-      localStorage.setItem(STORAGE_KEYS.dailyVideos, JSON.stringify(list));
-    }
-
-    function getScheduledAdVideos() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEYS.adVideos);
-        const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        return [];
-      }
-    }
-
-    function saveScheduledAdVideos(list) {
-      localStorage.setItem(STORAGE_KEYS.adVideos, JSON.stringify(list));
-    }
-
-    function formatAdDateRangeLabel(ad) {
-      if (ad.scheduleMode === 'daily') return 'Setiap Hari (Tanpa Tanggal)';
-      const start = ad.startDate || ad.date || '';
-      const end = ad.endDate || start;
-      if (!start) return 'Setiap Hari (Tanpa Tanggal)';
-      if (start === end) return `Tgl ${formatDateIndo(start)}`;
-      return `${formatDateIndo(start)} s/d ${formatDateIndo(end)}`;
-    }
-
-    function cleanupObjectUrls() {
-      activeObjectUrls.forEach(u => {
-        try { URL.revokeObjectURL(u); } catch (e) {}
-      });
-      activeObjectUrls = [];
-    }
-
-    function stopScheduledVideoFullscreen() {
-      const panel = document.getElementById('scheduledVideoPanel');
-      const host = document.getElementById('scheduledVideoPlayerHost');
-      const unmuteBtn = document.getElementById('scheduledVideoUnmuteBtn');
-      if (activeVideoTimeout) {
-        clearTimeout(activeVideoTimeout);
-        activeVideoTimeout = null;
-      }
-      if (host) host.innerHTML = '';
-      if (panel) panel.classList.remove('active');
-      if (unmuteBtn) unmuteBtn.classList.remove('visible');
-      document.body.classList.remove('video-fullscreen-active');
-      cleanupObjectUrls();
-    }
-
-    async function playVideoItemFullscreen(item, categoryLabel = 'Video Terjadwal') {
-      const panel = document.getElementById('scheduledVideoPanel');
-      const host = document.getElementById('scheduledVideoPlayerHost');
-      const caption = document.getElementById('scheduledVideoCaption');
-      const unmuteBtn = document.getElementById('scheduledVideoUnmuteBtn');
-      if (!panel || !host) return;
-
-      stopScheduledVideoFullscreen();
-
-      let srcUrl = '';
-      let isEmbedIframe = false;
-
-      if (item.storageType === 'indexeddb' && item.videoId) {
-        const blob = await getVideoBlobFromDB(item.videoId);
-        if (!blob) {
-          showToastMessage('File video lokal tidak ditemukan di perangkat.');
-          return;
-        }
-        srcUrl = URL.createObjectURL(blob);
-        activeObjectUrls.push(srcUrl);
-      } else {
-        srcUrl = normalizeGoogleDriveVideoDirectUrl(item.url || '');
-        if (!srcUrl) {
-          showToastMessage('Link video tidak valid atau kosong.');
-          return;
-        }
-        isEmbedIframe = isEmbedVideoUrl(srcUrl);
-      }
-
-      if (caption) {
-        caption.textContent = `${categoryLabel}: ${item.title || 'Tayangan Video'}`;
-      }
-
-      document.body.classList.add('video-fullscreen-active');
-      panel.classList.add('active');
-
-      if (isEmbedIframe) {
-        const autoplayUrl = srcUrl.includes('?') ? `${srcUrl}&autoplay=1` : `${srcUrl}?autoplay=1`;
-        host.innerHTML = `<iframe src="${escapeHtml(autoplayUrl)}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
-      } else {
-        const videoEl = document.createElement('video');
-        videoEl.src = srcUrl;
-        videoEl.autoplay = true;
-        videoEl.playsInline = true;
-        videoEl.controls = false;
-        videoEl.style.width = '100vw';
-        videoEl.style.height = '100dvh';
-        videoEl.style.objectFit = 'contain';
-
-        videoEl.addEventListener('ended', () => {
-          stopScheduledVideoFullscreen();
-        });
-
-        videoEl.addEventListener('error', () => {
-          showToastMessage('Gagal memutar link video. Pastikan link dapat diakses publik atau berbentuk file video langsung.');
-        });
-
-        host.appendChild(videoEl);
-
+    (function () {
+      function initDashboard() {
         try {
-          videoEl.muted = false;
-          await videoEl.play();
-        } catch (err) {
-          videoEl.muted = true;
-          try { await videoEl.play(); } catch (e) {}
-          if (unmuteBtn) {
-            unmuteBtn.classList.add('visible');
-            unmuteBtn.onclick = () => {
-              videoEl.muted = false;
-              unmuteBtn.classList.remove('visible');
-            };
+          var SHEET_PUB_ID = "2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK";
+          var PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/pub?gid=0&single=true&output=csv";
+          var GVIZ_JSONP_BASE = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/gviz/tq?gid=0";
+
+          var DEFAULT_RUNNING_TEXT = "Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba 60 menit sebelum jadwal keberangkatan • Siapkan tiket dan kartu identitas sebelum masuk ke gate";
+          var RUNNING_TEXT_STORAGE_KEY = "dumai_custom_running_text";
+          var LOGO_LEFT_KEY = "dumai_header_logo_left";
+          var LOGO_RIGHT_KEY = "dumai_header_logo_right";
+          var THEME_STORAGE_KEY = "dumai_theme_dark_mode";
+          var VIDEO_SCHEDULE_KEY = "dumai_daily_video_schedules_v1";
+
+          var state = {
+            rows: [],
+            headers: ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"],
+            isFetching: false,
+            lastSignature: "",
+            activeVideoScheduleId: null,
+            activeVideoTimer: null,
+            playedTodayKeys: {}
+          };
+
+          var thead = document.getElementById("scheduleTableHead");
+          var tbody = document.getElementById("scheduleTableBody");
+          var emptyMsg = document.getElementById("emptyMsg");
+          var tableResponsiveWrap = document.getElementById("tableResponsiveWrap");
+          var scheduledVideoPanel = document.getElementById("scheduledVideoPanel");
+          var scheduledVideoMount = document.getElementById("scheduledVideoMount");
+          var scheduledVideoCaption = document.getElementById("scheduledVideoCaption");
+          var scheduledVideoUnmuteBtn = document.getElementById("scheduledVideoUnmuteBtn");
+          var statTableCount = document.getElementById("statTableCount");
+          var statActiveCount = document.getElementById("statActiveCount");
+          var statWeather = document.getElementById("statWeather");
+          var statWeatherDesc = document.getElementById("statWeatherDesc");
+          var sheetSyncStatus = document.getElementById("sheetSyncStatus");
+          var manualRefreshBtn = document.getElementById("manualRefreshBtn");
+          var inlineTickerText = document.getElementById("inlineTickerText");
+          var saveRunningTextBtn = document.getElementById("saveRunningTextBtn");
+          var runningTextModal = document.getElementById("runningTextModal");
+          var modalRunningTextInput = document.getElementById("modalRunningTextInput");
+          var confirmRunningTextBtn = document.getElementById("confirmRunningTextBtn");
+          var closeRunningTextModalBtn = document.getElementById("closeRunningTextModalBtn");
+          var resetRunningTextBtn = document.getElementById("resetRunningTextBtn");
+
+          function escapeHtml(value) {
+            return String(value == null ? "" : value)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#39;");
           }
-        }
-      }
 
-      const durSec = parseInt(item.duration, 10) || 0;
-      if (durSec > 0) {
-        activeVideoTimeout = setTimeout(() => {
-          stopScheduledVideoFullscreen();
-        }, durSec * 1000);
-      } else if (isEmbedIframe) {
-        activeVideoTimeout = setTimeout(() => {
-          stopScheduledVideoFullscreen();
-        }, 300 * 1000);
-      }
-    }
-
-    function checkScheduledPlaybackTick() {
-      const panel = document.getElementById('scheduledVideoPanel');
-      if (panel && panel.classList.contains('active')) return;
-
-      const now = getJakartaNowParts();
-      const todayISO = now.isoDate;
-      const currentHHMM = now.hhmm;
-
-      // Prioritas 1: Video Iklan / Terjadwal yang cocok dengan tanggal & jam tayang
-      const adList = getScheduledAdVideos();
-      const matchedAd = adList.find(ad => {
-        if (ad.time !== currentHHMM) return false;
-        if (ad.scheduleMode === 'daily') return true;
-        const start = ad.startDate || ad.date || '';
-        const end = ad.endDate || start;
-        if (!start) return true;
-        return todayISO >= start && todayISO <= end;
-      });
-
-      if (matchedAd) {
-        const key = `ad_${todayISO}_${currentHHMM}_${matchedAd.title}`;
-        if (activeScheduledVideoKey !== key) {
-          activeScheduledVideoKey = key;
-          playVideoItemFullscreen(matchedAd, '📺 Video Iklan');
-        }
-        return;
-      }
-
-      // Prioritas 2: Video Harian
-      const dailyList = getScheduledVideos();
-      const matchedDaily = dailyList.find(v => v.time === currentHHMM);
-      if (matchedDaily) {
-        const key = `daily_${todayISO}_${currentHHMM}_${matchedDaily.title}`;
-        if (activeScheduledVideoKey !== key) {
-          activeScheduledVideoKey = key;
-          playVideoItemFullscreen(matchedDaily, '🎬 Video Harian');
-        }
-      }
-    }
-
-    // Mode Layar Penuh
-    function isAnyFullscreenActive() {
-      return Boolean(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.body.classList.contains('pseudo-fullscreen')
-      );
-    }
-
-    function syncFullscreenUIState() {
-      const active = isAnyFullscreenActive();
-      document.body.classList.toggle('is-fullscreen', active);
-      const btn = document.getElementById('fullscreenToggleBtn');
-      if (btn) {
-        btn.textContent = active ? '✕ Keluar Layar Penuh' : '⛶ Layar Penuh';
-      }
-      try {
-        localStorage.setItem(STORAGE_KEYS.wasFullscreen, active ? '1' : '0');
-      } catch (e) {}
-    }
-
-    async function toggleFullscreenMode() {
-      try {
-        if (!isAnyFullscreenActive()) {
-          const docEl = document.documentElement;
-          if (docEl.requestFullscreen) {
-            await docEl.requestFullscreen();
-          } else if (docEl.webkitRequestFullscreen) {
-            await docEl.webkitRequestFullscreen();
-          } else {
-            document.body.classList.add('pseudo-fullscreen');
+          function getJakartaNowParts() {
+            var now = new Date();
+            var dateStr = new Intl.DateTimeFormat("en-CA", {
+              timeZone: "Asia/Jakarta",
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit"
+            }).format(now);
+            var hmStr = new Intl.DateTimeFormat("en-GB", {
+              timeZone: "Asia/Jakarta",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            }).format(now);
+            var wibTimeStr = new Intl.DateTimeFormat("en-GB", {
+              timeZone: "Asia/Jakarta",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false
+            }).format(now);
+            return { now: now, dateKey: dateStr, hm: hmStr, wibTime: wibTimeStr };
           }
-        } else {
-          document.body.classList.remove('pseudo-fullscreen');
-          if (document.exitFullscreen && document.fullscreenElement) {
-            await document.exitFullscreen();
-          } else if (document.webkitExitFullscreen && document.webkitFullscreenElement) {
-            await document.webkitExitFullscreen();
+
+          function updateLiveClock() {
+            var el = document.getElementById("liveClock");
+            if (!el) return;
+            var now = new Date();
+            var tanggal = new Intl.DateTimeFormat("id-ID", {
+              timeZone: "Asia/Jakarta",
+              weekday: "long",
+              day: "2-digit",
+              month: "short",
+              year: "numeric"
+            }).format(now);
+            var jam = new Intl.DateTimeFormat("en-GB", {
+              timeZone: "Asia/Jakarta",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false
+            }).format(now);
+            el.textContent = tanggal + " • " + jam + " WIB";
           }
-        }
-      } catch (err) {
-        document.body.classList.toggle('pseudo-fullscreen');
-      }
-      syncFullscreenUIState();
-    }
 
-    // Auto-Update Aplikasi Otomatis saat index.html diperbarui di server
-    async function checkAppAutoUpdate() {
-      if (window.location.protocol === 'file:') return;
-      const videoPanel = document.getElementById('scheduledVideoPanel');
-      if (videoPanel && videoPanel.classList.contains('active')) return;
-      if (document.querySelector('.modal-backdrop.open')) return;
+          function formatMultiRunningText(rawText) {
+            var lines = String(rawText || "")
+              .split(/\r?\n/)
+              .map(function (line) { return line.trim(); })
+              .filter(function (line) { return line.length > 0; });
+            return lines.join("   •   ");
+          }
 
-      try {
-        const resp = await fetch(`${window.location.pathname}?_update_check=${Date.now()}`, { cache: 'no-store' });
-        if (!resp.ok) return;
-        const htmlText = await resp.text();
-        if (!htmlText || !htmlText.includes('JADWAL KEBERANGKATAN KAPAL PELABUHAN DUMAI')) return;
-        const cleanSig = htmlText.replace(/>\s+</g, '><').trim();
-        if (!initialAppHtmlSignature) {
-          initialAppHtmlSignature = cleanSig;
-        } else if (cleanSig !== initialAppHtmlSignature) {
-          window.location.reload();
-        }
-      } catch (e) {}
-    }
+          function syncRunningTextDisplay(text) {
+            var val = formatMultiRunningText(text) || DEFAULT_RUNNING_TEXT;
+            if (inlineTickerText) inlineTickerText.textContent = val;
+          }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      applyThemeMode();
-      renderHeaderLogos();
-      applyRunningText();
-      updateLiveClock();
-      syncGoogleSheetData(false);
-
-      // Tombol Header & Kontrol Utama
-      document.getElementById('manualRefreshBtn')?.addEventListener('click', () => syncGoogleSheetData(true));
-      document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
-        const nextDark = !document.body.classList.contains('dark-mode');
-        localStorage.setItem(STORAGE_KEYS.theme, nextDark ? 'dark' : 'light');
-        applyThemeMode();
-      });
-      document.getElementById('fullscreenToggleBtn')?.addEventListener('click', toggleFullscreenMode);
-      document.getElementById('closeScheduledVideoBtn')?.addEventListener('click', stopScheduledVideoFullscreen);
-
-      document.addEventListener('fullscreenchange', syncFullscreenUIState);
-      document.addEventListener('webkitfullscreenchange', syncFullscreenUIState);
-
-      // Modal Teks Berjalan
-      const runningTextModal = document.getElementById('runningTextModal');
-      const runningTextInput = document.getElementById('runningTextInput');
-      document.getElementById('saveRunningTextBtn')?.addEventListener('click', () => {
-        if (runningTextInput) {
-          runningTextInput.value = localStorage.getItem(STORAGE_KEYS.runningText) || DEFAULT_RUNNING_TEXT;
-        }
-        runningTextModal?.classList.add('open');
-      });
-      document.getElementById('closeRunningTextModalBtn')?.addEventListener('click', () => runningTextModal?.classList.remove('open'));
-      document.getElementById('resetRunningTextBtn')?.addEventListener('click', () => {
-        localStorage.removeItem(STORAGE_KEYS.runningText);
-        if (runningTextInput) runningTextInput.value = DEFAULT_RUNNING_TEXT;
-        applyRunningText();
-        showToastMessage('Teks berjalan dikembalikan ke default.');
-      });
-      document.getElementById('applyRunningTextBtn')?.addEventListener('click', () => {
-        const val = (runningTextInput?.value || '').trim();
-        if (val) {
-          localStorage.setItem(STORAGE_KEYS.runningText, val);
-        } else {
-          localStorage.removeItem(STORAGE_KEYS.runningText);
-        }
-        applyRunningText();
-        runningTextModal?.classList.remove('open');
-        showToastMessage('✓ Teks berjalan berhasil disimpan.');
-      });
-
-      // Modal Pengaturan Logo
-      const logoModal = document.getElementById('logoSettingsModal');
-      const leftLogoFileInput = document.getElementById('leftLogoFileInput');
-      const rightLogoFileInput = document.getElementById('rightLogoFileInput');
-      const leftLogoUrlInput = document.getElementById('leftLogoUrlInput');
-      const rightLogoUrlInput = document.getElementById('rightLogoUrlInput');
-      let pendingLeftLogo = '';
-      let pendingRightLogo = '';
-
-      function updateLogoPreviewBox(side, src, fileNameText) {
-        const box = document.getElementById(side === 'left' ? 'leftLogoPreviewBox' : 'rightLogoPreviewBox');
-        const nameEl = document.getElementById(side === 'left' ? 'leftLogoFileName' : 'rightLogoFileName');
-        if (box) {
-          box.innerHTML = src
-            ? `<img src="${escapeHtml(src)}" alt="Pratinjau Logo" />`
-            : `<span class="logo-preview-empty">Belum ada logo</span>`;
-        }
-        if (nameEl && fileNameText) {
-          nameEl.textContent = fileNameText;
-        }
-      }
-
-      function readImageFileAsDataUrl(file, callback) {
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => callback(String(ev.target?.result || ''), file.name);
-        reader.readAsDataURL(file);
-      }
-
-      document.getElementById('openLogoModalBtn')?.addEventListener('click', () => {
-        pendingLeftLogo = localStorage.getItem(STORAGE_KEYS.logoLeft) || '';
-        pendingRightLogo = localStorage.getItem(STORAGE_KEYS.logoRight) || '';
-        if (leftLogoUrlInput) leftLogoUrlInput.value = pendingLeftLogo.startsWith('data:') ? '' : pendingLeftLogo;
-        if (rightLogoUrlInput) rightLogoUrlInput.value = pendingRightLogo.startsWith('data:') ? '' : pendingRightLogo;
-        updateLogoPreviewBox('left', pendingLeftLogo, pendingLeftLogo ? 'Logo tersimpan' : 'Tidak ada file dipilih');
-        updateLogoPreviewBox('right', pendingRightLogo, pendingRightLogo ? 'Logo tersimpan' : 'Tidak ada file dipilih');
-        logoModal?.classList.add('open');
-      });
-
-      document.getElementById('closeLogoModalBtn')?.addEventListener('click', () => logoModal?.classList.remove('open'));
-      document.getElementById('openDriveForLeftLogoBtn')?.addEventListener('click', () => window.open('https://drive.google.com', '_blank'));
-      document.getElementById('openDriveForRightLogoBtn')?.addEventListener('click', () => window.open('https://drive.google.com', '_blank'));
-
-      leftLogoFileInput?.addEventListener('change', (e) => {
-        const f = e.target.files && e.target.files[0];
-        readImageFileAsDataUrl(f, (dataUrl, name) => {
-          pendingLeftLogo = dataUrl;
-          updateLogoPreviewBox('left', pendingLeftLogo, name);
-        });
-      });
-
-      rightLogoFileInput?.addEventListener('change', (e) => {
-        const f = e.target.files && e.target.files[0];
-        readImageFileAsDataUrl(f, (dataUrl, name) => {
-          pendingRightLogo = dataUrl;
-          updateLogoPreviewBox('right', pendingRightLogo, name);
-        });
-      });
-
-      leftLogoUrlInput?.addEventListener('input', (e) => {
-        pendingLeftLogo = normalizeGoogleDriveImageUrl(e.target.value);
-        updateLogoPreviewBox('left', pendingLeftLogo, pendingLeftLogo ? 'Link Logo' : 'Tidak ada file dipilih');
-      });
-
-      rightLogoUrlInput?.addEventListener('input', (e) => {
-        pendingRightLogo = normalizeGoogleDriveImageUrl(e.target.value);
-        updateLogoPreviewBox('right', pendingRightLogo, pendingRightLogo ? 'Link Logo' : 'Tidak ada file dipilih');
-      });
-
-      document.getElementById('resetLogoBtn')?.addEventListener('click', () => {
-        pendingLeftLogo = '';
-        pendingRightLogo = '';
-        if (leftLogoUrlInput) leftLogoUrlInput.value = '';
-        if (rightLogoUrlInput) rightLogoUrlInput.value = '';
-        localStorage.removeItem(STORAGE_KEYS.logoLeft);
-        localStorage.removeItem(STORAGE_KEYS.logoRight);
-        updateLogoPreviewBox('left', '', 'Tidak ada file dipilih');
-        updateLogoPreviewBox('right', '', 'Tidak ada file dipilih');
-        renderHeaderLogos();
-        showToastMessage('Semua logo header dihapus.');
-      });
-
-      document.getElementById('saveLogoBtn')?.addEventListener('click', () => {
-        if (pendingLeftLogo) localStorage.setItem(STORAGE_KEYS.logoLeft, pendingLeftLogo);
-        else localStorage.removeItem(STORAGE_KEYS.logoLeft);
-
-        if (pendingRightLogo) localStorage.setItem(STORAGE_KEYS.logoRight, pendingRightLogo);
-        else localStorage.removeItem(STORAGE_KEYS.logoRight);
-
-        renderHeaderLogos();
-        logoModal?.classList.remove('open');
-        showToastMessage('✓ Logo header berhasil disimpan.');
-      });
-
-      // Modal Video Harian & Sub-menu Penambahan Video yang Dijadwalkan
-      const dailyVideoModal = document.getElementById('videoScheduleModal');
-      const dailyFileInput = document.getElementById('videoFileInput');
-      const dailyUrlInput = document.getElementById('videoUrlInput');
-      const tabDailyRoutineBtn = document.getElementById('tabDailyRoutineBtn');
-      const tabScheduledVideoBtn = document.getElementById('tabScheduledVideoBtn');
-      const dailyRoutinePanel = document.getElementById('dailyRoutinePanel');
-      const scheduledVideoSubPanel = document.getElementById('scheduledVideoSubPanel');
-
-      const subSchedFileInput = document.getElementById('subSchedVideoFileInput');
-      const subSchedUrlInput = document.getElementById('subSchedVideoUrlInput');
-      const subSchedModeSelect = document.getElementById('subSchedModeSelect');
-      const subSchedDateRangeRow = document.getElementById('subSchedDateRangeRow');
-
-      let pendingDailyBlob = null;
-      let pendingSubSchedBlob = null;
-      let pendingSubSchedUrl = '';
-
-      function switchDailyModalTab(tabName) {
-        const isScheduledTab = tabName === 'scheduled';
-        tabDailyRoutineBtn?.classList.toggle('active', !isScheduledTab);
-        tabScheduledVideoBtn?.classList.toggle('active', isScheduledTab);
-        if (dailyRoutinePanel) dailyRoutinePanel.style.display = isScheduledTab ? 'none' : 'block';
-        if (scheduledVideoSubPanel) scheduledVideoSubPanel.style.display = isScheduledTab ? 'block' : 'none';
-        if (isScheduledTab) {
-          renderSubScheduledVideoList();
-        } else {
-          renderDailyScheduleList();
-        }
-      }
-
-      function updateSubSchedDateVisibility() {
-        const mode = subSchedModeSelect?.value || 'date_range';
-        if (subSchedDateRangeRow) {
-          subSchedDateRangeRow.style.display = mode === 'daily' ? 'none' : 'grid';
-        }
-      }
-
-      function updateSubSchedPreview(src, labelText) {
-        renderVideoPreviewElement(
-          src,
-          labelText,
-          'subSchedVideoPreviewBox',
-          'subSchedVideoFileName',
-          'Belum ada video terjadwal dipilih'
-        );
-      }
-
-      function renderSubScheduledVideoList() {
-        const container = document.getElementById('subSchedVideoList');
-        if (!container) return;
-        const list = getScheduledAdVideos();
-        if (list.length === 0) {
-          container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.78rem;padding:0.5rem;">Belum ada video terjadwal tersimpan.</div>`;
-          return;
-        }
-        container.innerHTML = list.map((item, idx) => `
-          <div class="video-schedule-item">
-            <div class="video-schedule-item-info">
-              <div class="video-schedule-item-title">${escapeHtml(item.title)}</div>
-              <div class="video-schedule-item-meta">${escapeHtml(formatAdDateRangeLabel(item))} • Pukul ${escapeHtml(item.time)} WIB • ${item.duration > 0 ? item.duration + ' dtk' : 'Durasi Penuh'}</div>
-            </div>
-            <div style="display:flex;gap:0.35rem;">
-              <button type="button" class="file-pick-btn" style="padding:0.25rem 0.5rem;font-size:0.72rem;" data-play-subsched="${idx}">▶</button>
-              <button type="button" class="btn-danger-xs" data-del-subsched="${idx}">Hapus</button>
-            </div>
-          </div>
-        `).join('');
-
-        container.querySelectorAll('[data-play-subsched]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const idx = parseInt(btn.getAttribute('data-play-subsched'), 10);
-            const item = getScheduledAdVideos()[idx];
-            if (item) {
-              dailyVideoModal?.classList.remove('open');
-              playVideoItemFullscreen(item, '📅 Video Terjadwal');
+          function openRunningTextModal() {
+            if (!runningTextModal) return;
+            var saved = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
+            if (modalRunningTextInput) {
+              modalRunningTextInput.value = saved.split(/\s+•\s+/).join("\n");
             }
-          });
-        });
-
-        container.querySelectorAll('[data-del-subsched]').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const idx = parseInt(btn.getAttribute('data-del-subsched'), 10);
-            const current = getScheduledAdVideos();
-            const removed = current[idx];
-            if (removed && removed.videoId) await deleteVideoBlobFromDB(removed.videoId);
-            current.splice(idx, 1);
-            saveScheduledAdVideos(current);
-            renderSubScheduledVideoList();
-            renderAdVideoScheduleList();
-            showToastMessage('Video terjadwal dihapus.');
-          });
-        });
-      }
-
-      tabDailyRoutineBtn?.addEventListener('click', () => switchDailyModalTab('daily'));
-      tabScheduledVideoBtn?.addEventListener('click', () => switchDailyModalTab('scheduled'));
-      subSchedModeSelect?.addEventListener('change', updateSubSchedDateVisibility);
-      document.getElementById('openDriveForSubSchedBtn')?.addEventListener('click', () => window.open('https://drive.google.com', '_blank'));
-      document.getElementById('closeVideoModalFromSubBtn')?.addEventListener('click', () => dailyVideoModal?.classList.remove('open'));
-
-      subSchedFileInput?.addEventListener('change', (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (!file) return;
-        pendingSubSchedBlob = file;
-        pendingSubSchedUrl = '';
-        const objUrl = URL.createObjectURL(file);
-        updateSubSchedPreview(objUrl, file.name);
-      });
-
-      subSchedUrlInput?.addEventListener('input', (e) => {
-        pendingSubSchedBlob = null;
-        pendingSubSchedUrl = normalizeGoogleDriveVideoDirectUrl(e.target.value);
-        updateSubSchedPreview(pendingSubSchedUrl, pendingSubSchedUrl ? `Link: ${e.target.value.trim()}` : 'Pilih file video atau tempel link video');
-      });
-
-      subSchedUrlInput?.addEventListener('paste', () => {
-        setTimeout(() => {
-          pendingSubSchedBlob = null;
-          pendingSubSchedUrl = normalizeGoogleDriveVideoDirectUrl(subSchedUrlInput.value);
-          updateSubSchedPreview(pendingSubSchedUrl, pendingSubSchedUrl ? `Link: ${subSchedUrlInput.value.trim()}` : 'Pilih file video atau tempel link video');
-        }, 0);
-      });
-
-      document.getElementById('testPlaySubSchedNowBtn')?.addEventListener('click', () => {
-        const title = (document.getElementById('subSchedVideoTitleInput')?.value || '').trim() || 'Pratinjau Video Terjadwal';
-        const duration = parseInt(document.getElementById('subSchedDurationInput')?.value, 10) || 0;
-        if (pendingSubSchedBlob) {
-          const tempUrl = URL.createObjectURL(pendingSubSchedBlob);
-          activeObjectUrls.push(tempUrl);
-          dailyVideoModal?.classList.remove('open');
-          playVideoItemFullscreen({ title, storageType: 'url', url: tempUrl, duration }, '📅 Pratinjau Terjadwal');
-          return;
-        }
-        const url = pendingSubSchedUrl || normalizeGoogleDriveVideoDirectUrl(subSchedUrlInput?.value || '');
-        if (!url) {
-          showToastMessage('Pilih file video atau tempel link Google Drive terlebih dahulu.');
-          return;
-        }
-        dailyVideoModal?.classList.remove('open');
-        playVideoItemFullscreen({ title, storageType: 'url', url, duration }, '📅 Pratinjau Terjadwal');
-      });
-
-      document.getElementById('saveSubSchedVideoBtn')?.addEventListener('click', async () => {
-        const title = (document.getElementById('subSchedVideoTitleInput')?.value || '').trim() || 'Video Terjadwal Terminal';
-        const scheduleMode = subSchedModeSelect?.value || 'date_range';
-        const time = document.getElementById('subSchedTimeInput')?.value || '09:30';
-        const duration = parseInt(document.getElementById('subSchedDurationInput')?.value, 10) || 0;
-
-        let startDate = '';
-        let endDate = '';
-        if (scheduleMode === 'date_range') {
-          startDate = document.getElementById('subSchedStartDateInput')?.value || getTodayJakartaISO();
-          endDate = document.getElementById('subSchedEndDateInput')?.value || startDate;
-          if (endDate < startDate) endDate = startDate;
-        }
-
-        const list = getScheduledAdVideos();
-        if (pendingSubSchedBlob) {
-          const videoId = `sched_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-          await saveVideoBlobToDB(videoId, pendingSubSchedBlob);
-          list.push({
-            title,
-            storageType: 'indexeddb',
-            videoId,
-            fileName: pendingSubSchedBlob.name,
-            scheduleMode,
-            startDate,
-            endDate,
-            time,
-            duration
-          });
-        } else {
-          const url = pendingSubSchedUrl || normalizeGoogleDriveVideoDirectUrl(subSchedUrlInput?.value || '');
-          if (!url) {
-            showToastMessage('Pilih file video atau tempel link Google Drive terlebih dahulu.');
-            return;
-          }
-          list.push({
-            title,
-            storageType: 'url',
-            url,
-            scheduleMode,
-            startDate,
-            endDate,
-            time,
-            duration
-          });
-        }
-
-        saveScheduledAdVideos(list);
-        pendingSubSchedBlob = null;
-        pendingSubSchedUrl = '';
-        if (document.getElementById('subSchedVideoTitleInput')) document.getElementById('subSchedVideoTitleInput').value = '';
-        if (subSchedUrlInput) subSchedUrlInput.value = '';
-        if (subSchedFileInput) subSchedFileInput.value = '';
-        updateSubSchedPreview('', 'Pilih file video atau tempel link Google Drive');
-        renderSubScheduledVideoList();
-        renderAdVideoScheduleList();
-        showToastMessage(`✓ Video terjadwal (${formatAdDateRangeLabel({ scheduleMode, startDate, endDate })} • ${time} WIB) tersimpan.`);
-      });
-
-      function updateDailyPreview(src, labelText) {
-        renderVideoPreviewElement(
-          src,
-          labelText,
-          'videoPreviewBox',
-          'videoFileName',
-          'Belum ada video dipilih'
-        );
-      }
-
-      function renderDailyScheduleList() {
-        const container = document.getElementById('videoScheduleList');
-        if (!container) return;
-        const list = getScheduledVideos();
-        if (list.length === 0) {
-          container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.78rem;padding:0.5rem;">Belum ada jadwal video harian tersimpan.</div>`;
-          return;
-        }
-        container.innerHTML = list.map((item, idx) => `
-          <div class="video-schedule-item">
-            <div class="video-schedule-item-info">
-              <div class="video-schedule-item-title">${escapeHtml(item.title)}</div>
-              <div class="video-schedule-item-meta">Setiap Hari • Pukul ${escapeHtml(item.time)} WIB • ${item.duration > 0 ? item.duration + ' dtk' : 'Durasi Penuh'}</div>
-            </div>
-            <div style="display:flex;gap:0.35rem;">
-              <button type="button" class="file-pick-btn" style="padding:0.25rem 0.5rem;font-size:0.72rem;" data-play-daily="${idx}">▶</button>
-              <button type="button" class="btn-danger-xs" data-del-daily="${idx}">Hapus</button>
-            </div>
-          </div>
-        `).join('');
-
-        container.querySelectorAll('[data-play-daily]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const idx = parseInt(btn.getAttribute('data-play-daily'), 10);
-            const item = getScheduledVideos()[idx];
-            if (item) {
-              dailyVideoModal?.classList.remove('open');
-              playVideoItemFullscreen(item, '🎬 Video Harian');
+            runningTextModal.classList.add("open");
+            if (modalRunningTextInput) {
+              setTimeout(function () { modalRunningTextInput.focus(); }, 30);
             }
-          });
-        });
-
-        container.querySelectorAll('[data-del-daily]').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const idx = parseInt(btn.getAttribute('data-del-daily'), 10);
-            const current = getScheduledVideos();
-            const removed = current[idx];
-            if (removed && removed.videoId) await deleteVideoBlobFromDB(removed.videoId);
-            current.splice(idx, 1);
-            saveScheduledVideos(current);
-            renderDailyScheduleList();
-            showToastMessage('Jadwal video harian dihapus.');
-          });
-        });
-      }
-
-      document.getElementById('openVideoModalBtn')?.addEventListener('click', () => {
-        pendingDailyBlob = null;
-        pendingSubSchedBlob = null;
-        pendingSubSchedUrl = '';
-        if (dailyUrlInput) dailyUrlInput.value = '';
-        if (dailyFileInput) dailyFileInput.value = '';
-        if (subSchedUrlInput) subSchedUrlInput.value = '';
-        if (subSchedFileInput) subSchedFileInput.value = '';
-        const todayISO = getTodayJakartaISO();
-        if (document.getElementById('subSchedStartDateInput')) document.getElementById('subSchedStartDateInput').value = todayISO;
-        if (document.getElementById('subSchedEndDateInput')) document.getElementById('subSchedEndDateInput').value = todayISO;
-        if (subSchedModeSelect) subSchedModeSelect.value = 'date_range';
-        updateSubSchedDateVisibility();
-        updateDailyPreview('', 'Pilih file video atau tempel link Google Drive');
-        updateSubSchedPreview('', 'Pilih file video atau tempel link Google Drive');
-        switchDailyModalTab('daily');
-        dailyVideoModal?.classList.add('open');
-      });
-      document.getElementById('closeVideoModalBtn')?.addEventListener('click', () => dailyVideoModal?.classList.remove('open'));
-      document.getElementById('openDriveForVideoBtn')?.addEventListener('click', () => window.open('https://drive.google.com', '_blank'));
-
-      dailyFileInput?.addEventListener('change', (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (!file) return;
-        pendingDailyBlob = file;
-        const objUrl = URL.createObjectURL(file);
-        updateDailyPreview(objUrl, file.name);
-      });
-
-      dailyUrlInput?.addEventListener('input', (e) => {
-        pendingDailyBlob = null;
-        const norm = normalizeGoogleDriveVideoDirectUrl(e.target.value);
-        updateDailyPreview(norm, norm ? `Link: ${e.target.value.trim()}` : 'Pilih file video atau tempel link video');
-      });
-
-      dailyUrlInput?.addEventListener('paste', () => {
-        setTimeout(() => {
-          pendingDailyBlob = null;
-          const norm = normalizeGoogleDriveVideoDirectUrl(dailyUrlInput.value);
-          updateDailyPreview(norm, norm ? `Link: ${dailyUrlInput.value.trim()}` : 'Pilih file video atau tempel link video');
-        }, 0);
-      });
-
-      document.getElementById('testPlayVideoNowBtn')?.addEventListener('click', () => {
-        const title = (document.getElementById('videoTitleInput')?.value || '').trim() || 'Pratinjau Video Harian';
-        const duration = parseInt(document.getElementById('videoDurationInput')?.value, 10) || 0;
-        if (pendingDailyBlob) {
-          const tempUrl = URL.createObjectURL(pendingDailyBlob);
-          activeObjectUrls.push(tempUrl);
-          dailyVideoModal?.classList.remove('open');
-          playVideoItemFullscreen({ title, storageType: 'url', url: tempUrl, duration }, '🎬 Pratinjau Video');
-          return;
-        }
-        const url = normalizeGoogleDriveVideoDirectUrl(dailyUrlInput?.value || '');
-        if (!url) {
-          showToastMessage('Pilih file video atau tempel link Google Drive terlebih dahulu.');
-          return;
-        }
-        dailyVideoModal?.classList.remove('open');
-        playVideoItemFullscreen({ title, storageType: 'url', url, duration }, '🎬 Pratinjau Video');
-      });
-
-      document.getElementById('addVideoScheduleBtn')?.addEventListener('click', async () => {
-        const title = (document.getElementById('videoTitleInput')?.value || '').trim() || 'Video Harian Terminal';
-        const time = document.getElementById('videoPlayTimeInput')?.value || '08:00';
-        const duration = parseInt(document.getElementById('videoDurationInput')?.value, 10) || 0;
-        const list = getScheduledVideos();
-
-        if (pendingDailyBlob) {
-          const videoId = `daily_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-          await saveVideoBlobToDB(videoId, pendingDailyBlob);
-          list.push({ title, storageType: 'indexeddb', videoId, fileName: pendingDailyBlob.name, time, duration });
-        } else {
-          const url = normalizeGoogleDriveVideoDirectUrl(dailyUrlInput?.value || '');
-          if (!url) {
-            showToastMessage('Pilih file video atau tempel link Google Drive terlebih dahulu.');
-            return;
           }
-          list.push({ title, storageType: 'url', url, time, duration });
-        }
 
-        saveScheduledVideos(list);
-        pendingDailyBlob = null;
-        if (document.getElementById('videoTitleInput')) document.getElementById('videoTitleInput').value = '';
-        if (dailyUrlInput) dailyUrlInput.value = '';
-        if (dailyFileInput) dailyFileInput.value = '';
-        updateDailyPreview('', 'Pilih file video atau tempel link Google Drive');
-        renderDailyScheduleList();
-        showToastMessage(`✓ Jadwal video harian pukul ${time} WIB berhasil disimpan.`);
-      });
-
-      // Modal Video Iklan (Sesuai Tanggal & Jam atau Setiap Hari)
-      const adVideoModal = document.getElementById('adVideoScheduleModal');
-      const adVideoFileInput = document.getElementById('adVideoFileInput');
-      const adVideoUrlInput = document.getElementById('adVideoUrlInput');
-      const adScheduleModeSelect = document.getElementById('adScheduleModeSelect');
-      const adDateRangeFields = document.getElementById('adDateRangeFields');
-      let pendingAdVideoSourceUrl = '';
-      let pendingAdVideoFileBlob = null;
-
-      function updateAdDateFieldsVisibility() {
-        const mode = adScheduleModeSelect?.value || 'date_range';
-        if (adDateRangeFields) {
-          adDateRangeFields.style.display = mode === 'daily' ? 'none' : 'grid';
-        }
-      }
-
-      function updateAdVideoPreviewBox(src, labelText) {
-        renderVideoPreviewElement(
-          src,
-          labelText,
-          'adVideoPreviewBox',
-          'adVideoFileName',
-          'Belum ada video iklan dipilih'
-        );
-      }
-
-      function renderAdVideoScheduleList() {
-<!-- ... code ... -->
-      adVideoUrlInput?.addEventListener('input', (e) => {
-        pendingAdVideoFileBlob = null;
-        pendingAdVideoSourceUrl = normalizeGoogleDriveVideoDirectUrl(e.target.value);
-        updateAdVideoPreviewBox(pendingAdVideoSourceUrl, pendingAdVideoSourceUrl ? `Link: ${e.target.value.trim()}` : 'Pilih file / tempel link video');
-      });
-
-      adVideoUrlInput?.addEventListener('paste', () => {
-        setTimeout(() => {
-          pendingAdVideoFileBlob = null;
-          pendingAdVideoSourceUrl = normalizeGoogleDriveVideoDirectUrl(adVideoUrlInput.value);
-          updateAdVideoPreviewBox(pendingAdVideoSourceUrl, pendingAdVideoSourceUrl ? `Link: ${adVideoUrlInput.value.trim()}` : 'Pilih file / tempel link video');
-        }, 0);
-      });
-
-      document.getElementById('testPlayAdVideoNowBtn')?.addEventListener('click', () => {
-        const title = (document.getElementById('adVideoTitleInput')?.value || '').trim() || 'Pratinjau Video Iklan';
-        const duration = parseInt(document.getElementById('adDurationInput')?.value, 10) || 0;
-        if (pendingAdVideoFileBlob) {
-          const tempUrl = URL.createObjectURL(pendingAdVideoFileBlob);
-          activeObjectUrls.push(tempUrl);
-          adVideoModal?.classList.remove('open');
-          playVideoItemFullscreen({ title, storageType: 'url', url: tempUrl, duration }, '📺 Pratinjau Iklan');
-          return;
-        }
-        const url = pendingAdVideoSourceUrl || normalizeGoogleDriveVideoDirectUrl(adVideoUrlInput?.value || '');
-        if (!url) {
-          showToastMessage('Pilih file video iklan atau tempel link Google Drive terlebih dahulu.');
-          return;
-        }
-        adVideoModal?.classList.remove('open');
-        playVideoItemFullscreen({ title, storageType: 'url', url, duration }, '📺 Pratinjau Iklan');
-      });
-
-      document.getElementById('openAdVideoModalBtn')?.addEventListener('click', () => {
-        pendingAdVideoSourceUrl = '';
-        pendingAdVideoFileBlob = null;
-        if (adVideoUrlInput) adVideoUrlInput.value = '';
-        if (adVideoFileInput) adVideoFileInput.value = '';
-        if (adScheduleModeSelect) adScheduleModeSelect.value = 'date_range';
-        updateAdDateFieldsVisibility();
-        const todayISO = getTodayJakartaISO();
-        const startEl = document.getElementById('adStartDateInput');
-        const endEl = document.getElementById('adEndDateInput');
-        const durEl = document.getElementById('adDurationInput');
-        if (startEl) startEl.value = todayISO;
-        if (endEl) endEl.value = todayISO;
-        if (durEl) durEl.value = '0';
-        updateAdVideoPreviewBox('', 'Pilih file / tempel link Google Drive');
-        renderAdVideoScheduleList();
-        adVideoModal?.classList.add('open');
-      });
-
-      document.getElementById('closeAdVideoModalBtn')?.addEventListener('click', () => {
-        pendingAdVideoFileBlob = null;
-        updateAdVideoPreviewBox('', 'Pilih file / tempel link Google Drive');
-        adVideoModal?.classList.remove('open');
-      });
-
-      document.getElementById('addAdVideoScheduleBtn')?.addEventListener('click', async () => {
-        const title = (document.getElementById('adVideoTitleInput')?.value || '').trim() || 'Tayangan Video Iklan';
-        const rawUrlInput = (adVideoUrlInput?.value || '').trim();
-        const chosenFile = pendingAdVideoFileBlob || (adVideoFileInput && adVideoFileInput.files && adVideoFileInput.files[0]) || null;
-        const scheduleMode = adScheduleModeSelect?.value || 'date_range';
-
-        let startDate = '';
-        let endDate = '';
-        if (scheduleMode === 'date_range') {
-          startDate = document.getElementById('adStartDateInput')?.value || getTodayJakartaISO();
-          endDate = document.getElementById('adEndDateInput')?.value || startDate;
-          if (endDate < startDate) {
-            endDate = startDate;
+          function closeRunningTextModal() {
+            if (runningTextModal) runningTextModal.classList.remove("open");
           }
-        }
-        const time = document.getElementById('adPlayTimeInput')?.value || '10:00';
-        const rawDuration = document.getElementById('adDurationInput')?.value;
-        const duration = rawDuration === '' || rawDuration === null ? 0 : (parseInt(rawDuration, 10) || 0);
 
-        const list = getScheduledAdVideos();
+          function applyCustomRunningText(rawValue) {
+            var formatted = formatMultiRunningText(rawValue);
+            if (!formatted) {
+              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
+              formatted = DEFAULT_RUNNING_TEXT;
+            } else {
+              localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, formatted);
+            }
+            syncRunningTextDisplay(formatted);
+          }
 
-        if (chosenFile) {
-          try {
-            const videoId = `ad_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-            await saveVideoBlobToDB(videoId, chosenFile);
-            list.push({
-              title,
-              storageType: 'indexeddb',
-              videoId,
-              fileName: chosenFile.name,
-              scheduleMode,
-              startDate,
-              endDate,
-              time,
-              duration
+          function getStatusBadgeClass(status) {
+            var s = String(status || "").toUpperCase();
+            if (s.indexOf("BOARDING") !== -1 || s.indexOf("BERANGKAT") !== -1 || s.indexOf("SESUAI") !== -1 || s.indexOf("ON TIME") !== -1 || s.indexOf("SANDAR") !== -1 || s.indexOf("TIBA") !== -1) {
+              return "status-ok";
+            }
+            if (s.indexOf("TUNDA") !== -1 || s.indexOf("DELAY") !== -1 || s.indexOf("BATAL") !== -1) {
+              return "status-warn";
+            }
+            if (s.indexOf("CHECK") !== -1 || s.indexOf("PERSIAPAN") !== -1 || s.indexOf("SIAP") !== -1 || s.indexOf("DEBARK") !== -1) {
+              return "status-info";
+            }
+            return "status-neutral";
+          }
+
+          function renderTableHeader(headers) {
+            if (!thead) return;
+            var cols = Array.isArray(headers) && headers.length > 0
+              ? headers
+              : ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"];
+            thead.innerHTML = "<tr>" + cols.map(function (h) {
+              return "<th>" + escapeHtml(h) + "</th>";
+            }).join("") + "</tr>";
+          }
+
+          function renderTableAndStats(rows, headers) {
+            renderTableHeader(headers || state.headers);
+            var list = Array.isArray(rows) ? rows : [];
+            if (tbody) {
+              if (!list.length) {
+                tbody.innerHTML = "";
+                if (emptyMsg) emptyMsg.style.display = "block";
+              } else {
+                if (emptyMsg) emptyMsg.style.display = "none";
+                tbody.innerHTML = list.map(function (item) {
+                  return (
+                    "<tr>" +
+                      "<td><span class='ship-name'>" + escapeHtml(item.ship) + "</span></td>" +
+                      "<td>" + escapeHtml(item.dest) + "</td>" +
+                      "<td>" + escapeHtml(item.arr) + "</td>" +
+                      "<td>" + escapeHtml(item.dep) + "</td>" +
+                      "<td><span class='gate-pill'>" + escapeHtml(item.gate) + "</span></td>" +
+                      "<td><span class='status-badge " + getStatusBadgeClass(item.status) + "'>" + escapeHtml(item.status) + "</span></td>" +
+                    "</tr>"
+                  );
+                }).join("");
+              }
+            }
+
+            if (statTableCount) {
+              statTableCount.textContent = String(list.length);
+            }
+            if (statActiveCount) {
+              var activeTotal = list.filter(function (item) {
+                var st = String(item.status || "").toUpperCase();
+                return st !== "-" && st !== "" && st.indexOf("BATAL") === -1 && st.indexOf("SELESAI") === -1;
+              }).length;
+              statActiveCount.textContent = String(activeTotal);
+            }
+          }
+
+          function parseCsvText(csvText) {
+            var rows = [];
+            var row = [];
+            var cell = "";
+            var inQuotes = false;
+            var text = String(csvText || "");
+
+            for (var i = 0; i < text.length; i++) {
+              var ch = text[i];
+              var next = text[i + 1];
+              if (inQuotes) {
+                if (ch === '"' && next === '"') {
+                  cell += '"';
+                  i++;
+                } else if (ch === '"') {
+                  inQuotes = false;
+                } else {
+                  cell += ch;
+                }
+              } else {
+                if (ch === '"') {
+                  inQuotes = true;
+                } else if (ch === ",") {
+                  row.push(cell.trim());
+                  cell = "";
+                } else if (ch === "\r" && next === "\n") {
+                  row.push(cell.trim());
+                  rows.push(row);
+                  row = [];
+                  cell = "";
+                  i++;
+                } else if (ch === "\n" || ch === "\r") {
+                  row.push(cell.trim());
+                  rows.push(row);
+                  row = [];
+                  cell = "";
+                } else {
+                  cell += ch;
+                }
+              }
+            }
+            if (cell.length > 0 || row.length > 0) {
+              row.push(cell.trim());
+              rows.push(row);
+            }
+            return rows.filter(function (r) {
+              return r.some(function (c) { return c !== ""; });
             });
-            saveScheduledAdVideos(list);
-            showToastMessage(`✓ Video iklan terjadwal untuk ${formatAdDateRangeLabel({ scheduleMode, startDate, endDate })} pukul ${time} WIB.`);
-          } catch (err) {
-            showToastMessage('Gagal menyimpan file video iklan ke memori perangkat. Gunakan Link Google Drive agar tetap aman setelah restart.');
-            return;
           }
-        } else {
-          let finalUrl = pendingAdVideoSourceUrl;
-          if (!finalUrl && rawUrlInput) {
-            finalUrl = normalizeGoogleDriveVideoDirectUrl(rawUrlInput);
+
+          function normalizeSheetPayload(rawRows) {
+            if (!Array.isArray(rawRows) || rawRows.length === 0) {
+              return { rows: [], headers: state.headers };
+            }
+
+            var headerRow = rawRows[0];
+            var headerLower = headerRow.map(function (c) { return String(c || "").toLowerCase().trim(); });
+            var hasHeader = headerLower.some(function (h) {
+              return (
+                h.indexOf("kapal") !== -1 ||
+                h.indexOf("nama") !== -1 ||
+                h.indexOf("destinasi") !== -1 ||
+                h.indexOf("tujuan") !== -1 ||
+                h.indexOf("rute") !== -1 ||
+                h.indexOf("datang") !== -1 ||
+                h.indexOf("tiba") !== -1 ||
+                h.indexOf("berangkat") !== -1 ||
+                h.indexOf("gate") !== -1 ||
+                h.indexOf("dermaga") !== -1 ||
+                h.indexOf("status") !== -1
+              );
+            });
+
+            var idxMap = { ship: 0, dest: 1, arr: 2, dep: 3, gate: 4, status: 5 };
+            var startIndex = 0;
+            var activeHeaders = state.headers.slice();
+
+            if (hasHeader) {
+              startIndex = 1;
+              var usedIndices = {};
+              headerLower.forEach(function (h, idx) {
+                if (!usedIndices.ship && (h.indexOf("kapal") !== -1 || h.indexOf("nama") !== -1 || h === "mv/km")) {
+                  idxMap.ship = idx;
+                  usedIndices.ship = true;
+                } else if (!usedIndices.dest && (h.indexOf("destinasi") !== -1 || h.indexOf("tujuan") !== -1 || h.indexOf("rute") !== -1)) {
+                  idxMap.dest = idx;
+                  usedIndices.dest = true;
+                } else if (!usedIndices.arr && (h.indexOf("datang") !== -1 || h.indexOf("tiba") !== -1 || h.indexOf("arr") !== -1)) {
+                  idxMap.arr = idx;
+                  usedIndices.arr = true;
+                } else if (!usedIndices.dep && (h.indexOf("berangkat") !== -1 || h.indexOf("dep") !== -1)) {
+                  idxMap.dep = idx;
+                  usedIndices.dep = true;
+                } else if (!usedIndices.gate && (h.indexOf("gate") !== -1 || h.indexOf("dermaga") !== -1 || h.indexOf("line") !== -1 || h.indexOf("peron") !== -1)) {
+                  idxMap.gate = idx;
+                  usedIndices.gate = true;
+                } else if (!usedIndices.status && (h.indexOf("status") !== -1 || h.indexOf("ket") !== -1 || h.indexOf("info") !== -1)) {
+                  idxMap.status = idx;
+                  usedIndices.status = true;
+                }
+              });
+
+              var pickHeader = function (idx, fallback) {
+                var val = headerRow[idx];
+                return val && String(val).trim() ? String(val).trim() : fallback;
+              };
+              activeHeaders = [
+                pickHeader(idxMap.ship, "Nama Kapal"),
+                pickHeader(idxMap.dest, "Destinasi"),
+                pickHeader(idxMap.arr, "EST. Datang"),
+                pickHeader(idxMap.dep, "EST. Berangkat"),
+                pickHeader(idxMap.gate, "Gate / Line"),
+                pickHeader(idxMap.status, "Status Keberangkatan")
+              ];
+            }
+
+            var parsed = [];
+            for (var i = startIndex; i < rawRows.length; i++) {
+              var r = rawRows[i];
+              var shipName = String(r[idxMap.ship] || "").trim();
+              if (!shipName) continue;
+              if (/^(no\.?|nomor|nama\s*kapal|kapal)$/i.test(shipName)) continue;
+
+              parsed.push({
+                ship: shipName,
+                dest: String(r[idxMap.dest] || "-").trim() || "-",
+                arr: String(r[idxMap.arr] || "-").trim() || "-",
+                dep: String(r[idxMap.dep] || "-").trim() || "-",
+                gate: String(r[idxMap.gate] || "-").trim() || "-",
+                status: String(r[idxMap.status] || "SESUAI JADWAL").trim() || "SESUAI JADWAL"
+              });
+            }
+
+            return { rows: parsed, headers: activeHeaders };
           }
-          if (!finalUrl) {
-            showToastMessage('Harap tempel link Google Drive video iklan atau pilih file melalui tombol "📁 Pilih File / Drive".');
-            return;
+
+          function fetchViaGvizJsonp(timeoutMs) {
+            return new Promise(function (resolve, reject) {
+              var cbName = "__dumaiGvizCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+              var script = document.createElement("script");
+              var done = false;
+
+              var timer = setTimeout(function () {
+                if (done) return;
+                done = true;
+                cleanup();
+                reject(new Error("GViz JSONP timeout"));
+              }, timeoutMs || 6000);
+
+              function cleanup() {
+                clearTimeout(timer);
+                try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                if (script && script.parentNode) script.parentNode.removeChild(script);
+              }
+
+              window[cbName] = function (resp) {
+                if (done) return;
+                done = true;
+                cleanup();
+                try {
+                  var table = resp && resp.table;
+                  var cols = (table && table.cols) || [];
+                  var rows = (table && table.rows) || [];
+                  var matrix = [];
+                  var headers = cols.map(function (c) { return (c && (c.label || c.id)) || ""; });
+                  if (headers.some(function (h) { return h !== ""; })) {
+                    matrix.push(headers);
+                  }
+                  rows.forEach(function (rowObj) {
+                    var cells = (rowObj && rowObj.c) || [];
+                    var line = cells.map(function (c) {
+                      if (!c) return "";
+                      return c.f != null ? String(c.f) : (c.v != null ? String(c.v) : "");
+                    });
+                    if (line.some(function (x) { return x.trim() !== ""; })) {
+                      matrix.push(line);
+                    }
+                  });
+                  resolve(normalizeSheetPayload(matrix));
+                } catch (err) {
+                  reject(err);
+                }
+              };
+
+              script.onerror = function () {
+                if (done) return;
+                done = true;
+                cleanup();
+                reject(new Error("GViz JSONP load error"));
+              };
+
+              var sep = GVIZ_JSONP_BASE.indexOf("?") === -1 ? "?" : "&";
+              script.src = GVIZ_JSONP_BASE + sep + "tqx=out:json;responseHandler:" + cbName + "&_cb=" + Date.now();
+              document.body.appendChild(script);
+            });
           }
-          list.push({
-            title,
-            storageType: 'url',
-            url: finalUrl,
-            scheduleMode,
-            startDate,
-            endDate,
-            time,
-            duration
-          });
-          saveScheduledAdVideos(list);
-          showToastMessage(`✓ Jadwal video iklan Google Drive tersimpan (${formatAdDateRangeLabel({ scheduleMode, startDate, endDate })}).`);
-        }
 
-        pendingAdVideoSourceUrl = '';
-        pendingAdVideoFileBlob = null;
-        if (document.getElementById('adVideoTitleInput')) document.getElementById('adVideoTitleInput').value = '';
-        if (adVideoUrlInput) adVideoUrlInput.value = '';
-        if (adVideoFileInput) adVideoFileInput.value = '';
-        if (document.getElementById('adDurationInput')) document.getElementById('adDurationInput').value = '0';
-        updateAdVideoPreviewBox('', 'Pilih file / tempel link Google Drive');
-        renderAdVideoScheduleList();
-        renderSubScheduledVideoList();
-      });
+          async function syncScheduleData(isManual) {
+            if (state.isFetching) return;
+            state.isFetching = true;
+            if (manualRefreshBtn && isManual) {
+              manualRefreshBtn.disabled = true;
+              manualRefreshBtn.textContent = "⏳ Memuat...";
+            }
 
-      // Interval jam, sinkronisasi Google Sheet (3 detik), rotasi slide tabel, jadwal video, dan auto-update
-      setInterval(updateLiveClock, 1000);
-      setInterval(() => syncGoogleSheetData(false), 3000);
-      setInterval(() => {
-        if (allShips.length > ROWS_PER_SLIDE) {
-          const totalPages = Math.ceil(allShips.length / ROWS_PER_SLIDE);
-          currentSlidePage = (currentSlidePage + 1) % totalPages;
-          renderScheduleSlide(true);
-        }
-      }, 8000);
-      setInterval(checkScheduledPlaybackTick, 1000);
-      setInterval(checkAppAutoUpdate, 15000);
+            try {
+              var payload = null;
+              var sourceLabel = "Google Sheets CSV";
 
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-          updateLiveClock();
-          syncGoogleSheetData(false);
-          checkScheduledPlaybackTick();
-        }
-      });
+              try {
+                var csvUrl = PUBLISHED_CSV_URL + (PUBLISHED_CSV_URL.indexOf("?") === -1 ? "?" : "&") + "_cb=" + Date.now();
+                var res = await fetch(csvUrl, { cache: "no-store" });
+                if (res && res.ok) {
+                  var csvText = await res.text();
+                  if (csvText && !/^\s*<!doctype html>/i.test(csvText) && !/^\s*<html/i.test(csvText)) {
+                    var parsedCsv = normalizeSheetPayload(parseCsvText(csvText));
+                    if (parsedCsv && parsedCsv.rows.length > 0) {
+                      payload = parsedCsv;
+                      sourceLabel = "Google Sheets CSV";
+                    }
+                  }
+                }
+              } catch (csvErr) {}
 
-      checkAppAutoUpdate();
-    });
-  </script>
-</body>
-</html>
+              if (!payload) {
+                try {
+                  var jsonpPayload = await fetchViaGvizJsonp(6000);
+                  if (jsonpPayload && jsonpPayload.rows.length > 0) {
+                    payload = jsonpPayload;
+                    sourceLabel = "Google Sheets GViz";
+                  }
+                } catch (jsonpErr) {}
+              }
+
+              var nowParts = getJakartaNowParts();
+              if (payload && payload.rows.length > 0) {
+                var sig = JSON.stringify(payload);
+                state.rows = payload.rows;
+                state.headers = payload.headers;
+                if (sig !== state.lastSignature) {
+                  state.lastSignature = sig;
+                  renderTableAndStats(state.rows, state.headers);
+                }
+                if (sheetSyncStatus) {
+                  sheetSyncStatus.textContent = "✅ " + sourceLabel + " • Update " + nowParts.wibTime + " WIB";
+                }
+              } else {
+                renderTableAndStats(state.rows, state.headers);
+                if (sheetSyncStatus) {
+                  sheetSyncStatus.textContent = "⚠️ Menunggu data Google Sheets • Cek " + nowParts.wibTime + " WIB";
+                }
+              }
+            } finally {
+              state.isFetching = false;
+              if (manualRefreshBtn && isManual) {
+                manualRefreshBtn.disabled = false;
+                manualRefreshBtn.textContent = "🔄 Refresh";
+              }
+            }
+          }
+
+          async function fetchDumaiWeather() {
+            try {
+              var url = "https://api.open-meteo.com/v1/forecast?latitude=1.6667&longitude=101.4500&current=temperature_2m,weather_code&timezone=Asia%2FJakarta";
+              var res = await fetch(url, { cache: "no-store" });
+              if (!res || !res.ok) return;
+              var data = await res.json();
+              var cur = data && data.current;
+              if (!cur || cur.temperature_2m == null) return;
+              var temp = Math.round(Number(cur.temperature_2m));
+              var code = Number(cur.weather_code || 0);
+              var icon = "⛅";
+              var label = "Cerah Berawan";
+              if (code === 0) { icon = "☀️"; label = "Cerah"; }
+              else if (code <= 3) { icon = "⛅"; label = "Cerah Berawan"; }
+              else if (code >= 51 && code <= 67) { icon = "🌧️"; label = "Hujan Ringan"; }
+              else if (code >= 80 && code <= 82) { icon = "🌦️"; label = "Hujan Lokal"; }
+              else if (code >= 95) { icon = "⛈️"; label = "Badai Petir"; }
+
+              if (statWeather) statWeather.textContent = icon + " " + temp + "°C";
+              if (statWeatherDesc) statWeatherDesc.textContent = label + " • Dumai (Open-Meteo)";
+            } catch (e) {}
+          }
+
+          function stripBlackBackgroundDataUrl(dataUrl) {
+            return new Promise(function (resolve) {
+              if (!dataUrl || typeof dataUrl !== "string") return resolve(dataUrl);
+              var img = new Image();
+              img.crossOrigin = "anonymous";
+              img.onload = function () {
+                try {
+                  var canvas = document.createElement("canvas");
+                  var w = img.naturalWidth || img.width || 256;
+                  var h = img.naturalHeight || img.height || 256;
+                  canvas.width = w;
+                  canvas.height = h;
+                  var ctx = canvas.getContext("2d");
+                  if (!ctx) return resolve(dataUrl);
+                  ctx.drawImage(img, 0, 0, w, h);
+                  var imgData = ctx.getImageData(0, 0, w, h);
+                  var d = imgData.data;
+                  for (var i = 0; i < d.length; i += 4) {
+                    var maxC = Math.max(d[i], d[i + 1], d[i + 2]);
+                    if (maxC <= 24) {
+                      d[i + 3] = 0;
+                    } else if (maxC < 52) {
+                      d[i + 3] = Math.round(d[i + 3] * ((maxC - 24) / 28));
+                    }
+                  }
+                  ctx.putImageData(imgData, 0, 0);
+                  resolve(canvas.toDataURL("image/png"));
+                } catch (err) {
+                  resolve(dataUrl);
+                }
+              };
+              img.onerror = function () { resolve(dataUrl); };
+              img.src = dataUrl;
+            });
+          }
+
+          function renderHeaderLogos() {
+            var leftSlot = document.getElementById("headerLogoLeft");
+            var rightSlot = document.getElementById("headerLogoRight");
+            var leftLogo = localStorage.getItem(LOGO_LEFT_KEY) || "";
+            var rightLogo = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+
+            if (leftSlot) {
+              leftSlot.innerHTML = leftLogo
+                ? "<img src='" + escapeHtml(leftLogo) + "' alt='Logo Kiri' onerror='this.remove()' />"
+                : "";
+            }
+            if (rightSlot) {
+              rightSlot.innerHTML = rightLogo
+                ? "<img src='" + escapeHtml(rightLogo) + "' alt='Logo Kanan' onerror='this.remove()' />"
+                : "";
+            }
+          }
+
+          function readFileAsDataUrl(fileInput, callback) {
+            var file = fileInput && fileInput.files && fileInput.files[0];
+            if (!file) return callback(null);
+            var reader = new FileReader();
+            reader.onload = function (ev) { callback(String(ev.target && ev.target.result || "")); };
+            reader.onerror = function () { callback(null); };
+            reader.readAsDataURL(file);
+          }
+
+          var logoModal = document.getElementById("logoModal");
+          var openLogoModalBtn = document.getElementById("openLogoModalBtn");
+          var closeLogoModalBtn = document.getElementById("closeLogoModalBtn");
+          var saveLogoBtn = document.getElementById("saveLogoBtn");
+          var resetLogoBtn = document.getElementById("resetLogoBtn");
+          var cleanExistingBlackBgBtn = document.getElementById("cleanExistingBlackBgBtn");
+          var removeBlackBgCheckbox = document.getElementById("removeBlackBgCheckbox");
+          var leftLogoFile = document.getElementById("leftLogoFile");
+          var rightLogoFile = document.getElementById("rightLogoFile");
+          var leftLogoUrl = document.getElementById("leftLogoUrl");
+          var rightLogoUrl = document.getElementById("rightLogoUrl");
+
+          if (openLogoModalBtn && logoModal) {
+            openLogoModalBtn.addEventListener("click", function () {
+              var curLeft = localStorage.getItem(LOGO_LEFT_KEY) || "";
+              var curRight = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+              if (leftLogoUrl) leftLogoUrl.value = curLeft.indexOf("data:") === 0 ? "" : curLeft;
+              if (rightLogoUrl) rightLogoUrl.value = curRight.indexOf("data:") === 0 ? "" : curRight;
+              if (leftLogoFile) leftLogoFile.value = "";
+              if (rightLogoFile) rightLogoFile.value = "";
+              logoModal.classList.add("open");
+            });
+          }
+
+          if (closeLogoModalBtn && logoModal) {
+            closeLogoModalBtn.addEventListener("click", function () {
+              logoModal.classList.remove("open");
+            });
+          }
+
+          if (resetLogoBtn) {
+            resetLogoBtn.addEventListener("click", function () {
+              localStorage.removeItem(LOGO_LEFT_KEY);
+              localStorage.removeItem(LOGO_RIGHT_KEY);
+              renderHeaderLogos();
+              if (logoModal) logoModal.classList.remove("open");
+            });
+          }
+
+          if (cleanExistingBlackBgBtn) {
+            cleanExistingBlackBgBtn.addEventListener("click", async function () {
+              var curLeft = localStorage.getItem(LOGO_LEFT_KEY) || "";
+              var curRight = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+              if (curLeft) {
+                var cleanedL = await stripBlackBackgroundDataUrl(curLeft);
+                if (cleanedL) localStorage.setItem(LOGO_LEFT_KEY, cleanedL);
+              }
+              if (curRight) {
+                var cleanedR = await stripBlackBackgroundDataUrl(curRight);
+                if (cleanedR) localStorage.setItem(LOGO_RIGHT_KEY, cleanedR);
+              }
+              renderHeaderLogos();
+            });
+          }
+
+          if (saveLogoBtn) {
+            saveLogoBtn.addEventListener("click", function () {
+              var shouldStripBlack = Boolean(removeBlackBgCheckbox && removeBlackBgCheckbox.checked);
+              readFileAsDataUrl(leftLogoFile, function (leftData) {
+                var finalLeft = leftData || (leftLogoUrl ? leftLogoUrl.value.trim() : "") || (localStorage.getItem(LOGO_LEFT_KEY) || "");
+                readFileAsDataUrl(rightLogoFile, async function (rightData) {
+                  var finalRight = rightData || (rightLogoUrl ? rightLogoUrl.value.trim() : "") || (localStorage.getItem(LOGO_RIGHT_KEY) || "");
+                  if (shouldStripBlack) {
+                    if (finalLeft) finalLeft = await stripBlackBackgroundDataUrl(finalLeft);
+                    if (finalRight) finalRight = await stripBlackBackgroundDataUrl(finalRight);
+                  }
+                  if (finalLeft) localStorage.setItem(LOGO_LEFT_KEY, finalLeft);
+                  else localStorage.removeItem(LOGO_LEFT_KEY);
+                  if (finalRight) localStorage.setItem(LOGO_RIGHT_KEY, finalRight);
+                  else localStorage.removeItem(LOGO_RIGHT_KEY);
+                  renderHeaderLogos();
+                  if (logoModal) logoModal.classList.remove("open");
+                });
+              });
+            });
+          }
+
+          function openVideoDb() {
+            return new Promise(function (resolve) {
+              if (!window.indexedDB) return resolve(null);
+              var req = window.indexedDB.open("DumaiVideoScheduleDB", 1);
+              req.onupgradeneeded = function (ev) {
+                var db = ev.target.result;
+                if (!db.objectStoreNames.contains("videos")) {
+                  db.createObjectStore("videos", { keyPath: "id" });
+                }
+              };
+              req.onsuccess = function (ev) { resolve(ev.target.result); };
+              req.onerror = function () { resolve(null); };
+            });
+          }
+
+          async function saveVideoBlobToDb(id, file) {
+            var db = await openVideoDb();
+            if (!db || !file) return false;
+            return new Promise(function (resolve) {
+              try {
+                var tx = db.transaction("videos", "readwrite");
+                var store = tx.objectStore("videos");
+                store.put({ id: id, blob: file, type: file.type || "video/mp4" });
+                tx.oncomplete = function () { resolve(true); };
+                tx.onerror = function () { resolve(false); };
+              } catch (e) {
+                resolve(false);
+              }
+            });
+          }
+
+          async function getVideoBlobUrlFromDb(id) {
+            var db = await openVideoDb();
+            if (!db || !id) return null;
+            return new Promise(function (resolve) {
+              try {
+                var tx = db.transaction("videos", "readonly");
+                var store = tx.objectStore("videos");
+                var req = store.get(id);
+                req.onsuccess = function () {
+                  var rec = req.result;
+                  resolve(rec && rec.blob ? URL.createObjectURL(rec.blob) : null);
+                };
+                req.onerror = function () { resolve(null); };
+              } catch (e) {
+                resolve(null);
+              }
+            });
+          }
+
+          async function deleteVideoBlobFromDb(id) {
+            var db = await openVideoDb();
+            if (!db || !id) return;
+            try {
+              var tx = db.transaction("videos", "readwrite");
+              tx.objectStore("videos").delete(id);
+            } catch (e) {}
+          }
+
+          function loadVideoSchedules() {
+            try {
+              var raw = localStorage.getItem(VIDEO_SCHEDULE_KEY);
+              var arr = raw ? JSON.parse(raw) : [];
+              return Array.isArray(arr) ? arr : [];
+            } catch (e) {
+              return [];
+            }
+          }
+
+          function saveVideoSchedules(list) {
+            try {
+              localStorage.setItem(VIDEO_SCHEDULE_KEY, JSON.stringify(list || []));
+            } catch (e) {}
+          }
+
+          function extractYouTubeEmbedUrl(url) {
+            var u = String(url || "").trim();
+            if (!u) return null;
+            var m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+            if (m && m[1]) {
+              return "https://www.youtube.com/embed/" + m[1] + "?autoplay=1&mute=1&rel=0";
+            }
+            return null;
+          }
+
+          var videoScheduleModal = document.getElementById("videoScheduleModal");
+          var openVideoModalBtn = document.getElementById("openVideoModalBtn");
+          var closeVideoModalBtn = document.getElementById("closeVideoModalBtn");
+          var addVideoScheduleBtn = document.getElementById("addVideoScheduleBtn");
+          var videoScheduleList = document.getElementById("videoScheduleList");
+          var videoTitleInput = document.getElementById("videoTitleInput");
+          var videoUrlInput = document.getElementById("videoUrlInput");
+          var videoFileInput = document.getElementById("videoFileInput");
+          var videoPlayTimeInput = document.getElementById("videoPlayTimeInput");
+          var videoDurationInput = document.getElementById("videoDurationInput");
+
+          function renderVideoScheduleList() {
+            if (!videoScheduleList) return;
+            var list = loadVideoSchedules();
+            if (!list.length) {
+              videoScheduleList.innerHTML = "<div class='form-hint'>Belum ada jadwal video harian tersimpan.</div>";
+              return;
+            }
+            videoScheduleList.innerHTML = list.map(function (item) {
+              var durLabel = Number(item.durationSec || 0) > 0 ? (item.durationSec + " detik") : "Penuh (sesuai durasi)";
+              var srcLabel = item.hasLocalFile ? ("File Lokal: " + (item.fileName || "Video")) : (item.url || "-");
+              return (
+                "<div class='video-schedule-item'>" +
+                  "<div class='video-schedule-item-info'>" +
+                    "<div class='video-schedule-item-title'>⏰ " + escapeHtml(item.playTime) + " WIB • " + escapeHtml(item.title || "Tayangan Harian") + "</div>" +
+                    "<div class='video-schedule-item-meta'>Durasi: " + escapeHtml(durLabel) + " • " + escapeHtml(srcLabel) + "</div>" +
+                  "</div>" +
+                  "<button type='button' class='btn-danger-xs' data-del-vid='" + escapeHtml(item.id) + "'>Hapus</button>" +
+                "</div>"
+              );
+            }).join("");
+
+            videoScheduleList.querySelectorAll("[data-del-vid]").forEach(function (btn) {
+              btn.addEventListener("click", async function () {
+                var idToDel = btn.getAttribute("data-del-vid");
+                var updated = loadVideoSchedules().filter(function (x) { return x.id !== idToDel; });
+                saveVideoSchedules(updated);
+                await deleteVideoBlobFromDb(idToDel);
+                renderVideoScheduleList();
+              });
+            });
+          }
+
+          function stopScheduledVideoPanel() {
+            if (state.activeVideoTimer) {
+              clearTimeout(state.activeVideoTimer);
+              state.activeVideoTimer = null;
+            }
+            state.activeVideoScheduleId = null;
+            if (scheduledVideoMount) {
+              var vid = scheduledVideoMount.querySelector("video");
+              if (vid) {
+                try { vid.pause(); vid.removeAttribute("src"); vid.load(); } catch (e) {}
+              }
+              scheduledVideoMount.innerHTML = "";
+            }
+            if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
+            if (scheduledVideoPanel) scheduledVideoPanel.classList.remove("active");
+            if (tableResponsiveWrap) tableResponsiveWrap.style.display = "flex";
+          }
+
+          async function playScheduledVideoItem(item) {
+            if (!item || !scheduledVideoPanel || !scheduledVideoMount) return;
+            stopScheduledVideoPanel();
+            state.activeVideoScheduleId = item.id;
+
+            if (tableResponsiveWrap) tableResponsiveWrap.style.display = "none";
+            scheduledVideoPanel.classList.add("active");
+            if (scheduledVideoCaption) {
+              scheduledVideoCaption.textContent = "🎬 " + (item.title || "Tayangan Harian") + " (" + item.playTime + " WIB)";
+            }
+
+            var ytEmbed = extractYouTubeEmbedUrl(item.url);
+            var durationSec = Number(item.durationSec || 0);
+
+            if (ytEmbed) {
+              scheduledVideoMount.innerHTML = "<iframe src='" + escapeHtml(ytEmbed) + "' allow='autoplay; encrypted-media; fullscreen' allowfullscreen></iframe>";
+              if (durationSec > 0) {
+                state.activeVideoTimer = setTimeout(stopScheduledVideoPanel, durationSec * 1000);
+              }
+              return;
+            }
+
+            var srcUrl = item.url || "";
+            if (item.hasLocalFile) {
+              var blobUrl = await getVideoBlobUrlFromDb(item.id);
+              if (blobUrl) srcUrl = blobUrl;
+            }
+
+            if (!srcUrl) {
+              stopScheduledVideoPanel();
+              return;
+            }
+
+            var videoEl = document.createElement("video");
+            videoEl.src = srcUrl;
+            videoEl.autoplay = true;
+            videoEl.playsInline = true;
+            videoEl.muted = false;
+            videoEl.controls = false;
+            videoEl.addEventListener("ended", stopScheduledVideoPanel);
+            videoEl.addEventListener("error", stopScheduledVideoPanel);
+            scheduledVideoMount.appendChild(videoEl);
+
+            try {
+              var p = videoEl.play();
+              if (p && typeof p.then === "function") {
+                p.catch(function () {
+                  videoEl.muted = true;
+                  videoEl.play().catch(function () {});
+                  if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.add("visible");
+                });
+              }
+            } catch (e) {}
+
+            if (durationSec > 0) {
+              state.activeVideoTimer = setTimeout(stopScheduledVideoPanel, durationSec * 1000);
+            }
+          }
+
+          if (scheduledVideoUnmuteBtn) {
+            scheduledVideoUnmuteBtn.addEventListener("click", function () {
+              var vid = scheduledVideoMount && scheduledVideoMount.querySelector("video");
+              if (vid) {
+                vid.muted = false;
+                vid.play().catch(function () {});
+              }
+              scheduledVideoUnmuteBtn.classList.remove("visible");
+            });
+          }
+
+          function checkVideoScheduleTrigger() {
+            if (state.activeVideoScheduleId) return;
+            var nowParts = getJakartaNowParts();
+            var list = loadVideoSchedules();
+            for (var i = 0; i < list.length; i++) {
+              var item = list[i];
+              if (item && item.playTime === nowParts.hm) {
+                var runKey = nowParts.dateKey + "_" + item.id + "_" + item.playTime;
+                if (!state.playedTodayKeys[runKey]) {
+                  state.playedTodayKeys[runKey] = true;
+                  playScheduledVideoItem(item);
+                  break;
+                }
+              }
+            }
+          }
+
+          if (openVideoModalBtn && videoScheduleModal) {
+            openVideoModalBtn.addEventListener("click", function () {
+              renderVideoScheduleList();
+              videoScheduleModal.classList.add("open");
+            });
+          }
+
+          if (closeVideoModalBtn && videoScheduleModal) {
+            closeVideoModalBtn.addEventListener("click", function () {
+              videoScheduleModal.classList.remove("open");
+            });
+          }
+
+          if (addVideoScheduleBtn) {
+            addVideoScheduleBtn.addEventListener("click", async function () {
+              var titleVal = (videoTitleInput && videoTitleInput.value.trim()) || "Tayangan Video Harian";
+              var urlVal = (videoUrlInput && videoUrlInput.value.trim()) || "";
+              var fileObj = videoFileInput && videoFileInput.files && videoFileInput.files[0];
+              var playTimeVal = (videoPlayTimeInput && videoPlayTimeInput.value) || "08:00";
+              var durationVal = Math.max(0, Number(videoDurationInput && videoDurationInput.value || 0));
+
+              if (!urlVal && !fileObj) {
+                alert("Silakan isi URL Video atau pilih file video lokal terlebih dahulu.");
+                return;
+              }
+
+              var newId = "
