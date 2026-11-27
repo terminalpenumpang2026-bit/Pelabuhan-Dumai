@@ -1979,51 +1979,7 @@
     }
 
     // Sinkronisasi Otomatis Google Sheet setiap 3 detik
-    async function syncGoogleSheetData(isManual = false) {
-      if (isFetchingSheet) return;
-      isFetchingSheet = true;
-      const refreshBtn = document.getElementById('manualRefreshBtn');
-      if (isManual && refreshBtn) refreshBtn.disabled = true;
-
-      try {
-        const savedUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl) || DEFAULT_SHEET_URL;
-        const candidateUrls = buildGoogleSheetCsvUrls(savedUrl);
-        let parsedShips = null;
-
-        for (const url of candidateUrls) {
-          try {
-            const resp = await fetch(url, { cache: 'no-store' });
-            if (!resp.ok) continue;
-            const text = await resp.text();
-            if (!text || text.trim().startsWith('<!DOCTYPE')) continue;
-            const rows = parseCsvRows(text);
-            const ships = mapSheetRowsToShips(rows);
-            if (ships.length > 0) {
-              parsedShips = ships;
-              break;
-            }
-          } catch (e) {}
-        }
-
-        if (parsedShips && parsedShips.length > 0) {
-          localStorage.setItem(STORAGE_KEYS.cachedShips, JSON.stringify(parsedShips));
-          applyShipsData(parsedShips);
-          if (isManual) showToastMessage(`✓ Data kapal diperbarui (${parsedShips.length} jadwal).`);
-        } else if (allShips.length === 0) {
-          const cached = localStorage.getItem(STORAGE_KEYS.cachedShips);
-          if (cached) {
-            applyShipsData(JSON.parse(cached));
-          } else {
-            applyShipsData(FALLBACK_SHIPS);
-          }
-        }
-      } finally {
-        isFetchingSheet = false;
-        if (refreshBtn) refreshBtn.disabled = false;
-      }
-    }
-
-    // Normalisasi Link Gambar & Video Google Drive
+    // Normalisasi Link Gambar & Video (Google Drive, YouTube, dan Link Video Langsung)
     function normalizeGoogleDriveImageUrl(input) {
       const val = (input || '').trim();
       if (!val) return '';
@@ -2034,14 +1990,58 @@
       return val;
     }
 
+    function extractYouTubeVideoId(input) {
+      const val = (input || '').trim();
+      if (!val) return '';
+      const ytMatch = val.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
+      return ytMatch ? ytMatch[1] : '';
+    }
+
     function normalizeGoogleDriveVideoDirectUrl(input) {
       const val = (input || '').trim();
       if (!val) return '';
-      const idMatch = val.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || val.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (idMatch) {
-        return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
+
+      // 1. Cek link Google Drive
+      const driveMatch = val.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || val.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (driveMatch) {
+        return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
       }
+
+      // 2. Cek link YouTube
+      const ytId = extractYouTubeVideoId(val);
+      if (ytId) {
+        return `https://www.youtube.com/embed/${ytId}`;
+      }
+
+      // 3. Link langsung (.mp4, .webm, .ogg, .m3u8, dsb.) atau URL lainnya
       return val;
+    }
+
+    function isEmbedVideoUrl(url) {
+      const u = (url || '').trim().toLowerCase();
+      if (!u) return false;
+      return (
+        u.includes('drive.google.com') ||
+        u.includes('youtube.com/embed/') ||
+        u.includes('player.vimeo.com')
+      );
+    }
+
+    function renderVideoPreviewElement(src, labelText, boxId, labelId, emptyText) {
+      const box = document.getElementById(boxId);
+      const label = document.getElementById(labelId);
+      if (box) {
+        if (!src) {
+          box.innerHTML = `<span class="logo-preview-empty">${escapeHtml(emptyText)}</span>`;
+        } else if (isEmbedVideoUrl(src)) {
+          box.innerHTML = `<iframe src="${escapeHtml(src)}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        } else {
+          box.innerHTML = `<video src="${escapeHtml(src)}" muted controls playsinline></video>`;
+        }
+      }
+      if (label && labelText) {
+        label.textContent = labelText;
+      }
     }
 
     function renderHeaderLogos() {
@@ -2157,8 +2157,11 @@
         activeObjectUrls.push(srcUrl);
       } else {
         srcUrl = normalizeGoogleDriveVideoDirectUrl(item.url || '');
-        if (!srcUrl) return;
-        isEmbedIframe = srcUrl.includes('drive.google.com') || srcUrl.includes('youtube.com') || srcUrl.includes('youtu.be');
+        if (!srcUrl) {
+          showToastMessage('Link video tidak valid atau kosong.');
+          return;
+        }
+        isEmbedIframe = isEmbedVideoUrl(srcUrl);
       }
 
       if (caption) {
@@ -2170,7 +2173,7 @@
 
       if (isEmbedIframe) {
         const autoplayUrl = srcUrl.includes('?') ? `${srcUrl}&autoplay=1` : `${srcUrl}?autoplay=1`;
-        host.innerHTML = `<iframe src="${escapeHtml(autoplayUrl)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        host.innerHTML = `<iframe src="${escapeHtml(autoplayUrl)}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
       } else {
         const videoEl = document.createElement('video');
         videoEl.src = srcUrl;
@@ -2183,6 +2186,10 @@
 
         videoEl.addEventListener('ended', () => {
           stopScheduledVideoFullscreen();
+        });
+
+        videoEl.addEventListener('error', () => {
+          showToastMessage('Gagal memutar link video. Pastikan link dapat diakses publik atau berbentuk file video langsung.');
         });
 
         host.appendChild(videoEl);
@@ -2503,18 +2510,13 @@
       }
 
       function updateSubSchedPreview(src, labelText) {
-        const box = document.getElementById('subSchedVideoPreviewBox');
-        const label = document.getElementById('subSchedVideoFileName');
-        if (box) {
-          if (!src) {
-            box.innerHTML = `<span class="logo-preview-empty">Belum ada video terjadwal dipilih</span>`;
-          } else if (src.includes('drive.google.com')) {
-            box.innerHTML = `<iframe src="${escapeHtml(src)}" allow="autoplay"></iframe>`;
-          } else {
-            box.innerHTML = `<video src="${escapeHtml(src)}" muted controls></video>`;
-          }
-        }
-        if (label && labelText) label.textContent = labelText;
+        renderVideoPreviewElement(
+          src,
+          labelText,
+          'subSchedVideoPreviewBox',
+          'subSchedVideoFileName',
+          'Belum ada video terjadwal dipilih'
+        );
       }
 
       function renderSubScheduledVideoList() {
@@ -2582,7 +2584,15 @@
       subSchedUrlInput?.addEventListener('input', (e) => {
         pendingSubSchedBlob = null;
         pendingSubSchedUrl = normalizeGoogleDriveVideoDirectUrl(e.target.value);
-        updateSubSchedPreview(pendingSubSchedUrl, pendingSubSchedUrl ? 'Link Video Google Drive' : 'Pilih file video atau tempel link Google Drive');
+        updateSubSchedPreview(pendingSubSchedUrl, pendingSubSchedUrl ? `Link: ${e.target.value.trim()}` : 'Pilih file video atau tempel link video');
+      });
+
+      subSchedUrlInput?.addEventListener('paste', () => {
+        setTimeout(() => {
+          pendingSubSchedBlob = null;
+          pendingSubSchedUrl = normalizeGoogleDriveVideoDirectUrl(subSchedUrlInput.value);
+          updateSubSchedPreview(pendingSubSchedUrl, pendingSubSchedUrl ? `Link: ${subSchedUrlInput.value.trim()}` : 'Pilih file video atau tempel link video');
+        }, 0);
       });
 
       document.getElementById('testPlaySubSchedNowBtn')?.addEventListener('click', () => {
@@ -2664,18 +2674,13 @@
       });
 
       function updateDailyPreview(src, labelText) {
-        const box = document.getElementById('videoPreviewBox');
-        const label = document.getElementById('videoFileName');
-        if (box) {
-          if (!src) {
-            box.innerHTML = `<span class="logo-preview-empty">Belum ada video dipilih</span>`;
-          } else if (src.includes('drive.google.com')) {
-            box.innerHTML = `<iframe src="${escapeHtml(src)}" allow="autoplay"></iframe>`;
-          } else {
-            box.innerHTML = `<video src="${escapeHtml(src)}" muted controls></video>`;
-          }
-        }
-        if (label && labelText) label.textContent = labelText;
+        renderVideoPreviewElement(
+          src,
+          labelText,
+          'videoPreviewBox',
+          'videoFileName',
+          'Belum ada video dipilih'
+        );
       }
 
       function renderDailyScheduleList() {
@@ -2756,7 +2761,15 @@
       dailyUrlInput?.addEventListener('input', (e) => {
         pendingDailyBlob = null;
         const norm = normalizeGoogleDriveVideoDirectUrl(e.target.value);
-        updateDailyPreview(norm, norm ? 'Link Video Google Drive' : 'Pilih file video atau tempel link Google Drive');
+        updateDailyPreview(norm, norm ? `Link: ${e.target.value.trim()}` : 'Pilih file video atau tempel link video');
+      });
+
+      dailyUrlInput?.addEventListener('paste', () => {
+        setTimeout(() => {
+          pendingDailyBlob = null;
+          const norm = normalizeGoogleDriveVideoDirectUrl(dailyUrlInput.value);
+          updateDailyPreview(norm, norm ? `Link: ${dailyUrlInput.value.trim()}` : 'Pilih file video atau tempel link video');
+        }, 0);
       });
 
       document.getElementById('testPlayVideoNowBtn')?.addEventListener('click', () => {
@@ -2824,83 +2837,29 @@
       }
 
       function updateAdVideoPreviewBox(src, labelText) {
-        const box = document.getElementById('adVideoPreviewBox');
-        const label = document.getElementById('adVideoFileName');
-        if (box) {
-          if (!src) {
-            box.innerHTML = `<span class="logo-preview-empty">Belum ada video iklan dipilih</span>`;
-          } else if (src.includes('drive.google.com')) {
-            box.innerHTML = `<iframe src="${escapeHtml(src)}" allow="autoplay"></iframe>`;
-          } else {
-            box.innerHTML = `<video src="${escapeHtml(src)}" muted controls></video>`;
-          }
-        }
-        if (label && labelText) label.textContent = labelText;
+        renderVideoPreviewElement(
+          src,
+          labelText,
+          'adVideoPreviewBox',
+          'adVideoFileName',
+          'Belum ada video iklan dipilih'
+        );
       }
 
       function renderAdVideoScheduleList() {
-        const container = document.getElementById('adVideoScheduleList');
-        if (!container) return;
-        const list = getScheduledAdVideos();
-        if (list.length === 0) {
-          container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.78rem;padding:0.5rem;">Belum ada jadwal video iklan tersimpan.</div>`;
-          return;
-        }
-        container.innerHTML = list.map((ad, idx) => `
-          <div class="video-schedule-item">
-            <div class="video-schedule-item-info">
-              <div class="video-schedule-item-title">${escapeHtml(ad.title)}</div>
-              <div class="video-schedule-item-meta">${escapeHtml(formatAdDateRangeLabel(ad))} • Pukul ${escapeHtml(ad.time)} WIB • ${ad.duration > 0 ? ad.duration + ' dtk' : 'Durasi Penuh'}</div>
-            </div>
-            <div style="display:flex;gap:0.35rem;">
-              <button type="button" class="file-pick-btn" style="padding:0.25rem 0.5rem;font-size:0.72rem;" data-play-ad="${idx}">▶</button>
-              <button type="button" class="btn-danger-xs" data-del-ad="${idx}">Hapus</button>
-            </div>
-          </div>
-        `).join('');
-
-        container.querySelectorAll('[data-play-ad]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const idx = parseInt(btn.getAttribute('data-play-ad'), 10);
-            const item = getScheduledAdVideos()[idx];
-            if (item) {
-              adVideoModal?.classList.remove('open');
-              playVideoItemFullscreen(item, '📺 Video Iklan');
-            }
-          });
-        });
-
-        container.querySelectorAll('[data-del-ad]').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const idx = parseInt(btn.getAttribute('data-del-ad'), 10);
-            const current = getScheduledAdVideos();
-            const removed = current[idx];
-            if (removed && removed.videoId) await deleteVideoBlobFromDB(removed.videoId);
-            current.splice(idx, 1);
-            saveScheduledAdVideos(current);
-            renderAdVideoScheduleList();
-            renderSubScheduledVideoList();
-            showToastMessage('Jadwal video iklan dihapus.');
-          });
-        });
-      }
-
-      adScheduleModeSelect?.addEventListener('change', updateAdDateFieldsVisibility);
-      document.getElementById('openDriveForAdVideoBtn')?.addEventListener('click', () => window.open('https://drive.google.com', '_blank'));
-
-      adVideoFileInput?.addEventListener('change', (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (!file) return;
-        pendingAdVideoFileBlob = file;
-        pendingAdVideoSourceUrl = '';
-        const objUrl = URL.createObjectURL(file);
-        updateAdVideoPreviewBox(objUrl, file.name);
-      });
-
+<!-- ... code ... -->
       adVideoUrlInput?.addEventListener('input', (e) => {
         pendingAdVideoFileBlob = null;
         pendingAdVideoSourceUrl = normalizeGoogleDriveVideoDirectUrl(e.target.value);
-        updateAdVideoPreviewBox(pendingAdVideoSourceUrl, pendingAdVideoSourceUrl ? 'Link Video Google Drive' : 'Pilih file / tempel link Google Drive');
+        updateAdVideoPreviewBox(pendingAdVideoSourceUrl, pendingAdVideoSourceUrl ? `Link: ${e.target.value.trim()}` : 'Pilih file / tempel link video');
+      });
+
+      adVideoUrlInput?.addEventListener('paste', () => {
+        setTimeout(() => {
+          pendingAdVideoFileBlob = null;
+          pendingAdVideoSourceUrl = normalizeGoogleDriveVideoDirectUrl(adVideoUrlInput.value);
+          updateAdVideoPreviewBox(pendingAdVideoSourceUrl, pendingAdVideoSourceUrl ? `Link: ${adVideoUrlInput.value.trim()}` : 'Pilih file / tempel link video');
+        }, 0);
       });
 
       document.getElementById('testPlayAdVideoNowBtn')?.addEventListener('click', () => {
