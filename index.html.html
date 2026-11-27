@@ -193,13 +193,11 @@
       justify-content: center;
     }
 
-    body.is-fullscreen #openSheetModalBtn,
     body.is-fullscreen #openLogoModalBtn,
     body.is-fullscreen #openVideoModalBtn,
     body.is-fullscreen #saveRunningTextBtn,
     body.is-fullscreen #themeToggleBtn,
-    body.is-fullscreen #manualRefreshBtn,
-    body.is-fullscreen #sheetSyncBadge {
+    body.is-fullscreen #manualRefreshBtn {
       display: none;
     }
 
@@ -599,31 +597,6 @@
       padding: 0;
       gap: 0.5rem;
       flex-shrink: 0;
-    }
-
-    .sync-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.32rem 0.7rem;
-      border-radius: 8px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    .sync-pill.connected {
-      border-color: rgba(34, 197, 94, 0.45);
-      color: #22c55e;
-    }
-
-    .sync-pill.fallback {
-      border-color: rgba(234, 179, 8, 0.5);
-      color: #eab308;
     }
 
     .refresh-btn {
@@ -1242,16 +1215,6 @@
       color: #0f172a;
     }
 
-    .sheet-status-box {
-      padding: 0.6rem 0.75rem;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      font-size: 0.78rem;
-      margin-bottom: 0.85rem;
-      line-height: 1.4;
-    }
-
     @media (max-width: 640px) {
       .header-container {
         flex-wrap: wrap;
@@ -1300,7 +1263,6 @@
             <div class="header-meta">
               <span class="live-pill"><span class="pulse-dot"></span> <span id="liveClock">Memuat waktu WIB...</span></span>
               <button type="button" class="action-btn" id="fullscreenToggleBtn">⛶ Layar Penuh</button>
-              <button type="button" class="action-btn" id="openSheetModalBtn">📊 Link Google Sheet</button>
               <button type="button" class="action-btn" id="openLogoModalBtn">🖼️ Atur Logo</button>
               <button type="button" class="action-btn" id="openVideoModalBtn">🎬 Video Harian</button>
               <button type="button" class="action-btn" id="saveRunningTextBtn">✏️ Ubah Teks</button>
@@ -1368,7 +1330,7 @@
         </table>
       </div>
       <div class="slide-page-badge" id="slidePageBadge">Halaman 1 / 1</div>
-      <div class="empty-msg" id="emptyMsg">Menunggu data jadwal kapal dari Google Sheets. Klik tombol <strong>📊 Link Google Sheet</strong> di atas untuk menempelkan link Google Sheet Anda.</div>
+      <div class="empty-msg" id="emptyMsg">Menunggu data jadwal kapal dari Google Sheets...</div>
     </section>
   </main>
 
@@ -1379,41 +1341,6 @@
     <div class="scheduled-video-controls-bar">
       <button type="button" class="scheduled-video-unmute-btn" id="scheduledVideoUnmuteBtn">🔊 Aktifkan Suara</button>
       <button type="button" class="scheduled-video-close-btn" id="scheduledVideoCloseBtn">✕ Tutup Video</button>
-    </div>
-  </div>
-
-  <!-- Modal Hubungkan Link Google Sheet -->
-  <div class="modal-backdrop" id="googleSheetModal">
-    <div class="modal-card" style="max-width: 530px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem;">
-        <h3 style="margin-bottom: 0;">📊 Hubungkan ke Google Sheet Anda</h3>
-        <button type="button" class="gdrive-open-btn" id="openGoogleSheetsWebBtn">☁️ Buka Google Sheets</button>
-      </div>
-
-      <div class="sheet-status-box" id="sheetModalStatusBox">
-        Status koneksi: Memeriksa sumber data...
-      </div>
-
-      <div class="form-group">
-        <label for="googleSheetUrlInput">Tempel Link Google Sheet (Link Browser / Share / Publish CSV)</label>
-        <div style="display: flex; gap: 0.45rem;">
-          <input type="text" id="googleSheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/..." style="flex: 1;" />
-          <button type="button" class="gdrive-open-btn" id="pasteSheetUrlBtn">📋 Tempel</button>
-        </div>
-        <div class="form-hint" style="margin-top: 0.55rem;">
-          <strong>Cara menghubungkan Google Sheet Anda:</strong><br />
-          1. Buka file Google Sheet jadwal kapal Anda di browser.<br />
-          2. Klik tombol <strong>Bagikan (Share)</strong> di kanan atas &rarr; ubah akses menjadi <strong>Siapa saja yang memiliki link (Anyone with the link)</strong>.<br />
-          3. Salin link Google Sheet tersebut lalu tempel ke kolom di atas dan klik <strong>Simpan &amp; Hubungkan</strong>.<br />
-          <em>(Sistem otomatis mengonversi link Google Sheet biasa maupun link "Publikasikan ke web / CSV" dan mengecek perubahan setiap 3 detik).</em>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" class="btn-secondary" id="resetSheetUrlBtn">Reset Link</button>
-        <button type="button" class="btn-secondary" id="closeSheetModalBtn">Tutup</button>
-        <button type="button" class="btn-primary" id="saveSheetUrlBtn">✓ Simpan &amp; Hubungkan</button>
-      </div>
     </div>
   </div>
 
@@ -1456,7 +1383,8 @@
       </div>
 
       <div class="form-hint">
-        • <strong>Durasi Otomatis Penuh (`0`):</strong> Video diputar utuh sesuai durasi asli video yang ditampilkan sampai selesai, lalu otomatis kembali ke papan jadwal.<br />
+        • <strong>Tahan Restart TV / Perangkat:</strong> Jadwal dan file video (hingga ratusan MB) disimpan permanen di memori perangkat (IndexedDB) maupun Link Google Drive, sehingga tetap otomatis tayang saat TV dimatikan lalu dinyalakan kembali.<br />
+        • <strong>Durasi Otomatis Penuh (`0`):</strong> Video diputar utuh sesuai durasi asli video sampai selesai, lalu otomatis kembali ke papan jadwal.<br />
         <strong>1. Tempel Link Google Drive:</strong> Salin link video dari Google Drive (<em>Bagikan &rarr; Siapa saja yang memiliki link</em>) lalu tempel pada kolom <strong>"Atau tempel link Google Drive..."</strong>.<br />
         <strong>2. Pilih File dari Google Drive Desktop / Perangkat:</strong> Klik tombol <strong>📁 Pilih File / Drive</strong>.
       </div>
@@ -1549,13 +1477,12 @@
       'https://docs.google.com/spreadsheets/d/e/2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK/pub?output=csv'
     ];
 
-    const STORAGE_KEY_CUSTOM_CSV = 'dumai_port_custom_csv_url';
-    const STORAGE_KEY_RAW_SHEET_LINK = 'dumai_port_raw_sheet_link';
     const STORAGE_KEY_TICKER = 'dumai_port_ticker_text';
     const STORAGE_KEY_LOGO_LEFT = 'dumai_port_logo_left';
     const STORAGE_KEY_LOGO_RIGHT = 'dumai_port_logo_right';
     const STORAGE_KEY_THEME = 'dumai_port_theme_mode';
     const STORAGE_KEY_VIDEOS = 'dumai_port_daily_videos';
+    const STORAGE_KEY_AUTO_FS = 'dumai_port_auto_fullscreen';
 
     const DEFAULT_TICKER_TEXT = 'SELAMAT DATANG DI TERMINAL PENUMPANG PELABUHAN DUMAI • HARAP MENYIAPKAN TIKET DAN KARTU IDENTITAS SEBELUM MEMASUKI RUANG TUNGGU • JAGA KEBERSIHAN DAN BARANG BAWAAN ANDA • UTAMAKAN KESELAMATAN PELAYARAN.';
 
@@ -1570,71 +1497,136 @@
     let lastPlayedMinuteKey = '';
     let isSheetConnected = false;
 
+    // Deteksi Otomatis Pembaruan File index.html di Server (Vercel / Netlify)
+    let initialPageSignature = null;
+    let isCheckingPageUpdate = false;
+
+    function computeHtmlAppSignature(htmlText) {
+      let hash = 5381;
+      for (let i = 0; i < htmlText.length; i++) {
+        hash = ((hash << 5) + hash) + htmlText.charCodeAt(i);
+        hash |= 0;
+      }
+      return `${htmlText.length}_${hash}`;
+    }
+
+    async function checkForHtmlAppUpdate() {
+      if (isCheckingPageUpdate || isVideoPlaying) return;
+      if (window.location.protocol === 'file:') return;
+      const hasOpenModal = document.querySelector('.modal-backdrop.open');
+      if (hasOpenModal) return;
+
+      isCheckingPageUpdate = true;
+      try {
+        const cleanUrl = window.location.href.split('#')[0].split('?')[0];
+        const res = await fetch(`${cleanUrl}?_appver=${Date.now()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
+        if (res.ok) {
+          const htmlText = await res.text();
+          if (htmlText && htmlText.includes('scheduleTableBody')) {
+            const currentSig = computeHtmlAppSignature(htmlText);
+            if (initialPageSignature === null) {
+              initialPageSignature = currentSig;
+            } else if (initialPageSignature !== currentSig) {
+              showToastMessage('🔄 Pembaruan tampilan terdeteksi! Memuat versi terbaru...');
+              setTimeout(() => {
+                window.location.reload();
+              }, 1200);
+            }
+          }
+        }
+      } catch (e) {
+      } finally {
+        isCheckingPageUpdate = false;
+      }
+    }
+
     // State sementara modal logo & video
     let pendingLeftLogoDataUrl = null;
     let pendingRightLogoDataUrl = null;
     let pendingVideoSourceUrl = '';
+    let pendingVideoFileBlob = null;
     let detectedVideoDurationSec = 0;
+    const activeBlobUrls = new Map();
 
-    // Utilitas Keamanan HTML
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+    // Penyimpanan Permanen File Video Lokal di IndexedDB (tahan TV/device dimatikan & dihidupkan kembali)
+    const VIDEO_DB_NAME = 'DumaiPortVideoDB';
+    const VIDEO_STORE_NAME = 'videoFiles';
+
+    function openVideoDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('Browser tidak mendukung IndexedDB.'));
+          return;
+        }
+        const req = indexedDB.open(VIDEO_DB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
+            db.createObjectStore(VIDEO_STORE_NAME);
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error || new Error('Gagal membuka IndexedDB.'));
+      });
     }
 
-    // Konversi Otomatis Segala Jenis Link Google Sheet menjadi URL CSV Siap Baca
-    function buildGoogleSheetCandidateUrls(rawInput) {
-      const trimmed = String(rawInput || '').trim();
-      if (!trimmed) return [];
+    async function saveVideoBlobToDB(id, fileBlob) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(VIDEO_STORE_NAME);
+        store.put(fileBlob, id);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(tx.error || new Error('Gagal menyimpan file video ke memori perangkat.'));
+      });
+    }
 
-      const candidates = [];
+    async function getVideoBlobFromDB(id) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
+        const store = tx.objectStore(VIDEO_STORE_NAME);
+        const req = store.get(id);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    }
 
-      // 1. Jika sudah berupa link publish / gviz / export CSV
-      if (trimmed.includes('output=csv') || trimmed.includes('tqx=out:csv') || trimmed.includes('format=csv')) {
-        candidates.push(trimmed);
-      }
+    async function deleteVideoBlobFromDB(id) {
+      try {
+        const db = await openVideoDB();
+        await new Promise((resolve) => {
+          const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+          tx.objectStore(VIDEO_STORE_NAME).delete(id);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => resolve();
+        });
+      } catch (e) {}
+    }
 
-      // 2. Link Publish to Web (/spreadsheets/d/e/2PACX-.../pubhtml atau /pub)
-      const pubMatch = trimmed.match(/docs\.google\.com\/spreadsheets\/d\/e\/([a-zA-Z0-9_-]+)/i);
-      if (pubMatch && pubMatch[1]) {
-        const pubId = pubMatch[1];
-        const gidMatch = trimmed.match(/[?&#]gid=(\d+)/i);
-        const gidParam = gidMatch ? `&gid=${gidMatch[1]}&single=true` : '';
-        candidates.push(`https://docs.google.com/spreadsheets/d/e/${pubId}/pub?output=csv${gidParam}`);
-        candidates.push(`https://docs.google.com/spreadsheets/d/e/${pubId}/pub?output=csv`);
-      }
-
-      // 3. Link Google Sheet Biasa (/spreadsheets/d/<SPREADSHEET_ID>/edit...)
-      const docMatch = trimmed.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]{15,})/i);
-      if (docMatch && docMatch[1] && docMatch[1] !== 'e') {
-        const sheetId = docMatch[1];
-        const gidMatch = trimmed.match(/[?&#]gid=(\d+)/i);
-        const gidQuery = gidMatch ? `&gid=${gidMatch[1]}` : '';
-        candidates.push(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv${gidQuery}`);
-        candidates.push(`https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv${gidQuery}`);
-        if (gidQuery) {
-          candidates.push(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`);
-          candidates.push(`https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`);
+    async function resolveVideoPlayableUrl(item) {
+      if (!item) return '';
+      if (item.storageType === 'indexeddb' && item.videoId) {
+        if (activeBlobUrls.has(item.videoId)) {
+          return activeBlobUrls.get(item.videoId);
         }
+        try {
+          const blob = await getVideoBlobFromDB(item.videoId);
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            activeBlobUrls.set(item.videoId, url);
+            return url;
+          }
+        } catch (e) {}
+        return '';
       }
-
-      // 4. Jika user hanya menempelkan ID Spreadsheet secara langsung
-      if (/^[a-zA-Z0-9_-]{25,}$/.test(trimmed)) {
-        candidates.push(`https://docs.google.com/spreadsheets/d/${trimmed}/gviz/tq?tqx=out:csv`);
-        candidates.push(`https://docs.google.com/spreadsheets/d/${trimmed}/export?format=csv`);
-      }
-
-      // Pastikan link asli tetap dicoba jika bukan format standar
-      if (candidates.length === 0) {
-        candidates.push(trimmed);
-      }
-
-      return [...new Set(candidates)];
+      return item.url || '';
     }
 
     // Jam Real-time WIB
@@ -1846,7 +1838,6 @@
     }
 
     function getVisibleRowCapacity() {
-      // Batasi maksimal 5 baris data kapal per slide; sisanya tampil pada slide berikutnya
       const MAX_ROWS_PER_SLIDE = 5;
       if (allSchedules.length <= MAX_ROWS_PER_SLIDE) {
         return allSchedules.length || MAX_ROWS_PER_SLIDE;
@@ -1964,18 +1955,6 @@
       }, 5000);
     }
 
-    function updateSheetSyncBadge(connected, timeLabel = '') {
-      isSheetConnected = connected;
-      const modalStatus = document.getElementById('sheetModalStatusBox');
-      if (modalStatus) {
-        if (connected) {
-          modalStatus.innerHTML = `<strong style="color:#22c55e;">🟢 Terhubung ke Google Sheet</strong><br/>Data otomatis diperiksa &amp; direfresh setiap 3 detik dari spreadsheet Anda.`;
-        } else {
-          modalStatus.innerHTML = `<strong style="color:#eab308;">⚠️ Belum Terhubung ke Google Sheet</strong><br/>Tempelkan link Google Sheet Anda pada kolom di bawah dan pastikan akses berbagi disetel ke <em>"Siapa saja yang memiliki link"</em>.`;
-        }
-      }
-    }
-
     function computeScheduleSignature(rows) {
       return JSON.stringify(rows || []);
     }
@@ -1993,16 +1972,8 @@
         refreshBtn.textContent = '⏳ Memuat...';
       }
 
-      const savedRawLink = localStorage.getItem(STORAGE_KEY_RAW_SHEET_LINK) || '';
-      const savedCsvUrl = localStorage.getItem(STORAGE_KEY_CUSTOM_CSV) || '';
-      const customCandidates = [
-        ...buildGoogleSheetCandidateUrls(savedRawLink),
-        ...buildGoogleSheetCandidateUrls(savedCsvUrl)
-      ];
-      const urlsToTry = [...new Set([...customCandidates, ...DEFAULT_SHEET_CSV_URLS])];
-
       let loaded = false;
-      for (const baseUrl of urlsToTry) {
+      for (const baseUrl of DEFAULT_SHEET_CSV_URLS) {
         try {
           const sep = baseUrl.includes('?') ? '&' : '?';
           const nonce = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
@@ -2026,26 +1997,18 @@
           allSchedules = rows;
           lastScheduleSignature = nextSignature;
           loaded = true;
+          isSheetConnected = true;
 
           if (dataChanged || isManual) {
             currentSlidePage = 0;
             renderScheduleTable(dataChanged);
           }
-
-          const nowJam = new Date().toLocaleTimeString('id-ID', {
-            timeZone: 'Asia/Jakarta',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-          }).replace(/\./g, ':');
-          updateSheetSyncBadge(true, nowJam);
           break;
         } catch (err) {}
       }
 
       if (!loaded) {
-        updateSheetSyncBadge(false);
+        isSheetConnected = false;
         if (allSchedules.length === 0) {
           allSchedules = [
             { kapal: 'MV. BATAM JET 2', destinasi: 'BENGKALIS - SELATPANJANG - BATAM', datang: '07:15', berangkat: '08:00', gate: 'GATE 1', status: 'BOARDING' },
@@ -2220,7 +2183,23 @@
         }
       } catch (e) {}
       inputEl.focus();
-      alert('Silakan tekan Ctrl+V (atau klik kanan -> Tempel) pada kotak link.');
+      showToastMessage('Silakan tekan Ctrl+V (atau klik kanan -> Tempel) pada kotak link.');
+    }
+
+    function showToastMessage(msg) {
+      let toast = document.getElementById('appToastMsg');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'appToastMsg';
+        toast.style.cssText = 'position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);background:#0f172a;color:#f8fafc;border:1px solid rgba(56,189,248,0.45);padding:0.6rem 1.1rem;border-radius:10px;font-size:0.84rem;font-weight:600;z-index:99999;box-shadow:0 10px 25px rgba(0,0,0,0.4);max-width:90vw;text-align:center;';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      clearTimeout(toast._hideTimer);
+      toast._hideTimer = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3600);
     }
 
     function setupLogoDropzone(side) {
@@ -2231,7 +2210,7 @@
 
       const handleChosenFile = async (file) => {
         if (!file || !file.type.startsWith('image/')) {
-          alert('Harap pilih file gambar (PNG, JPG, WebP, atau SVG).');
+          showToastMessage('Harap pilih file gambar (PNG, JPG, WebP, atau SVG).');
           return;
         }
         try {
@@ -2246,7 +2225,7 @@
           if (driveUrlInput) driveUrlInput.value = '';
           updateLogoPreviewBox(side, processed, `✓ ${file.name}`);
         } catch (err) {
-          alert(err.message || 'Gagal memproses gambar logo.');
+          showToastMessage(err.message || 'Gagal memproses gambar logo.');
         }
       };
 
@@ -2266,7 +2245,7 @@
           updateLogoPreviewBox(side, processed, '✓ Link Google Drive siap');
         } catch (err) {
           updateLogoPreviewBox(side, null, '⚠️ Gagal memuat link Drive');
-          alert(err.message);
+          showToastMessage(err.message);
         }
       };
 
@@ -2367,11 +2346,12 @@
 
       const handleVideoFile = (file) => {
         if (!file || !file.type.startsWith('video/')) {
-          alert('Harap pilih file video (MP4, WebM, MOV, atau MKV).');
+          showToastMessage('Harap pilih file video (MP4, WebM, MOV, atau MKV).');
           return;
         }
         const blobUrl = URL.createObjectURL(file);
         pendingVideoSourceUrl = blobUrl;
+        pendingVideoFileBlob = file;
         if (urlInput) urlInput.value = '';
         updateVideoPreviewBox(blobUrl, `✓ ${file.name}`);
       };
@@ -2381,10 +2361,12 @@
         if (!rawUrl) {
           if (!pendingVideoSourceUrl.startsWith('blob:')) {
             pendingVideoSourceUrl = '';
+            pendingVideoFileBlob = null;
             updateVideoPreviewBox('', 'Pilih file / tempel link Google Drive');
           }
           return;
         }
+        pendingVideoFileBlob = null;
         const convertedUrl = normalizeGoogleDriveVideoDirectUrl(rawUrl);
         pendingVideoSourceUrl = convertedUrl;
         const isDrive = Boolean(extractGoogleDriveFileId(rawUrl));
@@ -2461,11 +2443,28 @@
       }, 120);
     }
 
+    async function enterFullscreenMode() {
+      try {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          await docEl.requestFullscreen();
+        } else if (docEl.webkitRequestFullscreen) {
+          await docEl.webkitRequestFullscreen();
+        } else {
+          document.body.classList.add('pseudo-fullscreen');
+        }
+      } catch (e) {
+        document.body.classList.add('pseudo-fullscreen');
+      }
+      updateFullscreenState();
+    }
+
     async function toggleFullscreen() {
       const isNativeFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
       const isPseudoFs = document.body.classList.contains('pseudo-fullscreen');
 
       if (isNativeFs || isPseudoFs) {
+        localStorage.removeItem(STORAGE_KEY_AUTO_FS);
         if (isNativeFs) {
           try {
             if (document.exitFullscreen) await document.exitFullscreen();
@@ -2475,19 +2474,8 @@
         document.body.classList.remove('pseudo-fullscreen');
         updateFullscreenState();
       } else {
-        try {
-          const docEl = document.documentElement;
-          if (docEl.requestFullscreen) {
-            await docEl.requestFullscreen();
-          } else if (docEl.webkitRequestFullscreen) {
-            await docEl.webkitRequestFullscreen();
-          } else {
-            document.body.classList.add('pseudo-fullscreen');
-          }
-        } catch (e) {
-          document.body.classList.add('pseudo-fullscreen');
-        }
-        updateFullscreenState();
+        localStorage.setItem(STORAGE_KEY_AUTO_FS, '1');
+        await enterFullscreenMode();
       }
     }
 
@@ -2495,21 +2483,38 @@
     function getScheduledVideos() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY_VIDEOS);
-        const list = raw ? JSON.parse(raw) : [];
-        return Array.isArray(list) ? list : [];
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
         return [];
       }
     }
 
     function saveScheduledVideos(list) {
-      localStorage.setItem(STORAGE_KEY_VIDEOS, JSON.stringify(list));
+      try {
+        localStorage.setItem(STORAGE_KEY_VIDEOS, JSON.stringify(list || []));
+      } catch (e) {
+        showToastMessage('Gagal menyimpan jadwal video ke penyimpanan browser.');
+      }
     }
 
-    function detectVideoSourceLabel(url) {
-      if (extractGoogleDriveFileId(url)) return '☁️ Google Drive';
-      if (extractYouTubeEmbedUrl(url)) return '▶️ YouTube';
-      if (String(url).startsWith('blob:')) return '📁 File Lokal/Drive';
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function detectVideoSourceLabel(itemOrUrl) {
+      if (itemOrUrl && typeof itemOrUrl === 'object') {
+        if (itemOrUrl.storageType === 'indexeddb') return '💾 Tersimpan di Perangkat';
+        return detectVideoSourceLabel(itemOrUrl.url || '');
+      }
+      if (extractGoogleDriveFileId(itemOrUrl)) return '☁️ Google Drive';
+      if (extractYouTubeEmbedUrl(itemOrUrl)) return '▶️ YouTube';
+      if (String(itemOrUrl).startsWith('blob:')) return '💾 Tersimpan di Perangkat';
       return '🎬 Video URL';
     }
 
@@ -2526,7 +2531,7 @@
         <div class="video-schedule-item">
           <div class="video-schedule-item-info">
             <div class="video-schedule-item-title">${escapeHtml(v.title || 'Tayangan Video')}</div>
-            <div class="video-schedule-item-meta">⏰ ${escapeHtml(v.time)} WIB • ${detectVideoSourceLabel(v.url)} • ${v.duration > 0 ? formatDurationLabel(v.duration) : 'Sesuai durasi video'}</div>
+            <div class="video-schedule-item-meta">⏰ ${escapeHtml(v.time)} WIB • ${detectVideoSourceLabel(v)} • ${v.duration > 0 ? formatDurationLabel(v.duration) : 'Sesuai durasi video'}</div>
           </div>
           <div style="display:flex;gap:0.35rem;">
             <button type="button" class="btn-secondary" style="padding:0.25rem 0.5rem;font-size:0.74rem;" onclick="previewScheduledVideo(${idx})">▶ Tes</button>
@@ -2536,18 +2541,26 @@
       `).join('');
     }
 
-    window.deleteScheduledVideo = function(index) {
+    window.deleteScheduledVideo = async function(index) {
       const list = getScheduledVideos();
+      const removed = list[index];
+      if (removed && removed.storageType === 'indexeddb' && removed.videoId) {
+        await deleteVideoBlobFromDB(removed.videoId);
+        if (activeBlobUrls.has(removed.videoId)) {
+          URL.revokeObjectURL(activeBlobUrls.get(removed.videoId));
+          activeBlobUrls.delete(removed.videoId);
+        }
+      }
       list.splice(index, 1);
       saveScheduledVideos(list);
       renderVideoScheduleList();
     };
 
-    window.previewScheduledVideo = function(index) {
+    window.previewScheduledVideo = async function(index) {
       const list = getScheduledVideos();
       if (list[index]) {
         document.getElementById('videoScheduleModal')?.classList.remove('open');
-        playScheduledVideoFullscreen(list[index]);
+        await playScheduledVideoFullscreen(list[index]);
       }
     };
 
@@ -2575,23 +2588,28 @@
       if (panel) panel.classList.remove('active');
       if (mount) mount.innerHTML = '';
       if (unmuteBtn) unmuteBtn.classList.remove('visible');
-      renderScheduleTable(false);
     }
 
-    function playScheduledVideoFullscreen(item) {
+    async function playScheduledVideoFullscreen(item) {
       const panel = document.getElementById('scheduledVideoPanel');
       const mount = document.getElementById('scheduledVideoMount');
       const caption = document.getElementById('scheduledVideoCaption');
       const unmuteBtn = document.getElementById('scheduledVideoUnmuteBtn');
-      if (!panel || !mount || !item || !item.url) return;
+      if (!panel || !mount || !item) return;
+
+      const playableUrl = await resolveVideoPlayableUrl(item);
+      if (!playableUrl) {
+        showToastMessage('File video tidak ditemukan di memori perangkat. Silakan pilih ulang file atau gunakan Link Google Drive.');
+        return;
+      }
 
       isVideoPlaying = true;
       document.body.classList.add('video-fullscreen-active');
       panel.classList.add('active');
       if (caption) caption.textContent = `🎬 ${item.title || 'Tayangan Harian Terjadwal'}`;
 
-      const gdriveEmbed = extractGoogleDriveVideoEmbedUrl(item.url);
-      const ytEmbed = extractYouTubeEmbedUrl(item.url);
+      const gdriveEmbed = extractGoogleDriveVideoEmbedUrl(playableUrl);
+      const ytEmbed = extractYouTubeEmbedUrl(playableUrl);
 
       if (gdriveEmbed) {
         mount.innerHTML = `<iframe src="${escapeHtml(gdriveEmbed)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
@@ -2614,7 +2632,7 @@
           videoEndTimeout = setTimeout(stopScheduledVideoFullscreen, Number(item.duration) * 1000);
         }
       } else {
-        mount.innerHTML = `<video id="activeScheduledVideoEl" src="${escapeHtml(item.url)}" autoplay playsinline preload="auto"></video>`;
+        mount.innerHTML = `<video id="activeScheduledVideoEl" src="${escapeHtml(playableUrl)}" autoplay playsinline preload="auto"></video>`;
         const videoEl = document.getElementById('activeScheduledVideoEl');
         if (videoEl) {
           videoEl.muted = false;
@@ -2670,7 +2688,7 @@
       const currentHHMM = `${hh}:${mm}`;
       const minuteKey = `${now.toDateString()}_${currentHHMM}`;
 
-      if (ss <= 2 && lastPlayedMinuteKey !== minuteKey) {
+      if (ss <= 15 && lastPlayedMinuteKey !== minuteKey) {
         const match = list.find(v => v.time === currentHHMM);
         if (match) {
           lastPlayedMinuteKey = minuteKey;
@@ -2684,6 +2702,11 @@
       const savedTheme = localStorage.getItem(STORAGE_KEY_THEME) || 'dark';
       applyTheme(savedTheme);
 
+      // Kembalikan mode layar penuh secara otomatis jika sebelumnya aktif sebelum auto-reload
+      if (localStorage.getItem(STORAGE_KEY_AUTO_FS) === '1') {
+        enterFullscreenMode();
+      }
+
       renderHeaderLogos();
       loadTickerText();
       updateLiveClock();
@@ -2696,10 +2719,15 @@
       autoRefreshTimer = setInterval(() => fetchScheduleData(false), 3000);
       startAutoSlide();
 
+      // Cek pembaruan file index.html di server setiap 15 detik agar TV otomatis reload tanpa refresh manual
+      checkForHtmlAppUpdate();
+      setInterval(checkForHtmlAppUpdate, 15000);
+
       // Sinkronkan ulang seketika saat tab/halaman kembali aktif dilihat
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) {
           fetchScheduleData(false);
+          checkForHtmlAppUpdate();
         }
       });
 
@@ -2721,70 +2749,6 @@
       document.addEventListener('webkitfullscreenchange', updateFullscreenState);
       window.addEventListener('resize', () => {
         renderScheduleTable(false);
-      });
-
-      // Modal Hubungkan Google Sheet
-      const sheetModal = document.getElementById('googleSheetModal');
-      const sheetInput = document.getElementById('googleSheetUrlInput');
-
-      const openSheetModal = () => {
-        if (sheetInput) {
-          sheetInput.value = localStorage.getItem(STORAGE_KEY_RAW_SHEET_LINK) || localStorage.getItem(STORAGE_KEY_CUSTOM_CSV) || DEFAULT_SHEET_CSV_URLS[0];
-        }
-        updateSheetSyncBadge(isSheetConnected);
-        sheetModal?.classList.add('open');
-      };
-
-      document.getElementById('openSheetModalBtn')?.addEventListener('click', openSheetModal);
-      document.getElementById('closeSheetModalBtn')?.addEventListener('click', () => {
-        sheetModal?.classList.remove('open');
-      });
-
-      document.getElementById('openGoogleSheetsWebBtn')?.addEventListener('click', () => {
-        window.open('https://docs.google.com/spreadsheets/u/0/', '_blank', 'noopener');
-      });
-
-      document.getElementById('pasteSheetUrlBtn')?.addEventListener('click', () => {
-        if (sheetInput) pasteFromClipboardToInput(sheetInput);
-      });
-
-      document.getElementById('saveSheetUrlBtn')?.addEventListener('click', async () => {
-        const rawVal = (sheetInput?.value || '').trim();
-        if (!rawVal) {
-          alert('Harap masukkan link Google Sheet Anda terlebih dahulu.');
-          return;
-        }
-        const candidates = buildGoogleSheetCandidateUrls(rawVal);
-        localStorage.setItem(STORAGE_KEY_RAW_SHEET_LINK, rawVal);
-        if (candidates[0]) {
-          localStorage.setItem(STORAGE_KEY_CUSTOM_CSV, candidates[0]);
-        }
-
-        const saveBtn = document.getElementById('saveSheetUrlBtn');
-        if (saveBtn) {
-          saveBtn.disabled = true;
-          saveBtn.textContent = '⏳ Menghubungkan...';
-        }
-
-        const ok = await fetchScheduleData(false);
-
-        if (saveBtn) {
-          saveBtn.disabled = false;
-          saveBtn.textContent = '✓ Simpan & Hubungkan';
-        }
-
-        if (ok) {
-          sheetModal?.classList.remove('open');
-        } else {
-          alert('Belum bisa membaca data dari link tersebut. Pastikan Google Sheet sudah disetel ke "Bagikan -> Siapa saja yang memiliki link" atau "File -> Bagikan -> Publikasikan ke web (CSV)".');
-        }
-      });
-
-      document.getElementById('resetSheetUrlBtn')?.addEventListener('click', () => {
-        localStorage.removeItem(STORAGE_KEY_RAW_SHEET_LINK);
-        localStorage.removeItem(STORAGE_KEY_CUSTOM_CSV);
-        if (sheetInput) sheetInput.value = '';
-        fetchScheduleData(false);
       });
 
       // Tombol Buka Google Drive langsung dari Modal Logo & Video
@@ -2846,7 +2810,7 @@
           logoModal?.classList.remove('open');
           setTimeout(() => renderScheduleTable(false), 80);
         } catch (err) {
-          alert('Ukuran gambar logo terlalu besar untuk penyimpanan browser. Silakan pilih file gambar dengan ukuran lebih kecil.');
+          showToastMessage('Ukuran gambar logo terlalu besar untuk penyimpanan browser. Silakan pilih file gambar dengan ukuran lebih kecil.');
         }
       });
 
@@ -2872,7 +2836,7 @@
             updateLogoPreviewBox('right', pendingRightLogoDataUrl, '✓ Background hitam dibersihkan');
           }
         } catch (err) {
-          alert('Gagal membersihkan background hitam pada gambar.');
+          showToastMessage('Gagal membersihkan background hitam pada gambar.');
         }
       });
 
@@ -2914,6 +2878,7 @@
 
       document.getElementById('openVideoModalBtn')?.addEventListener('click', () => {
         pendingVideoSourceUrl = '';
+        pendingVideoFileBlob = null;
         detectedVideoDurationSec = 0;
         if (videoUrlInput) videoUrlInput.value = '';
         if (videoFileInput) videoFileInput.value = '';
@@ -2925,35 +2890,62 @@
       });
 
       document.getElementById('closeVideoModalBtn')?.addEventListener('click', () => {
+        pendingVideoFileBlob = null;
         updateVideoPreviewBox('', 'Pilih file / tempel link Google Drive');
         videoModal?.classList.remove('open');
       });
 
-      document.getElementById('addVideoScheduleBtn')?.addEventListener('click', () => {
+      document.getElementById('addVideoScheduleBtn')?.addEventListener('click', async () => {
         const title = (document.getElementById('videoTitleInput')?.value || '').trim() || 'Tayangan Video Pelabuhan';
         const rawUrlInput = (videoUrlInput?.value || '').trim();
-        let finalUrl = pendingVideoSourceUrl;
-
-        if (!finalUrl && rawUrlInput) {
-          finalUrl = normalizeGoogleDriveVideoDirectUrl(rawUrlInput);
-        } else if (!finalUrl && videoFileInput && videoFileInput.files && videoFileInput.files[0]) {
-          finalUrl = URL.createObjectURL(videoFileInput.files[0]);
-        }
+        const chosenFile = pendingVideoFileBlob || (videoFileInput && videoFileInput.files && videoFileInput.files[0]) || null;
 
         const time = document.getElementById('videoPlayTimeInput')?.value || '08:00';
         const rawDuration = document.getElementById('videoDurationInput')?.value;
         const duration = rawDuration === '' || rawDuration === null ? 0 : (parseInt(rawDuration, 10) || 0);
 
-        if (!finalUrl) {
-          alert('Harap tempel link Google Drive video atau pilih file melalui tombol "📁 Pilih File / Drive".');
-          return;
+        const list = getScheduledVideos();
+
+        if (chosenFile) {
+          try {
+            const videoId = `vid_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+            await saveVideoBlobToDB(videoId, chosenFile);
+            list.push({
+              title,
+              storageType: 'indexeddb',
+              videoId,
+              fileName: chosenFile.name,
+              time,
+              duration
+            });
+            saveScheduledVideos(list);
+            showToastMessage('✓ Video & jadwal tersimpan permanen di perangkat (aman saat TV dimatikan).');
+          } catch (err) {
+            showToastMessage('Gagal menyimpan file video ke memori perangkat. Gunakan Link Google Drive agar tetap aman setelah restart.');
+            return;
+          }
+        } else {
+          let finalUrl = pendingVideoSourceUrl;
+          if (!finalUrl && rawUrlInput) {
+            finalUrl = normalizeGoogleDriveVideoDirectUrl(rawUrlInput);
+          }
+          if (!finalUrl) {
+            showToastMessage('Harap tempel link Google Drive video atau pilih file melalui tombol "📁 Pilih File / Drive".');
+            return;
+          }
+          list.push({
+            title,
+            storageType: 'url',
+            url: finalUrl,
+            time,
+            duration
+          });
+          saveScheduledVideos(list);
+          showToastMessage('✓ Jadwal video Google Drive tersimpan permanen.');
         }
 
-        const list = getScheduledVideos();
-        list.push({ title, url: finalUrl, time, duration });
-        saveScheduledVideos(list);
-
         pendingVideoSourceUrl = '';
+        pendingVideoFileBlob = null;
         detectedVideoDurationSec = 0;
         if (document.getElementById('videoTitleInput')) document.getElementById('videoTitleInput').value = '';
         if (videoUrlInput) videoUrlInput.value = '';
