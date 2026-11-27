@@ -1930,4 +1930,152 @@
                 return;
               }
 
-              var newId = "
+              var newId = "vid_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+              var savedLocal = false;
+              if (fileObj) {
+                savedLocal = await saveVideoBlobToDb(newId, fileObj);
+              }
+
+              var list = loadVideoSchedules();
+              list.push({
+                id: newId,
+                title: titleVal,
+                url: urlVal,
+                hasLocalFile: savedLocal,
+                fileName: fileObj ? fileObj.name : "",
+                playTime: playTimeVal,
+                durationSec: durationVal
+              });
+              saveVideoSchedules(list);
+
+              if (videoTitleInput) videoTitleInput.value = "";
+              if (videoUrlInput) videoUrlInput.value = "";
+              if (videoFileInput) videoFileInput.value = "";
+              if (videoDurationInput) videoDurationInput.value = "0";
+              renderVideoScheduleList();
+            });
+          }
+
+          if (saveRunningTextBtn) saveRunningTextBtn.addEventListener("click", openRunningTextModal);
+          if (closeRunningTextModalBtn) closeRunningTextModalBtn.addEventListener("click", closeRunningTextModal);
+          if (confirmRunningTextBtn) {
+            confirmRunningTextBtn.addEventListener("click", function () {
+              applyCustomRunningText(modalRunningTextInput ? modalRunningTextInput.value : "");
+              closeRunningTextModal();
+            });
+          }
+          if (resetRunningTextBtn) {
+            resetRunningTextBtn.addEventListener("click", function () {
+              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
+              if (modalRunningTextInput) modalRunningTextInput.value = DEFAULT_RUNNING_TEXT;
+              syncRunningTextDisplay(DEFAULT_RUNNING_TEXT);
+            });
+          }
+
+          var themeToggleBtn = document.getElementById("themeToggleBtn");
+          function applySavedTheme() {
+            var savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            var isDark = savedTheme ? savedTheme === "dark" : true;
+            document.body.classList.toggle("dark-mode", isDark);
+            if (themeToggleBtn) {
+              themeToggleBtn.textContent = isDark ? "☀️ Mode Terang" : "🌙 Mode Gelap";
+            }
+          }
+
+          if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", function () {
+              var nextDark = !document.body.classList.contains("dark-mode");
+              localStorage.setItem(THEME_STORAGE_KEY, nextDark ? "dark" : "light");
+              applySavedTheme();
+            });
+          }
+
+          var fullscreenToggleBtn = document.getElementById("fullscreenToggleBtn");
+          function isFullscreenActive() {
+            return Boolean(
+              document.fullscreenElement ||
+              document.webkitFullscreenElement ||
+              document.body.classList.contains("pseudo-fullscreen")
+            );
+          }
+
+          function syncFullscreenLabel() {
+            var active = isFullscreenActive();
+            document.body.classList.toggle("is-fullscreen", active);
+            if (fullscreenToggleBtn) {
+              fullscreenToggleBtn.textContent = active ? "✕ Keluar Layar Penuh" : "⛶ Layar Penuh";
+            }
+          }
+
+          if (fullscreenToggleBtn) {
+            fullscreenToggleBtn.addEventListener("click", async function () {
+              try {
+                if (!isFullscreenActive()) {
+                  var root = document.documentElement;
+                  if (root.requestFullscreen) await root.requestFullscreen();
+                  else if (root.webkitRequestFullscreen) await root.webkitRequestFullscreen();
+                  else document.body.classList.add("pseudo-fullscreen");
+                } else {
+                  document.body.classList.remove("pseudo-fullscreen");
+                  if (document.exitFullscreen && document.fullscreenElement) await document.exitFullscreen();
+                  else if (document.webkitExitFullscreen && document.webkitFullscreenElement) await document.webkitExitFullscreen();
+                }
+              } catch (err) {
+                document.body.classList.toggle("pseudo-fullscreen");
+              }
+              syncFullscreenLabel();
+            });
+          }
+
+          document.addEventListener("fullscreenchange", syncFullscreenLabel);
+          document.addEventListener("webkitfullscreenchange", syncFullscreenLabel);
+
+          if (manualRefreshBtn) {
+            manualRefreshBtn.addEventListener("click", function () {
+              syncScheduleData(true);
+              fetchDumaiWeather();
+            });
+          }
+
+          [logoModal, runningTextModal, videoScheduleModal].forEach(function (backdrop) {
+            if (!backdrop) return;
+            backdrop.addEventListener("click", function (ev) {
+              if (ev.target === backdrop) backdrop.classList.remove("open");
+            });
+          });
+
+          applySavedTheme();
+          renderHeaderLogos();
+          syncRunningTextDisplay(localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT);
+          renderTableAndStats(state.rows, state.headers);
+          updateLiveClock();
+          syncScheduleData(false);
+          fetchDumaiWeather();
+          checkVideoScheduleTrigger();
+
+          setInterval(updateLiveClock, 1000);
+          setInterval(function () { syncScheduleData(false); }, 5000);
+          setInterval(checkVideoScheduleTrigger, 10000);
+          setInterval(fetchDumaiWeather, 300000);
+
+          document.addEventListener("visibilitychange", function () {
+            if (!document.hidden) {
+              updateLiveClock();
+              syncScheduleData(false);
+              checkVideoScheduleTrigger();
+            }
+          });
+        } catch (err) {
+          console.error("Dashboard initialization error:", err);
+        }
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initDashboard);
+      } else {
+        initDashboard();
+      }
+    })();
+  </script>
+</body>
+</html>
