@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Jadwal Keberangkatan Kapal - Pelabuhan Dumai</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -537,6 +540,57 @@
       background: var(--row-hover);
     }
 
+    tbody.slide-animate tr {
+      animation: tableSlideFade 0.35s ease;
+    }
+
+    .slide-page-badge {
+      position: absolute;
+      right: 0.85rem;
+      bottom: 0.65rem;
+      background: rgba(15, 23, 42, 0.82);
+      color: #f8fafc;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 0.24rem 0.72rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      backdrop-filter: blur(4px);
+      z-index: 4;
+      display: none;
+    }
+
+    .slide-page-badge.visible {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Notifikasi halus saat pembaruan otomatis terdeteksi */
+    .auto-update-toast {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(15, 23, 42, 0.92);
+      color: #f8fafc;
+      border: 1px solid #38bdf8;
+      padding: 0.55rem 1rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      z-index: 99999;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .auto-update-toast.visible {
+      display: inline-flex;
+      animation: tableSlideFade 0.3s ease;
+    }
+
     @keyframes tableSlideFade {
       from {
         opacity: 0;
@@ -875,6 +929,8 @@
 </head>
 <body class="dark-mode">
 
+  <div class="auto-update-toast" id="autoUpdateToast">🔄 Pembaruan aplikasi terdeteksi, memuat versi terbaru...</div>
+
   <header>
     <div class="header-wrap">
       <div class="header-banner-box" id="headerBannerBox">
@@ -924,7 +980,7 @@
         <div class="inline-ticker-wrap" id="inlineTickerWrap">
           <span class="inline-ticker-badge">INFO</span>
           <div class="inline-ticker-marquee">
-            <span class="inline-ticker-text" id="inlineTickerText">Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba 60 menit sebelum keberangkatan</span>
+            <span class="inline-ticker-text" id="inlineTickerText">Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba 60 menit sebelum jadwal keberangkatan</span>
           </div>
         </div>
       </div>
@@ -948,6 +1004,7 @@
           <tbody id="scheduleTableBody"></tbody>
         </table>
       </div>
+      <div class="slide-page-badge" id="slidePageBadge">Halaman 1 / 1</div>
       <div class="scheduled-video-panel" id="scheduledVideoPanel">
         <div id="scheduledVideoMount" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
         <div class="scheduled-video-caption" id="scheduledVideoCaption">🎬 Tayangan Harian Terjadwal</div>
@@ -1043,7 +1100,7 @@
   </div>
 
   <footer>
-    &copy; 2026 Layanan Informasi Pelabuhan Dumai • Sinkronisasi Otomatis Google Sheets
+    &copy; 2026 Layanan Informasi Pelabuhan Dumai • Sinkronisasi Otomatis Google Sheets &amp; Auto-Update TV
   </footer>
 
   <script>
@@ -1060,20 +1117,31 @@
           var LOGO_RIGHT_KEY = "dumai_header_logo_right";
           var THEME_STORAGE_KEY = "dumai_theme_dark_mode";
           var VIDEO_SCHEDULE_KEY = "dumai_daily_video_schedules_v1";
+          var FULLSCREEN_PREF_KEY = "dumai_keep_fullscreen_pref";
+
+          var ROWS_PER_SLIDE = 5;
+          var SLIDE_INTERVAL_MS = 5000;
+          var AUTO_UPDATE_CHECK_MS = 30000;
 
           var state = {
             rows: [],
             headers: ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"],
             isFetching: false,
             lastSignature: "",
+            currentSlideIndex: 0,
+            slideTimer: null,
             activeVideoScheduleId: null,
             activeVideoTimer: null,
-            playedTodayKeys: {}
+            playedTodayKeys: {},
+            initialHtmlFingerprint: null,
+            isReloadingUpdate: false
           };
 
           var thead = document.getElementById("scheduleTableHead");
           var tbody = document.getElementById("scheduleTableBody");
           var emptyMsg = document.getElementById("emptyMsg");
+          var slidePageBadge = document.getElementById("slidePageBadge");
+          var autoUpdateToast = document.getElementById("autoUpdateToast");
           var tableResponsiveWrap = document.getElementById("tableResponsiveWrap");
           var scheduledVideoPanel = document.getElementById("scheduledVideoPanel");
           var scheduledVideoMount = document.getElementById("scheduledVideoMount");
@@ -1100,6 +1168,45 @@
               .replace(/>/g, "&gt;")
               .replace(/"/g, "&quot;")
               .replace(/'/g, "&#39;");
+          }
+
+          function computeStringHash(str) {
+            var s = String(str || "");
+            var hash = 2166136261;
+            for (var i = 0; i < s.length; i++) {
+              hash ^= s.charCodeAt(i);
+              hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+            }
+            return (hash >>> 0).toString(16) + "_" + s.length;
+          }
+
+          async function checkForHtmlAppUpdate() {
+            if (state.isReloadingUpdate || state.activeVideoScheduleId) return;
+            var proto = window.location && window.location.protocol;
+            if (proto !== "http:" && proto !== "https:") return;
+            try {
+              var cleanUrl = window.location.pathname || "/";
+              var sep = cleanUrl.indexOf("?") === -1 ? "?" : "&";
+              var res = await fetch(cleanUrl + sep + "_vcheck=" + Date.now(), {
+                cache: "no-store",
+                headers: { "Cache-Control": "no-cache" }
+              });
+              if (!res || !res.ok) return;
+              var htmlText = await res.text();
+              if (!htmlText || htmlText.indexOf("<html") === -1) return;
+              var fingerprint = computeStringHash(htmlText);
+              if (!state.initialHtmlFingerprint) {
+                state.initialHtmlFingerprint = fingerprint;
+                return;
+              }
+              if (fingerprint !== state.initialHtmlFingerprint) {
+                state.isReloadingUpdate = true;
+                if (autoUpdateToast) autoUpdateToast.classList.add("visible");
+                setTimeout(function () {
+                  window.location.reload();
+                }, 1500);
+              }
+            } catch (e) {}
           }
 
           function getJakartaNowParts() {
@@ -1214,13 +1321,23 @@
           function renderTableAndStats(rows, headers) {
             renderTableHeader(headers || state.headers);
             var list = Array.isArray(rows) ? rows : [];
+            var totalPages = Math.max(1, Math.ceil(list.length / ROWS_PER_SLIDE));
+            if (state.currentSlideIndex >= totalPages) {
+              state.currentSlideIndex = 0;
+            }
+
             if (tbody) {
               if (!list.length) {
                 tbody.innerHTML = "";
                 if (emptyMsg) emptyMsg.style.display = "block";
               } else {
                 if (emptyMsg) emptyMsg.style.display = "none";
-                tbody.innerHTML = list.map(function (item) {
+                var startIdx = state.currentSlideIndex * ROWS_PER_SLIDE;
+                var visibleRows = list.slice(startIdx, startIdx + ROWS_PER_SLIDE);
+                tbody.classList.remove("slide-animate");
+                void tbody.offsetWidth;
+                tbody.classList.add("slide-animate");
+                tbody.innerHTML = visibleRows.map(function (item) {
                   return (
                     "<tr>" +
                       "<td><span class='ship-name'>" + escapeHtml(item.ship) + "</span></td>" +
@@ -1235,6 +1352,15 @@
               }
             }
 
+            if (slidePageBadge) {
+              if (list.length > ROWS_PER_SLIDE) {
+                slidePageBadge.textContent = "📑 Slide " + (state.currentSlideIndex + 1) + " / " + totalPages + " (" + list.length + " Kapal)";
+                slidePageBadge.classList.add("visible");
+              } else {
+                slidePageBadge.classList.remove("visible");
+              }
+            }
+
             if (statTableCount) {
               statTableCount.textContent = String(list.length);
             }
@@ -1245,6 +1371,21 @@
               }).length;
               statActiveCount.textContent = String(activeTotal);
             }
+          }
+
+          function advanceTableSlide() {
+            if (state.activeVideoScheduleId) return;
+            var list = Array.isArray(state.rows) ? state.rows : [];
+            if (list.length <= ROWS_PER_SLIDE) {
+              if (state.currentSlideIndex !== 0) {
+                state.currentSlideIndex = 0;
+                renderTableAndStats(list, state.headers);
+              }
+              return;
+            }
+            var totalPages = Math.ceil(list.length / ROWS_PER_SLIDE);
+            state.currentSlideIndex = (state.currentSlideIndex + 1) % totalPages;
+            renderTableAndStats(list, state.headers);
           }
 
           function parseCsvText(csvText) {
@@ -2007,23 +2148,32 @@
             }
           }
 
+          async function enterFullscreenMode() {
+            try {
+              var root = document.documentElement;
+              if (root.requestFullscreen) await root.requestFullscreen();
+              else if (root.webkitRequestFullscreen) await root.webkitRequestFullscreen();
+              else document.body.classList.add("pseudo-fullscreen");
+            } catch (err) {
+              document.body.classList.add("pseudo-fullscreen");
+            }
+            syncFullscreenLabel();
+          }
+
           if (fullscreenToggleBtn) {
             fullscreenToggleBtn.addEventListener("click", async function () {
-              try {
-                if (!isFullscreenActive()) {
-                  var root = document.documentElement;
-                  if (root.requestFullscreen) await root.requestFullscreen();
-                  else if (root.webkitRequestFullscreen) await root.webkitRequestFullscreen();
-                  else document.body.classList.add("pseudo-fullscreen");
-                } else {
-                  document.body.classList.remove("pseudo-fullscreen");
+              if (!isFullscreenActive()) {
+                localStorage.setItem(FULLSCREEN_PREF_KEY, "1");
+                await enterFullscreenMode();
+              } else {
+                localStorage.removeItem(FULLSCREEN_PREF_KEY);
+                document.body.classList.remove("pseudo-fullscreen");
+                try {
                   if (document.exitFullscreen && document.fullscreenElement) await document.exitFullscreen();
-                  else if (document.webkitExitFullscreen && document.webkitFullscreenElement) await document.webkitExitFullscreen();
-                }
-              } catch (err) {
-                document.body.classList.toggle("pseudo-fullscreen");
+                  else if (document.webkitExitFullscreen && document.webkitExitFullscreen) await document.webkitExitFullscreen();
+                } catch (err) {}
+                syncFullscreenLabel();
               }
-              syncFullscreenLabel();
             });
           }
 
@@ -2034,6 +2184,7 @@
             manualRefreshBtn.addEventListener("click", function () {
               syncScheduleData(true);
               fetchDumaiWeather();
+              checkForHtmlAppUpdate();
             });
           }
 
@@ -2052,17 +2203,25 @@
           syncScheduleData(false);
           fetchDumaiWeather();
           checkVideoScheduleTrigger();
+          checkForHtmlAppUpdate();
+
+          if (localStorage.getItem(FULLSCREEN_PREF_KEY) === "1") {
+            enterFullscreenMode();
+          }
 
           setInterval(updateLiveClock, 1000);
           setInterval(function () { syncScheduleData(false); }, 5000);
+          state.slideTimer = setInterval(advanceTableSlide, SLIDE_INTERVAL_MS);
           setInterval(checkVideoScheduleTrigger, 10000);
           setInterval(fetchDumaiWeather, 300000);
+          setInterval(checkForHtmlAppUpdate, AUTO_UPDATE_CHECK_MS);
 
           document.addEventListener("visibilitychange", function () {
             if (!document.hidden) {
               updateLiveClock();
               syncScheduleData(false);
               checkVideoScheduleTrigger();
+              checkForHtmlAppUpdate();
             }
           });
         } catch (err) {
