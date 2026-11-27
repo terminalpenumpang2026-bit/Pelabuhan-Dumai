@@ -1118,7 +1118,12 @@
           var THEME_STORAGE_KEY = "dumai_theme_dark_mode";
           var VIDEO_SCHEDULE_KEY = "dumai_daily_video_schedules_v1";
           var FULLSCREEN_PREF_KEY = "dumai_keep_fullscreen_pref";
-          var CLOUD_SYNC_URL = "https://kvdb.io/A2x9KmPqR7vLn4Wz8YtB3d/pelabuhan_dumai_v1_state";
+          var CLOUD_SYNC_BUCKET_ID = "pelabuhan_dumai_live_sync_2026_v2";
+          var CLOUD_SYNC_ENDPOINTS = [
+            "https://jsonblob.com/api/jsonBlob/0195c8e4-7b12-7a3f-9d10-dumai2026sync",
+            "https://api.npoint.io/dumai_pelabuhan_sync_2026"
+          ];
+          var CLOUD_BLOB_URL_KEY = "dumai_cloud_blob_url_v2";
 
           var ROWS_PER_SLIDE = 5;
           var SLIDE_INTERVAL_MS = 5000;
@@ -1131,6 +1136,7 @@
             lastSignature: "",
             lastRemoteConfigSig: "",
             lastCloudSyncSig: "",
+            lastCloudUpdatedAt: Number(localStorage.getItem("dumai_cloud_updated_at") || 0),
             remoteRunningText: "",
             currentSlideIndex: 0,
             slideTimer: null,
@@ -1586,7 +1592,7 @@
               var img = new Image();
               img.onload = function () {
                 try {
-                  var maxDim = 260;
+                  var maxDim = 220;
                   var w = img.naturalWidth || img.width || maxDim;
                   var h = img.naturalHeight || img.height || maxDim;
                   if (w > maxDim || h > maxDim) {
@@ -1610,8 +1616,69 @@
             });
           }
 
+          function showCloudSyncNotice(msg, isError) {
+            if (!autoUpdateToast) return;
+            autoUpdateToast.textContent = msg;
+            autoUpdateToast.style.borderColor = isError ? "#f87171" : "#4ade80";
+            autoUpdateToast.classList.add("visible");
+            clearTimeout(state._toastTimer);
+            state._toastTimer = setTimeout(function () {
+              autoUpdateToast.classList.remove("visible");
+            }, 3500);
+          }
+
+          async function getActiveCloudBlobUrl() {
+            var savedUrl = localStorage.getItem(CLOUD_BLOB_URL_KEY);
+            if (savedUrl && savedUrl.indexOf("http") === 0) return savedUrl;
+
+            try {
+              var lookupRes = await fetch("https://ntfy.sh/" + CLOUD_SYNC_BUCKET_ID + "/json?poll=1&since=all", {
+                cache: "no-store"
+              });
+              if (lookupRes && lookupRes.ok) {
+                var lines = (await lookupRes.text()).trim().split(/\r?\n/);
+                for (var i = lines.length - 1; i >= 0; i--) {
+                  if (!lines[i]) continue;
+                  var pkt = JSON.parse(lines[i]);
+                  if (pkt && pkt.message && pkt.message.indexOf("https://jsonblob.com/api/jsonBlob/") === 0) {
+                    localStorage.setItem(CLOUD_BLOB_URL_KEY, pkt.message.trim());
+                    return pkt.message.trim();
+                  }
+                }
+              }
+            } catch (e) {}
+
+            try {
+              var createRes = await fetch("https://jsonblob.com/api/jsonBlob", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Accept": "application/json"
+                },
+                body: JSON.stringify({ updatedAt: 0 })
+              });
+              if (createRes && createRes.ok) {
+                var loc = createRes.headers.get("Location") || createRes.headers.get("location") || "";
+                if (loc) {
+                  if (loc.indexOf("http") !== 0) {
+                    loc = "https://jsonblob.com" + (loc.charAt(0) === "/" ? "" : "/") + loc;
+                  }
+                  localStorage.setItem(CLOUD_BLOB_URL_KEY, loc);
+                  await fetch("https://ntfy.sh/" + CLOUD_SYNC_BUCKET_ID, {
+                    method: "POST",
+                    body: loc
+                  }).catch(function () {});
+                  return loc;
+                }
+              }
+            } catch (e) {}
+
+            return CLOUD_SYNC_ENDPOINTS[0];
+          }
+
           async function pushSettingsToCloudSync() {
             try {
+              showCloudSyncNotice("☁️ Mengirim pengaturan ke layar TV...", false);
               var rawLeft = localStorage.getItem(LOGO_LEFT_KEY) || "";
               var rawRight = localStorage.getItem(LOGO_RIGHT_KEY) || "";
               var cloudLeft = await compressLogoForCloudSync(rawLeft);
@@ -1619,8 +1686,12 @@
               var cloudVideos = loadVideoSchedules().filter(function (v) {
                 return v && !v.hasLocalFile && v.url;
               });
+              var nowTs = Date.now();
+              state.lastCloudUpdatedAt = nowTs;
+              localStorage.setItem("dumai_cloud_updated_at", String(nowTs));
+
               var payload = {
-                updatedAt: Date.now(),
+                updatedAt: nowTs,
                 runningText: localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT,
                 logoLeft: cloudLeft,
                 logoRight: cloudRight,
@@ -1628,17 +1699,40 @@
               };
               var serialized = JSON.stringify(payload);
               state.lastCloudSyncSig = computeStringHash(serialized);
-              await fetch(CLOUD_SYNC_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+
+              var blobUrl = await getActiveCloudBlobUrl();
+              var putRes = await fetch(blobUrl, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Accept": "application/json"
+                },
                 body: serialized
               });
-            } catch (e) {}
+
+              if (putRes && putRes.ok) {
+                await fetch("https://ntfy.sh/" + CLOUD_SYNC_BUCKET_ID, {
+                  method: "POST",
+                  body: blobUrl
+                }).catch(function () {});
+                showCloudSyncNotice("✅ Pengaturan berhasil disinkronkan ke TV!", false);
+              } else {
+                showCloudSyncNotice("⚠️ Gagal mengirim ke server cloud, periksa koneksi internet.", true);
+              }
+            } catch (e) {
+              showCloudSyncNotice("⚠️ Gagal sinkronisasi cloud: " + (e && e.message ? e.message : "Network error"), true);
+            }
           }
 
           async function pullSettingsFromCloudSync() {
             try {
-              var res = await fetch(CLOUD_SYNC_URL + "?_cb=" + Date.now(), { cache: "no-store" });
+              var blobUrl = await getActiveCloudBlobUrl();
+              if (!blobUrl) return;
+              var sep = blobUrl.indexOf("?") === -1 ? "?" : "&";
+              var res = await fetch(blobUrl + sep + "_cb=" + Date.now(), {
+                cache: "no-store",
+                headers: { "Accept": "application/json" }
+              });
               if (!res || !res.ok) return;
               var rawText = await res.text();
               if (!rawText) return;
@@ -1646,7 +1740,16 @@
               if (sig === state.lastCloudSyncSig) return;
               var data = JSON.parse(rawText);
               if (!data || typeof data !== "object") return;
+
+              var remoteTs = Number(data.updatedAt || 0);
+              if (remoteTs <= 0 || remoteTs <= state.lastCloudUpdatedAt) {
+                state.lastCloudSyncSig = sig;
+                return;
+              }
+
               state.lastCloudSyncSig = sig;
+              state.lastCloudUpdatedAt = remoteTs;
+              localStorage.setItem("dumai_cloud_updated_at", String(remoteTs));
 
               if (typeof data.runningText === "string" && !state.remoteRunningText) {
                 var trimmedText = data.runningText.trim();
