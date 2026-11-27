@@ -567,7 +567,6 @@
       gap: 0.35rem;
     }
 
-    /* Notifikasi halus saat pembaruan otomatis terdeteksi */
     .auto-update-toast {
       position: fixed;
       top: 1rem;
@@ -1110,6 +1109,7 @@
           var SHEET_PUB_ID = "2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK";
           var PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/pub?gid=0&single=true&output=csv";
           var GVIZ_JSONP_BASE = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/gviz/tq?gid=0";
+          var REMOTE_CONFIG_CSV_URL = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/pub?gid=1&single=true&output=csv";
 
           var DEFAULT_RUNNING_TEXT = "Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba 60 menit sebelum jadwal keberangkatan • Siapkan tiket dan kartu identitas sebelum masuk ke gate";
           var RUNNING_TEXT_STORAGE_KEY = "dumai_custom_running_text";
@@ -1118,6 +1118,7 @@
           var THEME_STORAGE_KEY = "dumai_theme_dark_mode";
           var VIDEO_SCHEDULE_KEY = "dumai_daily_video_schedules_v1";
           var FULLSCREEN_PREF_KEY = "dumai_keep_fullscreen_pref";
+          var CLOUD_SYNC_URL = "https://kvdb.io/A2x9KmPqR7vLn4Wz8YtB3d/pelabuhan_dumai_v1_state";
 
           var ROWS_PER_SLIDE = 5;
           var SLIDE_INTERVAL_MS = 5000;
@@ -1128,6 +1129,9 @@
             headers: ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"],
             isFetching: false,
             lastSignature: "",
+            lastRemoteConfigSig: "",
+            lastCloudSyncSig: "",
+            remoteRunningText: "",
             currentSlideIndex: 0,
             slideTimer: null,
             activeVideoScheduleId: null,
@@ -1178,6 +1182,312 @@
               hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
             }
             return (hash >>> 0).toString(16) + "_" + s.length;
+          }
+
+          function parseCsvText(csv) {
+            var rows = [];
+            var row = [];
+            var field = "";
+            var inQuotes = false;
+            var text = String(csv || "");
+
+            for (var i = 0; i < text.length; i++) {
+              var c = text[i];
+              var next = text[i + 1];
+
+              if (inQuotes) {
+                if (c === '"' && next === '"') {
+                  field += '"';
+                  i++;
+                } else if (c === '"') {
+                  inQuotes = false;
+                } else {
+                  field += c;
+                }
+              } else {
+                if (c === '"') {
+                  inQuotes = true;
+                } else if (c === ",") {
+                  row.push(field.trim());
+                  field = "";
+                } else if (c === "\r" && next === "\n") {
+                  row.push(field.trim());
+                  rows.push(row);
+                  row = [];
+                  field = "";
+                  i++;
+                } else if (c === "\n" || c === "\r") {
+                  row.push(field.trim());
+                  rows.push(row);
+                  row = [];
+                  field = "";
+                } else {
+                  field += c;
+                }
+              }
+            }
+            if (field.length > 0 || row.length > 0) {
+              row.push(field.trim());
+              rows.push(row);
+            }
+            return rows.filter(function (r) {
+              return r.some(function (cell) { return cell !== ""; });
+            });
+          }
+
+          function getStatusBadgeClass(statusText) {
+            var s = String(statusText || "").toLowerCase();
+            if (/boarding|berangkat|berlayar|tiba|debarkasi|buka|open|ready|on\s*time|aktif|selesai/i.test(s)) {
+              return "status-ok";
+            }
+            if (/tunda|delay|batal|cancel|tutup|closed|gangguan|penuh/i.test(s)) {
+              return "status-warn";
+            }
+            if (/persiapan|check[\s-]*in|sandar|antri|menunggu|segera/i.test(s)) {
+              return "status-prep";
+            }
+            if (/jadwal|terjadwal|estimasi/i.test(s)) {
+              return "status-info";
+            }
+            return "status-neutral";
+          }
+
+          function renderTableAndStats(rows, headers) {
+            var safeHeaders = Array.isArray(headers) && headers.length ? headers : state.headers;
+            var safeRows = Array.isArray(rows) ? rows : [];
+
+            if (thead) {
+              thead.innerHTML =
+                "<tr>" +
+                safeHeaders.map(function (h) {
+                  return "<th>" + escapeHtml(h || "-") + "</th>";
+                }).join("") +
+                "</tr>";
+            }
+
+            if (statTableCount) {
+              statTableCount.textContent = String(safeRows.length);
+            }
+
+            if (statActiveCount) {
+              var activeCount = safeRows.filter(function (r) {
+                var joined = r.join(" ").toLowerCase();
+                return !/batal|cancel|selesai|tutup|closed/.test(joined) && r.some(function (c) { return String(c || "").trim() !== ""; });
+              }).length;
+              statActiveCount.textContent = String(activeCount);
+            }
+
+            if (!safeRows.length) {
+              if (tbody) tbody.innerHTML = "";
+              if (emptyMsg) emptyMsg.style.display = "block";
+              if (slidePageBadge) slidePageBadge.classList.remove("visible");
+              return;
+            }
+
+            if (emptyMsg) emptyMsg.style.display = "none";
+
+            var totalPages = Math.max(1, Math.ceil(safeRows.length / ROWS_PER_SLIDE));
+            if (state.currentSlideIndex >= totalPages) {
+              state.currentSlideIndex = 0;
+            }
+
+            var startIdx = state.currentSlideIndex * ROWS_PER_SLIDE;
+            var pageRows = safeRows.slice(startIdx, startIdx + ROWS_PER_SLIDE);
+            var colCount = safeHeaders.length;
+
+            if (tbody) {
+              tbody.classList.remove("slide-animate");
+              tbody.innerHTML = pageRows.map(function (r) {
+                var cells = [];
+                for (var c = 0; c < colCount; c++) {
+                  var val = String(r[c] != null && r[c] !== "" ? r[c] : "-");
+                  var headerLabel = String(safeHeaders[c] || "").toLowerCase();
+                  if (c === 0 || /kapal|vessel|ship/.test(headerLabel)) {
+                    cells.push("<td><span class='ship-name'>" + escapeHtml(val) + "</span></td>");
+                  } else if (/gate|line|dermaga|pintu/.test(headerLabel)) {
+                    cells.push("<td><span class='gate-pill'>" + escapeHtml(val) + "</span></td>");
+                  } else if (c === colCount - 1 || /status|ket/.test(headerLabel)) {
+                    var badgeCls = getStatusBadgeClass(val);
+                    cells.push("<td><span class='status-badge " + badgeCls + "'>" + escapeHtml(val) + "</span></td>");
+                  } else {
+                    cells.push("<td>" + escapeHtml(val) + "</td>");
+                  }
+                }
+                return "<tr>" + cells.join("") + "</tr>";
+              }).join("");
+              void tbody.offsetWidth;
+              tbody.classList.add("slide-animate");
+            }
+
+            if (slidePageBadge) {
+              if (totalPages > 1) {
+                slidePageBadge.textContent = "📑 Slide " + (state.currentSlideIndex + 1) + " / " + totalPages;
+                slidePageBadge.classList.add("visible");
+              } else {
+                slidePageBadge.classList.remove("visible");
+              }
+            }
+          }
+
+          function advanceTableSlide() {
+            if (state.activeVideoScheduleId) return;
+            if (!state.rows || state.rows.length <= ROWS_PER_SLIDE) return;
+            var totalPages = Math.ceil(state.rows.length / ROWS_PER_SLIDE);
+            state.currentSlideIndex = (state.currentSlideIndex + 1) % totalPages;
+            renderTableAndStats(state.rows, state.headers);
+          }
+
+          function applyParsedSheetRows(rawRows) {
+            if (!Array.isArray(rawRows) || !rawRows.length) return false;
+            var headerRow = rawRows[0].map(function (h) { return String(h || "").trim(); });
+            var dataRows = rawRows.slice(1).filter(function (r) {
+              return r.some(function (cell) { return String(cell || "").trim() !== ""; });
+            });
+
+            if (!headerRow.some(function (h) { return h !== ""; })) return false;
+
+            var maxCols = headerRow.length;
+            dataRows.forEach(function (r) {
+              if (r.length > maxCols) maxCols = r.length;
+            });
+            while (headerRow.length < maxCols) {
+              headerRow.push("Kolom " + (headerRow.length + 1));
+            }
+
+            var sig = JSON.stringify({ h: headerRow, r: dataRows });
+            if (sig !== state.lastSignature) {
+              state.lastSignature = sig;
+              state.headers = headerRow;
+              state.rows = dataRows;
+              renderTableAndStats(state.rows, state.headers);
+            }
+
+            var nowParts = getJakartaNowParts();
+            if (sheetSyncStatus) {
+              sheetSyncStatus.textContent = "Terakhir sinkron: " + nowParts.wibTime + " WIB";
+            }
+            return true;
+          }
+
+          function fetchViaGvizJsonp() {
+            return new Promise(function (resolve) {
+              var cbName = "_gvizCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+              var script = document.createElement("script");
+              var timeoutId = setTimeout(function () {
+                cleanup();
+                resolve(false);
+              }, 8000);
+
+              function cleanup() {
+                clearTimeout(timeoutId);
+                try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                if (script && script.parentNode) script.parentNode.removeChild(script);
+              }
+
+              window[cbName] = function (resp) {
+                try {
+                  var table = resp && resp.table;
+                  if (!table || !Array.isArray(table.rows)) {
+                    cleanup();
+                    return resolve(false);
+                  }
+                  var headers = (table.cols || []).map(function (col, i) {
+                    return (col && (col.label || col.id)) ? String(col.label || col.id).trim() : ("Kolom " + (i + 1));
+                  });
+                  var rows = table.rows.map(function (rowObj) {
+                    var cells = (rowObj && rowObj.c) || [];
+                    return headers.map(function (_, idx) {
+                      var cell = cells[idx];
+                      if (!cell) return "";
+                      return String(cell.f != null ? cell.f : (cell.v != null ? cell.v : "")).trim();
+                    });
+                  });
+
+                  var hasHeaderLabels = headers.some(function (h) {
+                    return h && !/^[A-Z]$/.test(h) && !/^Kolom \d+$/.test(h);
+                  });
+
+                  var combined = hasHeaderLabels ? [headers].concat(rows) : rows;
+                  var ok = applyParsedSheetRows(combined);
+                  cleanup();
+                  resolve(ok);
+                } catch (err) {
+                  cleanup();
+                  resolve(false);
+                }
+              };
+
+              script.onerror = function () {
+                cleanup();
+                resolve(false);
+              };
+              script.src = GVIZ_JSONP_BASE + "&tqx=responseHandler:" + cbName + "&_cb=" + Date.now();
+              document.head.appendChild(script);
+            });
+          }
+
+          async function syncScheduleData(isManual) {
+            if (state.isFetching) return;
+            state.isFetching = true;
+            if (manualRefreshBtn && isManual) manualRefreshBtn.disabled = true;
+
+            try {
+              var csvUrl = PUBLISHED_CSV_URL + "&_cb=" + Date.now();
+              var loaded = false;
+              try {
+                var res = await fetch(csvUrl, { cache: "no-store" });
+                if (res && res.ok) {
+                  var text = await res.text();
+                  if (text && !/^\s*<!doctype html>/i.test(text) && !/^\s*<html/i.test(text)) {
+                    var parsed = parseCsvText(text);
+                    loaded = applyParsedSheetRows(parsed);
+                  }
+                }
+              } catch (fetchErr) {}
+
+              if (!loaded) {
+                loaded = await fetchViaGvizJsonp();
+              }
+
+              if (!loaded && sheetSyncStatus && !state.lastSignature) {
+                sheetSyncStatus.textContent = "Menunggu koneksi Google Sheets...";
+              }
+            } finally {
+              state.isFetching = false;
+              if (manualRefreshBtn) manualRefreshBtn.disabled = false;
+            }
+          }
+
+          function describeWeatherCode(code) {
+            var c = Number(code);
+            if (c === 0) return { icon: "☀️", text: "Cerah" };
+            if (c === 1 || c === 2) return { icon: "⛅", text: "Cerah Berawan" };
+            if (c === 3) return { icon: "☁️", text: "Berawan" };
+            if (c === 45 || c === 48) return { icon: "🌫️", text: "Berkabut" };
+            if (c >= 51 && c <= 67) return { icon: "🌦️", text: "Hujan Ringan" };
+            if (c >= 80 && c <= 82) return { icon: "🌧️", text: "Hujan Lokal" };
+            if (c >= 95) return { icon: "⛈️", text: "Hujan Petir" };
+            return { icon: "⛅", text: "Cerah Berawan" };
+          }
+
+          async function fetchDumaiWeather() {
+            try {
+              var url = "https://api.open-meteo.com/v1/forecast?latitude=1.667&longitude=101.45&current=temperature_2m,weather_code,wind_speed_10m&timezone=Asia%2FJakarta";
+              var res = await fetch(url, { cache: "no-store" });
+              if (!res || !res.ok) return;
+              var data = await res.json();
+              var cur = data && data.current;
+              if (!cur) return;
+              var temp = Math.round(Number(cur.temperature_2m || 29));
+              var info = describeWeatherCode(cur.weather_code);
+              var wind = Math.round(Number(cur.wind_speed_10m || 0));
+              if (statWeather) {
+                statWeather.textContent = info.icon + " " + temp + "°C";
+              }
+              if (statWeatherDesc) {
+                statWeatherDesc.textContent = info.text + " • Angin " + wind + " km/j (Dumai)";
+              }
+            } catch (e) {}
           }
 
           async function checkForHtmlAppUpdate() {
@@ -1264,411 +1574,179 @@
 
           function syncRunningTextDisplay(text) {
             var val = formatMultiRunningText(text) || DEFAULT_RUNNING_TEXT;
-            if (inlineTickerText) inlineTickerText.textContent = val;
-          }
-
-          function openRunningTextModal() {
-            if (!runningTextModal) return;
-            var saved = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
-            if (modalRunningTextInput) {
-              modalRunningTextInput.value = saved.split(/\s+•\s+/).join("\n");
-            }
-            runningTextModal.classList.add("open");
-            if (modalRunningTextInput) {
-              setTimeout(function () { modalRunningTextInput.focus(); }, 30);
+            if (inlineTickerText && inlineTickerText.textContent !== val) {
+              inlineTickerText.textContent = val;
             }
           }
 
-          function closeRunningTextModal() {
-            if (runningTextModal) runningTextModal.classList.remove("open");
-          }
-
-          function applyCustomRunningText(rawValue) {
-            var formatted = formatMultiRunningText(rawValue);
-            if (!formatted) {
-              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
-              formatted = DEFAULT_RUNNING_TEXT;
-            } else {
-              localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, formatted);
-            }
-            syncRunningTextDisplay(formatted);
-          }
-
-          function getStatusBadgeClass(status) {
-            var s = String(status || "").toUpperCase();
-            if (s.indexOf("BOARDING") !== -1 || s.indexOf("BERANGKAT") !== -1 || s.indexOf("SESUAI") !== -1 || s.indexOf("ON TIME") !== -1 || s.indexOf("SANDAR") !== -1 || s.indexOf("TIBA") !== -1) {
-              return "status-ok";
-            }
-            if (s.indexOf("TUNDA") !== -1 || s.indexOf("DELAY") !== -1 || s.indexOf("BATAL") !== -1) {
-              return "status-warn";
-            }
-            if (s.indexOf("CHECK") !== -1 || s.indexOf("PERSIAPAN") !== -1 || s.indexOf("SIAP") !== -1 || s.indexOf("DEBARK") !== -1) {
-              return "status-info";
-            }
-            return "status-neutral";
-          }
-
-          function renderTableHeader(headers) {
-            if (!thead) return;
-            var cols = Array.isArray(headers) && headers.length > 0
-              ? headers
-              : ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"];
-            thead.innerHTML = "<tr>" + cols.map(function (h) {
-              return "<th>" + escapeHtml(h) + "</th>";
-            }).join("") + "</tr>";
-          }
-
-          function renderTableAndStats(rows, headers) {
-            renderTableHeader(headers || state.headers);
-            var list = Array.isArray(rows) ? rows : [];
-            var totalPages = Math.max(1, Math.ceil(list.length / ROWS_PER_SLIDE));
-            if (state.currentSlideIndex >= totalPages) {
-              state.currentSlideIndex = 0;
-            }
-
-            if (tbody) {
-              if (!list.length) {
-                tbody.innerHTML = "";
-                if (emptyMsg) emptyMsg.style.display = "block";
-              } else {
-                if (emptyMsg) emptyMsg.style.display = "none";
-                var startIdx = state.currentSlideIndex * ROWS_PER_SLIDE;
-                var visibleRows = list.slice(startIdx, startIdx + ROWS_PER_SLIDE);
-                tbody.classList.remove("slide-animate");
-                void tbody.offsetWidth;
-                tbody.classList.add("slide-animate");
-                tbody.innerHTML = visibleRows.map(function (item) {
-                  return (
-                    "<tr>" +
-                      "<td><span class='ship-name'>" + escapeHtml(item.ship) + "</span></td>" +
-                      "<td>" + escapeHtml(item.dest) + "</td>" +
-                      "<td>" + escapeHtml(item.arr) + "</td>" +
-                      "<td>" + escapeHtml(item.dep) + "</td>" +
-                      "<td><span class='gate-pill'>" + escapeHtml(item.gate) + "</span></td>" +
-                      "<td><span class='status-badge " + getStatusBadgeClass(item.status) + "'>" + escapeHtml(item.status) + "</span></td>" +
-                    "</tr>"
-                  );
-                }).join("");
-              }
-            }
-
-            if (slidePageBadge) {
-              if (list.length > ROWS_PER_SLIDE) {
-                slidePageBadge.textContent = "📑 Slide " + (state.currentSlideIndex + 1) + " / " + totalPages + " (" + list.length + " Kapal)";
-                slidePageBadge.classList.add("visible");
-              } else {
-                slidePageBadge.classList.remove("visible");
-              }
-            }
-
-            if (statTableCount) {
-              statTableCount.textContent = String(list.length);
-            }
-            if (statActiveCount) {
-              var activeTotal = list.filter(function (item) {
-                var st = String(item.status || "").toUpperCase();
-                return st !== "-" && st !== "" && st.indexOf("BATAL") === -1 && st.indexOf("SELESAI") === -1;
-              }).length;
-              statActiveCount.textContent = String(activeTotal);
-            }
-          }
-
-          function advanceTableSlide() {
-            if (state.activeVideoScheduleId) return;
-            var list = Array.isArray(state.rows) ? state.rows : [];
-            if (list.length <= ROWS_PER_SLIDE) {
-              if (state.currentSlideIndex !== 0) {
-                state.currentSlideIndex = 0;
-                renderTableAndStats(list, state.headers);
-              }
-              return;
-            }
-            var totalPages = Math.ceil(list.length / ROWS_PER_SLIDE);
-            state.currentSlideIndex = (state.currentSlideIndex + 1) % totalPages;
-            renderTableAndStats(list, state.headers);
-          }
-
-          function parseCsvText(csvText) {
-            var rows = [];
-            var row = [];
-            var cell = "";
-            var inQuotes = false;
-            var text = String(csvText || "");
-
-            for (var i = 0; i < text.length; i++) {
-              var ch = text[i];
-              var next = text[i + 1];
-              if (inQuotes) {
-                if (ch === '"' && next === '"') {
-                  cell += '"';
-                  i++;
-                } else if (ch === '"') {
-                  inQuotes = false;
-                } else {
-                  cell += ch;
-                }
-              } else {
-                if (ch === '"') {
-                  inQuotes = true;
-                } else if (ch === ",") {
-                  row.push(cell.trim());
-                  cell = "";
-                } else if (ch === "\r" && next === "\n") {
-                  row.push(cell.trim());
-                  rows.push(row);
-                  row = [];
-                  cell = "";
-                  i++;
-                } else if (ch === "\n" || ch === "\r") {
-                  row.push(cell.trim());
-                  rows.push(row);
-                  row = [];
-                  cell = "";
-                } else {
-                  cell += ch;
-                }
-              }
-            }
-            if (cell.length > 0 || row.length > 0) {
-              row.push(cell.trim());
-              rows.push(row);
-            }
-            return rows.filter(function (r) {
-              return r.some(function (c) { return c !== ""; });
-            });
-          }
-
-          function normalizeSheetPayload(rawRows) {
-            if (!Array.isArray(rawRows) || rawRows.length === 0) {
-              return { rows: [], headers: state.headers };
-            }
-
-            var headerRow = rawRows[0];
-            var headerLower = headerRow.map(function (c) { return String(c || "").toLowerCase().trim(); });
-            var hasHeader = headerLower.some(function (h) {
-              return (
-                h.indexOf("kapal") !== -1 ||
-                h.indexOf("nama") !== -1 ||
-                h.indexOf("destinasi") !== -1 ||
-                h.indexOf("tujuan") !== -1 ||
-                h.indexOf("rute") !== -1 ||
-                h.indexOf("datang") !== -1 ||
-                h.indexOf("tiba") !== -1 ||
-                h.indexOf("berangkat") !== -1 ||
-                h.indexOf("gate") !== -1 ||
-                h.indexOf("dermaga") !== -1 ||
-                h.indexOf("status") !== -1
-              );
-            });
-
-            var idxMap = { ship: 0, dest: 1, arr: 2, dep: 3, gate: 4, status: 5 };
-            var startIndex = 0;
-            var activeHeaders = state.headers.slice();
-
-            if (hasHeader) {
-              startIndex = 1;
-              var usedIndices = {};
-              headerLower.forEach(function (h, idx) {
-                if (!usedIndices.ship && (h.indexOf("kapal") !== -1 || h.indexOf("nama") !== -1 || h === "mv/km")) {
-                  idxMap.ship = idx;
-                  usedIndices.ship = true;
-                } else if (!usedIndices.dest && (h.indexOf("destinasi") !== -1 || h.indexOf("tujuan") !== -1 || h.indexOf("rute") !== -1)) {
-                  idxMap.dest = idx;
-                  usedIndices.dest = true;
-                } else if (!usedIndices.arr && (h.indexOf("datang") !== -1 || h.indexOf("tiba") !== -1 || h.indexOf("arr") !== -1)) {
-                  idxMap.arr = idx;
-                  usedIndices.arr = true;
-                } else if (!usedIndices.dep && (h.indexOf("berangkat") !== -1 || h.indexOf("dep") !== -1)) {
-                  idxMap.dep = idx;
-                  usedIndices.dep = true;
-                } else if (!usedIndices.gate && (h.indexOf("gate") !== -1 || h.indexOf("dermaga") !== -1 || h.indexOf("line") !== -1 || h.indexOf("peron") !== -1)) {
-                  idxMap.gate = idx;
-                  usedIndices.gate = true;
-                } else if (!usedIndices.status && (h.indexOf("status") !== -1 || h.indexOf("ket") !== -1 || h.indexOf("info") !== -1)) {
-                  idxMap.status = idx;
-                  usedIndices.status = true;
-                }
-              });
-
-              var pickHeader = function (idx, fallback) {
-                var val = headerRow[idx];
-                return val && String(val).trim() ? String(val).trim() : fallback;
-              };
-              activeHeaders = [
-                pickHeader(idxMap.ship, "Nama Kapal"),
-                pickHeader(idxMap.dest, "Destinasi"),
-                pickHeader(idxMap.arr, "EST. Datang"),
-                pickHeader(idxMap.dep, "EST. Berangkat"),
-                pickHeader(idxMap.gate, "Gate / Line"),
-                pickHeader(idxMap.status, "Status Keberangkatan")
-              ];
-            }
-
-            var parsed = [];
-            for (var i = startIndex; i < rawRows.length; i++) {
-              var r = rawRows[i];
-              var shipName = String(r[idxMap.ship] || "").trim();
-              if (!shipName) continue;
-              if (/^(no\.?|nomor|nama\s*kapal|kapal)$/i.test(shipName)) continue;
-
-              parsed.push({
-                ship: shipName,
-                dest: String(r[idxMap.dest] || "-").trim() || "-",
-                arr: String(r[idxMap.arr] || "-").trim() || "-",
-                dep: String(r[idxMap.dep] || "-").trim() || "-",
-                gate: String(r[idxMap.gate] || "-").trim() || "-",
-                status: String(r[idxMap.status] || "SESUAI JADWAL").trim() || "SESUAI JADWAL"
-              });
-            }
-
-            return { rows: parsed, headers: activeHeaders };
-          }
-
-          function fetchViaGvizJsonp(timeoutMs) {
-            return new Promise(function (resolve, reject) {
-              var cbName = "__dumaiGvizCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-              var script = document.createElement("script");
-              var done = false;
-
-              var timer = setTimeout(function () {
-                if (done) return;
-                done = true;
-                cleanup();
-                reject(new Error("GViz JSONP timeout"));
-              }, timeoutMs || 6000);
-
-              function cleanup() {
-                clearTimeout(timer);
-                try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
-                if (script && script.parentNode) script.parentNode.removeChild(script);
-              }
-
-              window[cbName] = function (resp) {
-                if (done) return;
-                done = true;
-                cleanup();
+          function compressLogoForCloudSync(dataUrl) {
+            return new Promise(function (resolve) {
+              if (!dataUrl || typeof dataUrl !== "string") return resolve("");
+              if (dataUrl.indexOf("data:") !== 0) return resolve(dataUrl);
+              var img = new Image();
+              img.onload = function () {
                 try {
-                  var table = resp && resp.table;
-                  var cols = (table && table.cols) || [];
-                  var rows = (table && table.rows) || [];
-                  var matrix = [];
-                  var headers = cols.map(function (c) { return (c && (c.label || c.id)) || ""; });
-                  if (headers.some(function (h) { return h !== ""; })) {
-                    matrix.push(headers);
+                  var maxDim = 260;
+                  var w = img.naturalWidth || img.width || maxDim;
+                  var h = img.naturalHeight || img.height || maxDim;
+                  if (w > maxDim || h > maxDim) {
+                    var ratio = Math.min(maxDim / w, maxDim / h);
+                    w = Math.round(w * ratio);
+                    h = Math.round(h * ratio);
                   }
-                  rows.forEach(function (rowObj) {
-                    var cells = (rowObj && rowObj.c) || [];
-                    var line = cells.map(function (c) {
-                      if (!c) return "";
-                      return c.f != null ? String(c.f) : (c.v != null ? String(c.v) : "");
-                    });
-                    if (line.some(function (x) { return x.trim() !== ""; })) {
-                      matrix.push(line);
-                    }
-                  });
-                  resolve(normalizeSheetPayload(matrix));
-                } catch (err) {
-                  reject(err);
+                  var canvas = document.createElement("canvas");
+                  canvas.width = w;
+                  canvas.height = h;
+                  var ctx = canvas.getContext("2d");
+                  if (!ctx) return resolve(dataUrl);
+                  ctx.drawImage(img, 0, 0, w, h);
+                  resolve(canvas.toDataURL("image/png"));
+                } catch (e) {
+                  resolve(dataUrl);
                 }
               };
-
-              script.onerror = function () {
-                if (done) return;
-                done = true;
-                cleanup();
-                reject(new Error("GViz JSONP load error"));
-              };
-
-              var sep = GVIZ_JSONP_BASE.indexOf("?") === -1 ? "?" : "&";
-              script.src = GVIZ_JSONP_BASE + sep + "tqx=out:json;responseHandler:" + cbName + "&_cb=" + Date.now();
-              document.body.appendChild(script);
+              img.onerror = function () { resolve(dataUrl); };
+              img.src = dataUrl;
             });
           }
 
-          async function syncScheduleData(isManual) {
-            if (state.isFetching) return;
-            state.isFetching = true;
-            if (manualRefreshBtn && isManual) {
-              manualRefreshBtn.disabled = true;
-              manualRefreshBtn.textContent = "⏳ Memuat...";
-            }
-
+          async function pushSettingsToCloudSync() {
             try {
-              var payload = null;
-              var sourceLabel = "Google Sheets CSV";
-
-              try {
-                var csvUrl = PUBLISHED_CSV_URL + (PUBLISHED_CSV_URL.indexOf("?") === -1 ? "?" : "&") + "_cb=" + Date.now();
-                var res = await fetch(csvUrl, { cache: "no-store" });
-                if (res && res.ok) {
-                  var csvText = await res.text();
-                  if (csvText && !/^\s*<!doctype html>/i.test(csvText) && !/^\s*<html/i.test(csvText)) {
-                    var parsedCsv = normalizeSheetPayload(parseCsvText(csvText));
-                    if (parsedCsv && parsedCsv.rows.length > 0) {
-                      payload = parsedCsv;
-                      sourceLabel = "Google Sheets CSV";
-                    }
-                  }
-                }
-              } catch (csvErr) {}
-
-              if (!payload) {
-                try {
-                  var jsonpPayload = await fetchViaGvizJsonp(6000);
-                  if (jsonpPayload && jsonpPayload.rows.length > 0) {
-                    payload = jsonpPayload;
-                    sourceLabel = "Google Sheets GViz";
-                  }
-                } catch (jsonpErr) {}
-              }
-
-              var nowParts = getJakartaNowParts();
-              if (payload && payload.rows.length > 0) {
-                var sig = JSON.stringify(payload);
-                state.rows = payload.rows;
-                state.headers = payload.headers;
-                if (sig !== state.lastSignature) {
-                  state.lastSignature = sig;
-                  renderTableAndStats(state.rows, state.headers);
-                }
-                if (sheetSyncStatus) {
-                  sheetSyncStatus.textContent = "✅ " + sourceLabel + " • Update " + nowParts.wibTime + " WIB";
-                }
-              } else {
-                renderTableAndStats(state.rows, state.headers);
-                if (sheetSyncStatus) {
-                  sheetSyncStatus.textContent = "⚠️ Menunggu data Google Sheets • Cek " + nowParts.wibTime + " WIB";
-                }
-              }
-            } finally {
-              state.isFetching = false;
-              if (manualRefreshBtn && isManual) {
-                manualRefreshBtn.disabled = false;
-                manualRefreshBtn.textContent = "🔄 Refresh";
-              }
-            }
+              var rawLeft = localStorage.getItem(LOGO_LEFT_KEY) || "";
+              var rawRight = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+              var cloudLeft = await compressLogoForCloudSync(rawLeft);
+              var cloudRight = await compressLogoForCloudSync(rawRight);
+              var cloudVideos = loadVideoSchedules().filter(function (v) {
+                return v && !v.hasLocalFile && v.url;
+              });
+              var payload = {
+                updatedAt: Date.now(),
+                runningText: localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT,
+                logoLeft: cloudLeft,
+                logoRight: cloudRight,
+                videos: cloudVideos
+              };
+              var serialized = JSON.stringify(payload);
+              state.lastCloudSyncSig = computeStringHash(serialized);
+              await fetch(CLOUD_SYNC_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: serialized
+              });
+            } catch (e) {}
           }
 
-          async function fetchDumaiWeather() {
+          async function pullSettingsFromCloudSync() {
             try {
-              var url = "https://api.open-meteo.com/v1/forecast?latitude=1.6667&longitude=101.4500&current=temperature_2m,weather_code&timezone=Asia%2FJakarta";
+              var res = await fetch(CLOUD_SYNC_URL + "?_cb=" + Date.now(), { cache: "no-store" });
+              if (!res || !res.ok) return;
+              var rawText = await res.text();
+              if (!rawText) return;
+              var sig = computeStringHash(rawText);
+              if (sig === state.lastCloudSyncSig) return;
+              var data = JSON.parse(rawText);
+              if (!data || typeof data !== "object") return;
+              state.lastCloudSyncSig = sig;
+
+              if (typeof data.runningText === "string" && !state.remoteRunningText) {
+                var trimmedText = data.runningText.trim();
+                if (trimmedText) {
+                  localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, trimmedText);
+                  syncRunningTextDisplay(trimmedText);
+                }
+              }
+
+              var logoChanged = false;
+              if (typeof data.logoLeft === "string") {
+                var curL = localStorage.getItem(LOGO_LEFT_KEY) || "";
+                if (data.logoLeft !== curL) {
+                  if (data.logoLeft) localStorage.setItem(LOGO_LEFT_KEY, data.logoLeft);
+                  else localStorage.removeItem(LOGO_LEFT_KEY);
+                  logoChanged = true;
+                }
+              }
+              if (typeof data.logoRight === "string") {
+                var curR = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+                if (data.logoRight !== curR) {
+                  if (data.logoRight) localStorage.setItem(LOGO_RIGHT_KEY, data.logoRight);
+                  else localStorage.removeItem(LOGO_RIGHT_KEY);
+                  logoChanged = true;
+                }
+              }
+              if (logoChanged) renderHeaderLogos();
+
+              if (Array.isArray(data.videos)) {
+                var localAndSheet = loadVideoSchedules().filter(function (v) {
+                  return v && (v.hasLocalFile || String(v.id || "").indexOf("remote_vid_") === 0);
+                });
+                var merged = localAndSheet.concat(data.videos);
+                saveVideoSchedules(merged);
+                if (videoScheduleModal && videoScheduleModal.classList.contains("open")) {
+                  renderVideoScheduleList();
+                }
+              }
+            } catch (e) {}
+          }
+
+          async function syncRemoteConfigFromSheet() {
+            try {
+              var url = REMOTE_CONFIG_CSV_URL + "&_cb=" + Date.now();
               var res = await fetch(url, { cache: "no-store" });
               if (!res || !res.ok) return;
-              var data = await res.json();
-              var cur = data && data.current;
-              if (!cur || cur.temperature_2m == null) return;
-              var temp = Math.round(Number(cur.temperature_2m));
-              var code = Number(cur.weather_code || 0);
-              var icon = "⛅";
-              var label = "Cerah Berawan";
-              if (code === 0) { icon = "☀️"; label = "Cerah"; }
-              else if (code <= 3) { icon = "⛅"; label = "Cerah Berawan"; }
-              else if (code >= 51 && code <= 67) { icon = "🌧️"; label = "Hujan Ringan"; }
-              else if (code >= 80 && code <= 82) { icon = "🌦️"; label = "Hujan Lokal"; }
-              else if (code >= 95) { icon = "⛈️"; label = "Badai Petir"; }
+              var csvText = await res.text();
+              if (!csvText || /^\s*<!doctype html>/i.test(csvText) || /^\s*<html/i.test(csvText)) return;
 
-              if (statWeather) statWeather.textContent = icon + " " + temp + "°C";
-              if (statWeatherDesc) statWeatherDesc.textContent = label + " • Dumai (Open-Meteo)";
+              var rows = parseCsvText(csvText);
+              if (!rows.length) return;
+
+              var infoLines = [];
+              var remoteVideos = [];
+
+              rows.forEach(function (r, idx) {
+                var colA = String(r[0] || "").trim();
+                var colB = String(r[1] || "").trim();
+                var colC = String(r[2] || "").trim();
+                var colD = String(r[3] || "").trim();
+                if (!colA) return;
+                if (idx === 0 && /^(tipe|jenis|key|kategori)$/i.test(colA)) return;
+
+                var key = colA.toUpperCase();
+                if (key === "INFO" || key === "TEKS" || key === "RUNNING_TEXT") {
+                  if (colB) infoLines.push(colB);
+                } else if (key === "VIDEO" && colB && colC) {
+                  remoteVideos.push({
+                    id: "remote_vid_" + idx + "_" + colB.replace(/[^0-9]/g, ""),
+                    title: colD || "Tayangan Terjadwal",
+                    url: colC,
+                    hasLocalFile: false,
+                    fileName: "",
+                    playTime: colB.length === 4 ? ("0" + colB) : colB.slice(0, 5),
+                    durationSec: Math.max(0, Number(r[4] || 0))
+                  });
+                }
+              });
+
+              var sig = JSON.stringify({ info: infoLines, videos: remoteVideos });
+              if (sig === state.lastRemoteConfigSig) return;
+              state.lastRemoteConfigSig = sig;
+
+              if (infoLines.length > 0) {
+                state.remoteRunningText = infoLines.join("\n");
+                syncRunningTextDisplay(state.remoteRunningText);
+              } else if (state.remoteRunningText) {
+                state.remoteRunningText = "";
+                syncRunningTextDisplay(localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT);
+              }
+
+              if (remoteVideos.length > 0) {
+                var localOnly = loadVideoSchedules().filter(function (v) {
+                  return String(v.id || "").indexOf("remote_vid_") !== 0;
+                });
+                saveVideoSchedules(remoteVideos.concat(localOnly));
+                if (videoScheduleModal && videoScheduleModal.classList.contains("open")) {
+                  renderVideoScheduleList();
+                }
+              }
             } catch (e) {}
           }
 
@@ -1770,6 +1848,7 @@
               localStorage.removeItem(LOGO_LEFT_KEY);
               localStorage.removeItem(LOGO_RIGHT_KEY);
               renderHeaderLogos();
+              pushSettingsToCloudSync();
               if (logoModal) logoModal.classList.remove("open");
             });
           }
@@ -1787,6 +1866,7 @@
                 if (cleanedR) localStorage.setItem(LOGO_RIGHT_KEY, cleanedR);
               }
               renderHeaderLogos();
+              pushSettingsToCloudSync();
             });
           }
 
@@ -1806,6 +1886,7 @@
                   if (finalRight) localStorage.setItem(LOGO_RIGHT_KEY, finalRight);
                   else localStorage.removeItem(LOGO_RIGHT_KEY);
                   renderHeaderLogos();
+                  pushSettingsToCloudSync();
                   if (logoModal) logoModal.classList.remove("open");
                 });
               });
@@ -1936,6 +2017,7 @@
                 saveVideoSchedules(updated);
                 await deleteVideoBlobFromDb(idToDel);
                 renderVideoScheduleList();
+                pushSettingsToCloudSync();
               });
             });
           }
@@ -2094,7 +2176,36 @@
               if (videoFileInput) videoFileInput.value = "";
               if (videoDurationInput) videoDurationInput.value = "0";
               renderVideoScheduleList();
+              pushSettingsToCloudSync();
             });
+          }
+
+          function openRunningTextModal() {
+            if (!runningTextModal) return;
+            if (modalRunningTextInput) {
+              var currentVal = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
+              modalRunningTextInput.value = currentVal.split("   •   ").join("\n");
+            }
+            runningTextModal.classList.add("open");
+            if (modalRunningTextInput) {
+              setTimeout(function () { modalRunningTextInput.focus(); }, 30);
+            }
+          }
+
+          function closeRunningTextModal() {
+            if (runningTextModal) runningTextModal.classList.remove("open");
+          }
+
+          function applyCustomRunningText(rawText) {
+            var formatted = formatMultiRunningText(rawText);
+            if (!formatted) {
+              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
+              syncRunningTextDisplay(DEFAULT_RUNNING_TEXT);
+            } else {
+              localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, formatted);
+              syncRunningTextDisplay(formatted);
+            }
+            pushSettingsToCloudSync();
           }
 
           if (saveRunningTextBtn) saveRunningTextBtn.addEventListener("click", openRunningTextModal);
@@ -2110,6 +2221,7 @@
               localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
               if (modalRunningTextInput) modalRunningTextInput.value = DEFAULT_RUNNING_TEXT;
               syncRunningTextDisplay(DEFAULT_RUNNING_TEXT);
+              pushSettingsToCloudSync();
             });
           }
 
@@ -2183,6 +2295,8 @@
           if (manualRefreshBtn) {
             manualRefreshBtn.addEventListener("click", function () {
               syncScheduleData(true);
+              syncRemoteConfigFromSheet();
+              pullSettingsFromCloudSync();
               fetchDumaiWeather();
               checkForHtmlAppUpdate();
             });
@@ -2201,6 +2315,8 @@
           renderTableAndStats(state.rows, state.headers);
           updateLiveClock();
           syncScheduleData(false);
+          syncRemoteConfigFromSheet();
+          pullSettingsFromCloudSync();
           fetchDumaiWeather();
           checkVideoScheduleTrigger();
           checkForHtmlAppUpdate();
@@ -2210,7 +2326,11 @@
           }
 
           setInterval(updateLiveClock, 1000);
-          setInterval(function () { syncScheduleData(false); }, 5000);
+          setInterval(function () {
+            syncScheduleData(false);
+            syncRemoteConfigFromSheet();
+            pullSettingsFromCloudSync();
+          }, 5000);
           state.slideTimer = setInterval(advanceTableSlide, SLIDE_INTERVAL_MS);
           setInterval(checkVideoScheduleTrigger, 10000);
           setInterval(fetchDumaiWeather, 300000);
@@ -2220,6 +2340,7 @@
             if (!document.hidden) {
               updateLiveClock();
               syncScheduleData(false);
+              pullSettingsFromCloudSync();
               checkVideoScheduleTrigger();
               checkForHtmlAppUpdate();
             }
