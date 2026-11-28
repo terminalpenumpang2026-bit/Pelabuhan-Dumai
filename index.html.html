@@ -80,7 +80,7 @@
       transition: background-color 0.25s, color 0.25s;
       overflow-x: hidden;
       min-height: 100dvh;
-      width: 100vw;
+      width: 100%;
       max-width: 100vw;
       display: flex;
       flex-direction: column;
@@ -117,13 +117,186 @@
     }
 
     body.is-fullscreen {
+      --tv-scale: 1;
       opacity: 1 !important;
       visibility: visible !important;
       background-color: var(--bg) !important;
+      width: 100vw;
+      height: 100dvh;
+      max-width: 100vw;
+      max-height: 100dvh;
+      overflow: hidden !important;
     }
 
-    body.is-fullscreen .header-wrap,
-    body.is-fullscreen .main-container,
+    /* Tata letak adaptif & proporsional otomatis untuk semua jenis & ukuran inchi TV (32" - 100"+) */
+    body.is-fullscreen header {
+      padding: calc(0.75vh * var(--tv-scale)) 0 0;
+    }
+
+    body.is-fullscreen .header-wrap {
+      padding: 0 calc(1.1vw * var(--tv-scale));
+    }
+
+    body.is-fullscreen .header-banner-box {
+      padding: calc(1vh * var(--tv-scale)) calc(1.5vw * var(--tv-scale));
+      border-radius: calc(14px * var(--tv-scale));
+    }
+
+    body.is-fullscreen .header-logo-slot {
+      height: clamp(72px, calc(14vh * var(--tv-scale)), 220px);
+      width: clamp(96px, calc(15vw * var(--tv-scale)), 320px);
+      max-width: clamp(96px, calc(15vw * var(--tv-scale)), 320px);
+    }
+
+    body.is-fullscreen .header-center h1 {
+      font-size: clamp(1.25rem, calc(2.25vw * var(--tv-scale)), 3.6rem);
+      letter-spacing: 0.6px;
+      margin-bottom: 0.3vh;
+    }
+
+    body.is-fullscreen .header-center p {
+      font-size: clamp(0.82rem, calc(1.15vw * var(--tv-scale)), 1.8rem);
+    }
+
+    body.is-fullscreen .header-meta {
+      margin-top: calc(0.7vh * var(--tv-scale));
+      gap: calc(0.65rem * var(--tv-scale));
+    }
+
+    body.is-fullscreen .live-pill {
+      font-size: clamp(0.8rem, calc(1.08vw * var(--tv-scale)), 1.65rem);
+      padding: calc(0.4rem * var(--tv-scale)) calc(1.05rem * var(--tv-scale));
+    }
+
+    /* Sembunyikan tombol pengaturan saat mode TV Layar Penuh agar tampilan bersih & rapi */
+    body.is-fullscreen .header-meta .action-btn:not(#fullscreenToggleBtn) {
+      display: none !important;
+    }
+
+    body.is-fullscreen #fullscreenToggleBtn {
+      opacity: 0.42;
+      font-size: clamp(0.72rem, calc(0.85vw * var(--tv-scale)), 1.2rem);
+      padding: calc(0.32rem * var(--tv-scale)) calc(0.8rem * var(--tv-scale));
+      transition: opacity 0.25s;
+    }
+
+    body.is-fullscreen #fullscreenToggleBtn:hover,
+    body.is-fullscreen #fullscreenToggleBtn:focus {
+      opacity: 1;
+    }
+
+    body.is-fullscreen .main-container {
+      margin-top: calc(0.85vh * var(--tv-scale));
+      padding: 0 calc(1.1vw * var(--tv-scale)) calc(0.65vh * var(--tv-scale));
+      gap: calc(0.8vh * var(--tv-scale));
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .summary-grid {
+      gap: calc(1vw * var(--tv-scale));
+      margin-bottom: 0;
+    }
+
+    body.is-fullscreen .summary-card {
+      padding: calc(0.95vh * var(--tv-scale)) calc(1.3vw * var(--tv-scale));
+      min-height: clamp(68px, calc(10.5vh * var(--tv-scale)), 160px);
+      border-radius: calc(12px * var(--tv-scale));
+    }
+
+    body.is-fullscreen .summary-label {
+      font-size: clamp(0.72rem, calc(0.92vw * var(--tv-scale)), 1.45rem);
+    }
+
+    body.is-fullscreen .summary-value {
+      font-size: clamp(1.2rem, calc(1.95vw * var(--tv-scale)), 3.1rem);
+    }
+
+    body.is-fullscreen .summary-sub {
+      font-size: clamp(0.72rem, calc(0.92vw * var(--tv-scale)), 1.4rem);
+    }
+
+    body.is-fullscreen .sync-status-bar {
+      margin-bottom: 0;
+    }
+
+    body.is-fullscreen #manualRefreshBtn {
+      display: none !important;
+    }
+
+    body.is-fullscreen .inline-ticker-wrap {
+      padding: calc(0.55vh * var(--tv-scale)) calc(1vw * var(--tv-scale)) calc(0.55vh * var(--tv-scale)) calc(0.55vw * var(--tv-scale));
+      border-radius: calc(10px * var(--tv-scale));
+    }
+
+    body.is-fullscreen .inline-ticker-badge {
+      font-size: clamp(0.76rem, calc(0.98vw * var(--tv-scale)), 1.5rem);
+      padding: calc(0.3rem * var(--tv-scale)) calc(0.85rem * var(--tv-scale));
+    }
+
+    body.is-fullscreen .inline-ticker-marquee {
+      font-size: clamp(0.9rem, calc(1.28vw * var(--tv-scale)), 2.05rem);
+    }
+
+    body.is-fullscreen .table-card {
+      border-radius: calc(12px * var(--tv-scale));
+      min-height: 0;
+    }
+
+    body.is-fullscreen .table-responsive {
+      overflow: hidden;
+    }
+
+    body.is-fullscreen table {
+      height: 100%;
+    }
+
+    body.is-fullscreen th {
+      padding: calc(1.1vh * var(--tv-scale)) calc(1.15vw * var(--tv-scale));
+      font-size: clamp(0.82rem, calc(1.12vw * var(--tv-scale)), 1.75rem);
+      letter-spacing: 0.7px;
+    }
+
+    body.is-fullscreen td {
+      padding: calc(1vh * var(--tv-scale)) calc(1.15vw * var(--tv-scale));
+      font-size: clamp(0.88rem, calc(1.25vw * var(--tv-scale)), 1.95rem);
+    }
+
+    body.is-fullscreen .ship-name {
+      font-size: clamp(0.92rem, calc(1.32vw * var(--tv-scale)), 2.05rem);
+    }
+
+    body.is-fullscreen .gate-pill,
+    body.is-fullscreen .status-badge {
+      padding: calc(0.3rem * var(--tv-scale)) calc(0.82rem * var(--tv-scale));
+      font-size: clamp(0.78rem, calc(1.06vw * var(--tv-scale)), 1.65rem);
+    }
+
+    body.is-fullscreen .slide-page-badge {
+      font-size: clamp(0.76rem, calc(0.92vw * var(--tv-scale)), 1.35rem);
+      padding: calc(0.3rem * var(--tv-scale)) calc(0.9rem * var(--tv-scale));
+    }
+
+    body.is-fullscreen footer {
+      padding: calc(0.55vh * var(--tv-scale)) 1vw;
+      font-size: clamp(0.8rem, calc(1.05vw * var(--tv-scale)), 1.65rem);
+      letter-spacing: 2px;
+    }
+
+    @media (orientation: portrait) {
+      body.is-fullscreen .summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      body.is-fullscreen .header-center h1 {
+        font-size: clamp(1.15rem, 2.8vw, 2.2rem);
+      }
+      body.is-fullscreen th,
+      body.is-fullscreen td {
+        padding: 0.85vh 1.2vw;
+        font-size: clamp(0.82rem, 1.85vw, 1.4rem);
+      }
+    }
+
     .header-wrap,
     .main-container {
       max-width: 100vw;
@@ -141,13 +314,12 @@
 
     .inline-ticker-wrap {
       flex: 1;
-      min-width: 260px;
+      min-width: 240px;
       width: 100%;
-      max-width: none;
       background: rgba(234, 179, 8, 0.14);
       border: 1px solid rgba(234, 179, 8, 0.45);
       border-radius: 10px;
-      padding: 0.32rem 0.85rem 0.32rem 0.42rem;
+      padding: 0.34rem 0.85rem 0.34rem 0.42rem;
       display: flex;
       align-items: center;
       gap: 0.65rem;
@@ -185,6 +357,7 @@
       padding-left: 100%;
       white-space: nowrap;
       font-family: 'Roboto', sans-serif;
+      text-transform: uppercase;
       color: var(--text-main);
       animation: inlineTickerScroll 28s linear infinite;
     }
@@ -216,7 +389,7 @@
       color: #ffffff;
       border-radius: 12px;
       border: 1px solid var(--border);
-      padding: clamp(0.35rem, 0.7vh, 0.55rem) clamp(0.75rem, 1.5vw, 1.5rem) clamp(0.75rem, 1.4vh, 1.25rem);
+      padding: clamp(0.55rem, 1vh, 0.95rem) clamp(0.75rem, 1.5vw, 1.5rem);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
       position: relative;
       overflow: hidden;
@@ -234,14 +407,14 @@
     .header-center {
       text-align: center;
       flex: 1;
-      padding-top: 0.25rem;
+      min-width: 0;
     }
 
     .header-center h1 {
       font-size: clamp(1.15rem, 1.9vw, 1.85rem);
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      margin-bottom: 0.15rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      margin-bottom: 0.2rem;
     }
 
     .header-center p {
@@ -250,7 +423,7 @@
     }
 
     .header-meta {
-      margin-top: 0.5rem;
+      margin-top: 0.6rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -260,10 +433,10 @@
 
     .live-pill {
       background: rgba(255, 255, 255, 0.16);
-      padding: 0.32rem 0.85rem;
+      padding: 0.34rem 0.85rem;
       border-radius: 999px;
       font-size: 0.82rem;
-      font-weight: 500;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
@@ -288,11 +461,13 @@
       background: rgba(255, 255, 255, 0.16);
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: #ffffff;
-      padding: 0.32rem 0.8rem;
+      padding: 0.34rem 0.82rem;
       border-radius: 999px;
       font-size: 0.8rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
     }
 
     .action-btn:hover {
@@ -300,12 +475,10 @@
     }
 
     .header-logo-slot {
-      height: clamp(190px, 28vh, 380px);
-      max-width: clamp(190px, 31vw, 440px);
-      width: clamp(190px, 31vw, 440px);
-      margin-top: 0;
+      height: clamp(88px, 14vh, 148px);
+      width: clamp(110px, 16vw, 220px);
+      max-width: clamp(110px, 16vw, 220px);
       padding: 0;
-      border-radius: 0;
       background: transparent;
       border: none;
       display: inline-flex;
@@ -313,7 +486,6 @@
       justify-content: center;
       flex-shrink: 0;
       z-index: 3;
-      transition: width 0.25s ease, height 0.25s ease;
     }
 
     .header-logo-slot:empty {
@@ -337,6 +509,7 @@
       flex-direction: column;
       margin: clamp(0.45rem, 0.8vh, 0.75rem) auto 0;
       padding: 0 clamp(0.5rem, 1.2vw, 1.25rem) clamp(0.35rem, 0.7vh, 0.6rem);
+      min-height: 0;
     }
 
     .summary-grid {
@@ -357,24 +530,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: clamp(74px, 10vh, 106px);
-      opacity: 1 !important;
-      visibility: visible !important;
-      transition: border-color 0.2s ease;
-    }
-
-    .summary-card:hover {
-      border-color: var(--primary);
-    }
-
-    .summary-card.static-card,
-    .summary-card.static-card:hover {
-      transform: none !important;
-      transition: none !important;
-      border-color: var(--border);
-      cursor: default;
-      position: relative;
-      z-index: 2;
+      min-height: clamp(74px, 10vh, 104px);
     }
 
     .summary-label {
@@ -384,25 +540,15 @@
       color: var(--text-muted);
       font-weight: 700;
       line-height: 1.3;
-      white-space: normal;
-      overflow: visible;
-      opacity: 1;
-      visibility: visible;
-      display: block;
     }
 
     .summary-value {
       font-size: clamp(1.1rem, 1.55vw, 1.55rem);
-      font-weight: 700;
+      font-weight: 800;
       color: var(--primary);
       margin-top: 0.2rem;
       line-height: 1.2;
       font-variant-numeric: tabular-nums;
-      white-space: normal;
-      overflow: visible;
-      opacity: 1;
-      visibility: visible;
-      display: block;
     }
 
     .summary-sub {
@@ -410,12 +556,7 @@
       color: var(--text-muted);
       margin-top: 0.2rem;
       line-height: 1.3;
-      opacity: 0.95;
-      visibility: visible;
-      display: block;
       font-weight: 500;
-      white-space: normal;
-      overflow: visible;
     }
 
     @media (max-width: 640px) {
@@ -434,24 +575,16 @@
       align-items: center;
       font-size: clamp(0.72rem, 0.85vw, 0.82rem);
       color: var(--text-muted);
-      margin-bottom: clamp(0.35rem, 0.65vh, 0.55rem);
-      padding: 0 0.25rem;
+      margin-bottom: clamp(0.4rem, 0.7vh, 0.6rem);
       gap: 0.5rem;
       flex-shrink: 0;
-    }
-
-    .sync-meta-text {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      white-space: nowrap;
     }
 
     .refresh-btn {
       background: var(--card-bg);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 0.3rem 0.75rem;
+      padding: 0.34rem 0.78rem;
       border-radius: 8px;
       font-size: 0.78rem;
       font-weight: 600;
@@ -482,7 +615,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      min-height: 0;
+      min-height: 240px;
     }
 
     .table-responsive {
@@ -514,8 +647,8 @@
     }
 
     th {
-      padding: 0.56rem clamp(0.6rem, 0.9vw, 0.95rem);
-      font-size: clamp(0.68rem, 0.82vw, 0.8rem);
+      padding: 0.68rem clamp(0.65rem, 1vw, 1.05rem);
+      font-size: clamp(0.72rem, 0.86vw, 0.85rem);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #f8fafc;
@@ -528,9 +661,9 @@
     }
 
     td {
-      padding: 0.46rem clamp(0.55rem, 0.85vw, 0.85rem);
+      padding: 0.58rem clamp(0.65rem, 1vw, 1.05rem);
       border-bottom: 1px solid var(--border);
-      font-size: clamp(0.72rem, 0.84vw, 0.88rem);
+      font-size: clamp(0.78rem, 0.92vw, 0.96rem);
       font-weight: 600;
       color: var(--text-main);
       vertical-align: middle;
@@ -548,12 +681,12 @@
       position: absolute;
       right: 0.85rem;
       bottom: 0.65rem;
-      background: rgba(15, 23, 42, 0.82);
+      background: rgba(15, 23, 42, 0.86);
       color: #f8fafc;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      padding: 0.24rem 0.72rem;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      padding: 0.26rem 0.78rem;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       font-weight: 700;
       letter-spacing: 0.3px;
       backdrop-filter: blur(4px);
@@ -623,24 +756,27 @@
     .scheduled-video-panel iframe {
       width: 100%;
       height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       border: 0;
       object-fit: contain;
       background: #000000;
+      transition: width 0.2s ease, height 0.2s ease;
     }
 
-    .scheduled-video-caption {
-      position: absolute;
-      left: 1rem;
-      bottom: 0.85rem;
-      background: rgba(15, 23, 42, 0.78);
-      color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      padding: 0.32rem 0.75rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      pointer-events: none;
-      backdrop-filter: blur(4px);
+    body.is-fullscreen .scheduled-video-panel {
+      width: 100%;
+      height: 100%;
+      border-radius: calc(12px * var(--tv-scale));
+    }
+
+    body.is-fullscreen .scheduled-video-panel video,
+    body.is-fullscreen .scheduled-video-panel iframe {
+      width: 100%;
+      height: 100%;
+      max-width: 100vw;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     .scheduled-video-unmute-btn {
@@ -672,7 +808,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.45rem;
-      margin-top: 0.45rem;
+      margin-top: 0.65rem;
     }
 
     .video-schedule-item {
@@ -719,24 +855,24 @@
     .ship-name {
       font-weight: 700;
       color: var(--primary);
-      font-size: clamp(0.76rem, 0.9vw, 0.92rem);
+      font-size: clamp(0.8rem, 0.96vw, 1rem);
     }
 
     .gate-pill {
       display: inline-block;
-      padding: 0.14rem 0.48rem;
+      padding: 0.18rem 0.55rem;
       border-radius: 6px;
       font-weight: 700;
-      font-size: clamp(0.66rem, 0.76vw, 0.8rem);
+      font-size: clamp(0.7rem, 0.8vw, 0.85rem);
       background: var(--badge-info-bg);
       color: var(--badge-info-text);
     }
 
     .status-badge {
       display: inline-block;
-      padding: 0.16rem 0.52rem;
+      padding: 0.2rem 0.6rem;
       border-radius: 999px;
-      font-size: clamp(0.66rem, 0.76vw, 0.8rem);
+      font-size: clamp(0.7rem, 0.8vw, 0.85rem);
       font-weight: 700;
       white-space: nowrap;
     }
@@ -773,7 +909,7 @@
       color: var(--text-main);
       border: 1px solid var(--border);
       border-radius: 14px;
-      max-width: 460px;
+      max-width: 480px;
       width: 100%;
       padding: 1.4rem;
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
@@ -814,7 +950,7 @@
     }
 
     .form-group textarea {
-      min-height: 110px;
+      min-height: 96px;
       resize: vertical;
       line-height: 1.45;
     }
@@ -881,13 +1017,15 @@
 
     footer {
       text-align: center;
-      padding: clamp(0.3rem, 0.6vh, 0.55rem) 0.75rem;
-      font-size: clamp(0.7rem, 0.82vw, 0.8rem);
+      padding: clamp(0.4rem, 0.8vh, 0.65rem) 0.75rem;
+      font-size: clamp(0.75rem, 0.88vw, 0.86rem);
+      font-weight: 700;
+      letter-spacing: 1px;
       color: var(--text-muted);
       flex-shrink: 0;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
       .header-container {
         flex-wrap: wrap;
         justify-content: center;
@@ -896,32 +1034,11 @@
         order: -1;
         width: 100%;
         margin-bottom: 0.35rem;
-        padding-top: 0;
-      }
-      .header-center h1 {
-        font-size: 1.15rem;
       }
       .header-logo-slot {
-        width: 196px;
-        height: 196px;
-        max-width: 196px;
-        margin-top: 0;
-      }
-      .header-logo-slot img {
-        max-width: 196px;
-        max-height: 196px;
-      }
-    }
-
-    @media (orientation: landscape) and (max-height: 620px) {
-      .header-logo-slot {
-        height: clamp(136px, 22vh, 200px);
-        width: clamp(136px, 22vh, 200px);
-        max-width: 200px;
-      }
-      .summary-card {
-        min-height: 60px;
-        padding: 0.45rem 0.8rem;
+        width: 96px;
+        height: 96px;
+        max-width: 96px;
       }
     }
   </style>
@@ -944,6 +1061,7 @@
               <button type="button" class="action-btn" id="fullscreenToggleBtn">⛶ Layar Penuh</button>
               <button type="button" class="action-btn" id="openLogoModalBtn">🖼️ Atur Logo</button>
               <button type="button" class="action-btn" id="openVideoModalBtn">🎬 Video Harian</button>
+              <button type="button" class="action-btn" id="openAdVideoModalBtn">📺 Video Iklan</button>
               <button type="button" class="action-btn" id="saveRunningTextBtn">✏️ Ubah Teks</button>
               <button type="button" class="action-btn" id="themeToggleBtn">☀️ Mode Terang</button>
             </div>
@@ -957,17 +1075,17 @@
 
   <main class="main-container">
     <section class="summary-grid">
-      <div class="summary-card static-card">
+      <div class="summary-card">
         <div class="summary-label">Kapal Tercatat di Papan</div>
         <div class="summary-value" id="statTableCount">0</div>
         <div class="summary-sub">Jumlah baris jadwal aktif</div>
       </div>
-      <div class="summary-card static-card">
+      <div class="summary-card">
         <div class="summary-label">Status Debarkasi / Aktif</div>
         <div class="summary-value" id="statActiveCount">0</div>
         <div class="summary-sub">Kapal dalam proses layanan</div>
       </div>
-      <div class="summary-card static-card">
+      <div class="summary-card">
         <div class="summary-label">Cuaca Perairan Dumai</div>
         <div class="summary-value" id="statWeather">⛅ 29°C</div>
         <div class="summary-sub" id="statWeatherDesc">Cerah Berawan • Dumai (Open-Meteo)</div>
@@ -979,11 +1097,10 @@
         <div class="inline-ticker-wrap" id="inlineTickerWrap">
           <span class="inline-ticker-badge">INFO</span>
           <div class="inline-ticker-marquee">
-            <span class="inline-ticker-text" id="inlineTickerText">Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba 60 menit sebelum jadwal keberangkatan</span>
+            <span class="inline-ticker-text" id="inlineTickerText">SELAMAT DATANG DI TERMINAL PENUMPANG PELABUHAN DUMAI • HARAP TIBA 60 MENIT SEBELUM JADWAL KEBERANGKATAN</span>
           </div>
         </div>
       </div>
-      <span class="sync-meta-text" id="sheetSyncStatus">Sinkronisasi Sheet...</span>
       <button type="button" class="refresh-btn" id="manualRefreshBtn">🔄 Refresh</button>
     </div>
 
@@ -1006,7 +1123,6 @@
       <div class="slide-page-badge" id="slidePageBadge">Halaman 1 / 1</div>
       <div class="scheduled-video-panel" id="scheduledVideoPanel">
         <div id="scheduledVideoMount" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
-        <div class="scheduled-video-caption" id="scheduledVideoCaption">🎬 Tayangan Harian Terjadwal</div>
         <button type="button" class="scheduled-video-unmute-btn" id="scheduledVideoUnmuteBtn">🔊 Aktifkan Suara</button>
       </div>
       <div class="empty-msg" id="emptyMsg">Menunggu data jadwal kapal dari Google Sheets. Pastikan sheet sudah dipublikasikan ke web (Publish to web -&gt; CSV) dan dapat diakses publik.</div>
@@ -1045,6 +1161,45 @@
         <button type="button" class="btn-secondary" id="closeVideoModalBtn">Tutup</button>
       </div>
       <div class="video-schedule-list" id="videoScheduleList"></div>
+    </div>
+  </div>
+
+  <!-- Modal Atur Video Iklan Terjadwal (Mendukung Unggah > 5 Video Sekaligus & Multi-Jam Per Hari) -->
+  <div class="modal-backdrop" id="adVideoScheduleModal">
+    <div class="modal-card" style="max-width: 540px;">
+      <h3>📺 Video Iklan Terjadwal (Banyak Jam / Hari &amp; Otomatis Tiap Hari)</h3>
+      <div class="form-group">
+        <label for="adVideoFilesInput">Pilih Banyak File Video Iklan Sekaligus (Bisa Lebih dari 5 File MP4/WebM)</label>
+        <input type="file" id="adVideoFilesInput" accept="video/mp4,video/webm,video/*" multiple />
+        <div class="form-hint" id="adSelectedFilesInfo">Belum ada file dipilih. Anda dapat memilih 5, 10, atau lebih file video sekaligus.</div>
+      </div>
+      <div class="form-group">
+        <label for="adVideoUrlsInput">Atau Tempel Daftar URL Video Iklan (1 URL per Baris - MP4 / YouTube)</label>
+        <textarea id="adVideoUrlsInput" rows="2" placeholder="https://contoh.com/iklan1.mp4&#10;https://youtu.be/kodevideo2"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="adMultiTimesInput">Daftar Jam Tayang dalam 1 Hari (Pisahkan dengan koma - Otomatis Tiap Hari)</label>
+        <input type="text" id="adMultiTimesInput" value="08:00, 10:00, 12:00, 14:00, 16:00" placeholder="Contoh: 07:30, 09:00, 11:30, 14:00, 16:30" />
+        <div class="form-hint">Masukkan beberapa jam sekaligus dalam 1 hari (format <strong>JJ:MM</strong> dipisah koma). Pada setiap jam tersebut, semua video iklan akan diputar otomatis berurutan dan berulang setiap hari.</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+        <div class="form-group">
+          <label for="adVideoIntervalInput">Jeda Antar Video (Menit, 0 = Berurutan)</label>
+          <input type="number" id="adVideoIntervalInput" min="0" max="720" value="0" placeholder="0 = Putar langsung berurutan" />
+        </div>
+        <div class="form-group">
+          <label for="adVideoDurationInput">Durasi / Video (Detik, 0 = Penuh)</label>
+          <input type="number" id="adVideoDurationInput" min="0" max="7200" value="0" placeholder="0 = Sesuai durasi video" />
+        </div>
+      </div>
+      <div class="modal-actions" style="justify-content: space-between; margin-top: 0.75rem;">
+        <button type="button" class="btn-primary" id="addAdVideoBatchBtn">+ Simpan Jadwal Iklan Harian</button>
+        <div style="display: flex; gap: 0.45rem;">
+          <button type="button" class="btn-danger-xs" id="clearAllAdVideosBtn" style="padding: 0.48rem 0.75rem; font-size: 0.82rem;">Hapus Semua Iklan</button>
+          <button type="button" class="btn-secondary" id="closeAdVideoModalBtn">Tutup</button>
+        </div>
+      </div>
+      <div class="video-schedule-list" id="adVideoScheduleList"></div>
     </div>
   </div>
 
@@ -1099,7 +1254,7 @@
   </div>
 
   <footer>
-    &copy; 2026 Layanan Informasi Pelabuhan Dumai • Sinkronisasi Otomatis Google Sheets &amp; Auto-Update TV
+    MELAYANI SEPENUH HATI
   </footer>
 
   <script>
@@ -1109,40 +1264,26 @@
           var SHEET_PUB_ID = "2PACX-1vSGvYpxgf_nsfNkpd2u_FDCDTENw6PkgeBbJZWZulGIdDjsiDhzKQJO76QcR_Hp4LvARZXgBjCL1-eK";
           var PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/pub?gid=0&single=true&output=csv";
           var GVIZ_JSONP_BASE = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/gviz/tq?gid=0";
-          var REMOTE_CONFIG_CSV_URL = "https://docs.google.com/spreadsheets/d/e/" + SHEET_PUB_ID + "/pub?gid=1&single=true&output=csv";
 
-          var DEFAULT_RUNNING_TEXT = "Selamat datang di Terminal Penumpang Pelabuhan Dumai • Harap tiba 60 menit sebelum jadwal keberangkatan • Siapkan tiket dan kartu identitas sebelum masuk ke gate";
+          var DEFAULT_RUNNING_TEXT = "SELAMAT DATANG DI TERMINAL PENUMPANG PELABUHAN DUMAI • HARAP TIBA 60 MENIT SEBELUM JADWAL KEBERANGKATAN • SIAPKAN TIKET DAN KARTU IDENTITAS SEBELUM MASUK KE GATE";
           var RUNNING_TEXT_STORAGE_KEY = "dumai_custom_running_text";
           var LOGO_LEFT_KEY = "dumai_header_logo_left";
           var LOGO_RIGHT_KEY = "dumai_header_logo_right";
           var THEME_STORAGE_KEY = "dumai_theme_dark_mode";
           var VIDEO_SCHEDULE_KEY = "dumai_daily_video_schedules_v1";
-          var FULLSCREEN_PREF_KEY = "dumai_keep_fullscreen_pref";
-          var CLOUD_SYNC_BUCKET_ID = "pelabuhan_dumai_live_sync_2026_v2";
-          var CLOUD_SYNC_ENDPOINTS = [
-            "https://jsonblob.com/api/jsonBlob/0195c8e4-7b12-7a3f-9d10-dumai2026sync",
-            "https://api.npoint.io/dumai_pelabuhan_sync_2026"
-          ];
-          var CLOUD_BLOB_URL_KEY = "dumai_cloud_blob_url_v2";
-
           var ROWS_PER_SLIDE = 5;
           var SLIDE_INTERVAL_MS = 5000;
-          var AUTO_UPDATE_CHECK_MS = 30000;
 
           var state = {
             rows: [],
             headers: ["Nama Kapal", "Destinasi", "EST. Datang", "EST. Berangkat", "Gate / Line", "Status Keberangkatan"],
             isFetching: false,
             lastSignature: "",
-            lastRemoteConfigSig: "",
-            lastCloudSyncSig: "",
-            lastCloudUpdatedAt: Number(localStorage.getItem("dumai_cloud_updated_at") || 0),
-            remoteRunningText: "",
-            currentSlideIndex: 0,
-            slideTimer: null,
+            currentSlide: 0,
             activeVideoScheduleId: null,
             activeVideoTimer: null,
             playedTodayKeys: {},
+            videoQueue: [],
             initialHtmlFingerprint: null,
             isReloadingUpdate: false
           };
@@ -1151,771 +1292,276 @@
           var tbody = document.getElementById("scheduleTableBody");
           var emptyMsg = document.getElementById("emptyMsg");
           var slidePageBadge = document.getElementById("slidePageBadge");
-          var autoUpdateToast = document.getElementById("autoUpdateToast");
           var tableResponsiveWrap = document.getElementById("tableResponsiveWrap");
           var scheduledVideoPanel = document.getElementById("scheduledVideoPanel");
           var scheduledVideoMount = document.getElementById("scheduledVideoMount");
-          var scheduledVideoCaption = document.getElementById("scheduledVideoCaption");
           var scheduledVideoUnmuteBtn = document.getElementById("scheduledVideoUnmuteBtn");
           var statTableCount = document.getElementById("statTableCount");
           var statActiveCount = document.getElementById("statActiveCount");
           var statWeather = document.getElementById("statWeather");
           var statWeatherDesc = document.getElementById("statWeatherDesc");
-          var sheetSyncStatus = document.getElementById("sheetSyncStatus");
           var manualRefreshBtn = document.getElementById("manualRefreshBtn");
+          var liveClock = document.getElementById("liveClock");
           var inlineTickerText = document.getElementById("inlineTickerText");
-          var saveRunningTextBtn = document.getElementById("saveRunningTextBtn");
-          var runningTextModal = document.getElementById("runningTextModal");
-          var modalRunningTextInput = document.getElementById("modalRunningTextInput");
-          var confirmRunningTextBtn = document.getElementById("confirmRunningTextBtn");
-          var closeRunningTextModalBtn = document.getElementById("closeRunningTextModalBtn");
-          var resetRunningTextBtn = document.getElementById("resetRunningTextBtn");
+          var autoUpdateToast = document.getElementById("autoUpdateToast");
 
-          function escapeHtml(value) {
-            return String(value == null ? "" : value)
+          function escapeHtml(str) {
+            return String(str == null ? "" : str)
               .replace(/&/g, "&amp;")
               .replace(/</g, "&lt;")
               .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#39;");
+              .replace(/"/g, "&quot;");
           }
 
-          function computeStringHash(str) {
-            var s = String(str || "");
-            var hash = 2166136261;
-            for (var i = 0; i < s.length; i++) {
-              hash ^= s.charCodeAt(i);
-              hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-            }
-            return (hash >>> 0).toString(16) + "_" + s.length;
-          }
-
-          function parseCsvText(csv) {
-            var rows = [];
-            var row = [];
-            var field = "";
-            var inQuotes = false;
-            var text = String(csv || "");
-
-            for (var i = 0; i < text.length; i++) {
-              var c = text[i];
-              var next = text[i + 1];
-
-              if (inQuotes) {
-                if (c === '"' && next === '"') {
-                  field += '"';
-                  i++;
-                } else if (c === '"') {
-                  inQuotes = false;
-                } else {
-                  field += c;
-                }
-              } else {
-                if (c === '"') {
-                  inQuotes = true;
-                } else if (c === ",") {
-                  row.push(field.trim());
-                  field = "";
-                } else if (c === "\r" && next === "\n") {
-                  row.push(field.trim());
-                  rows.push(row);
-                  row = [];
-                  field = "";
-                  i++;
-                } else if (c === "\n" || c === "\r") {
-                  row.push(field.trim());
-                  rows.push(row);
-                  row = [];
-                  field = "";
-                } else {
-                  field += c;
-                }
-              }
-            }
-            if (field.length > 0 || row.length > 0) {
-              row.push(field.trim());
-              rows.push(row);
-            }
-            return rows.filter(function (r) {
-              return r.some(function (cell) { return cell !== ""; });
-            });
-          }
-
-          function getStatusBadgeClass(statusText) {
-            var s = String(statusText || "").toLowerCase();
-            if (/boarding|berangkat|berlayar|tiba|debarkasi|buka|open|ready|on\s*time|aktif|selesai/i.test(s)) {
-              return "status-ok";
-            }
-            if (/tunda|delay|batal|cancel|tutup|closed|gangguan|penuh/i.test(s)) {
-              return "status-warn";
-            }
-            if (/persiapan|check[\s-]*in|sandar|antri|menunggu|segera/i.test(s)) {
-              return "status-prep";
-            }
-            if (/jadwal|terjadwal|estimasi/i.test(s)) {
-              return "status-info";
-            }
-            return "status-neutral";
-          }
-
-          function renderTableAndStats(rows, headers) {
-            var safeHeaders = Array.isArray(headers) && headers.length ? headers : state.headers;
-            var safeRows = Array.isArray(rows) ? rows : [];
-
-            if (thead) {
-              thead.innerHTML =
-                "<tr>" +
-                safeHeaders.map(function (h) {
-                  return "<th>" + escapeHtml(h || "-") + "</th>";
-                }).join("") +
-                "</tr>";
-            }
-
-            if (statTableCount) {
-              statTableCount.textContent = String(safeRows.length);
-            }
-
-            if (statActiveCount) {
-              var activeCount = safeRows.filter(function (r) {
-                var joined = r.join(" ").toLowerCase();
-                return !/batal|cancel|selesai|tutup|closed/.test(joined) && r.some(function (c) { return String(c || "").trim() !== ""; });
-              }).length;
-              statActiveCount.textContent = String(activeCount);
-            }
-
-            if (!safeRows.length) {
-              if (tbody) tbody.innerHTML = "";
-              if (emptyMsg) emptyMsg.style.display = "block";
-              if (slidePageBadge) slidePageBadge.classList.remove("visible");
-              return;
-            }
-
-            if (emptyMsg) emptyMsg.style.display = "none";
-
-            var totalPages = Math.max(1, Math.ceil(safeRows.length / ROWS_PER_SLIDE));
-            if (state.currentSlideIndex >= totalPages) {
-              state.currentSlideIndex = 0;
-            }
-
-            var startIdx = state.currentSlideIndex * ROWS_PER_SLIDE;
-            var pageRows = safeRows.slice(startIdx, startIdx + ROWS_PER_SLIDE);
-            var colCount = safeHeaders.length;
-
-            if (tbody) {
-              tbody.classList.remove("slide-animate");
-              tbody.innerHTML = pageRows.map(function (r) {
-                var cells = [];
-                for (var c = 0; c < colCount; c++) {
-                  var val = String(r[c] != null && r[c] !== "" ? r[c] : "-");
-                  var headerLabel = String(safeHeaders[c] || "").toLowerCase();
-                  if (c === 0 || /kapal|vessel|ship/.test(headerLabel)) {
-                    cells.push("<td><span class='ship-name'>" + escapeHtml(val) + "</span></td>");
-                  } else if (/gate|line|dermaga|pintu/.test(headerLabel)) {
-                    cells.push("<td><span class='gate-pill'>" + escapeHtml(val) + "</span></td>");
-                  } else if (c === colCount - 1 || /status|ket/.test(headerLabel)) {
-                    var badgeCls = getStatusBadgeClass(val);
-                    cells.push("<td><span class='status-badge " + badgeCls + "'>" + escapeHtml(val) + "</span></td>");
-                  } else {
-                    cells.push("<td>" + escapeHtml(val) + "</td>");
-                  }
-                }
-                return "<tr>" + cells.join("") + "</tr>";
-              }).join("");
-              void tbody.offsetWidth;
-              tbody.classList.add("slide-animate");
-            }
-
-            if (slidePageBadge) {
-              if (totalPages > 1) {
-                slidePageBadge.textContent = "📑 Slide " + (state.currentSlideIndex + 1) + " / " + totalPages;
-                slidePageBadge.classList.add("visible");
-              } else {
-                slidePageBadge.classList.remove("visible");
-              }
-            }
-          }
-
-          function advanceTableSlide() {
-            if (state.activeVideoScheduleId) return;
-            if (!state.rows || state.rows.length <= ROWS_PER_SLIDE) return;
-            var totalPages = Math.ceil(state.rows.length / ROWS_PER_SLIDE);
-            state.currentSlideIndex = (state.currentSlideIndex + 1) % totalPages;
-            renderTableAndStats(state.rows, state.headers);
-          }
-
-          function applyParsedSheetRows(rawRows) {
-            if (!Array.isArray(rawRows) || !rawRows.length) return false;
-            var headerRow = rawRows[0].map(function (h) { return String(h || "").trim(); });
-            var dataRows = rawRows.slice(1).filter(function (r) {
-              return r.some(function (cell) { return String(cell || "").trim() !== ""; });
-            });
-
-            if (!headerRow.some(function (h) { return h !== ""; })) return false;
-
-            var maxCols = headerRow.length;
-            dataRows.forEach(function (r) {
-              if (r.length > maxCols) maxCols = r.length;
-            });
-            while (headerRow.length < maxCols) {
-              headerRow.push("Kolom " + (headerRow.length + 1));
-            }
-
-            var sig = JSON.stringify({ h: headerRow, r: dataRows });
-            if (sig !== state.lastSignature) {
-              state.lastSignature = sig;
-              state.headers = headerRow;
-              state.rows = dataRows;
-              renderTableAndStats(state.rows, state.headers);
-            }
-
-            var nowParts = getJakartaNowParts();
-            if (sheetSyncStatus) {
-              sheetSyncStatus.textContent = "Terakhir sinkron: " + nowParts.wibTime + " WIB";
-            }
-            return true;
-          }
-
-          function fetchViaGvizJsonp() {
-            return new Promise(function (resolve) {
-              var cbName = "_gvizCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-              var script = document.createElement("script");
-              var timeoutId = setTimeout(function () {
-                cleanup();
-                resolve(false);
-              }, 8000);
-
-              function cleanup() {
-                clearTimeout(timeoutId);
-                try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
-                if (script && script.parentNode) script.parentNode.removeChild(script);
-              }
-
-              window[cbName] = function (resp) {
-                try {
-                  var table = resp && resp.table;
-                  if (!table || !Array.isArray(table.rows)) {
-                    cleanup();
-                    return resolve(false);
-                  }
-                  var headers = (table.cols || []).map(function (col, i) {
-                    return (col && (col.label || col.id)) ? String(col.label || col.id).trim() : ("Kolom " + (i + 1));
-                  });
-                  var rows = table.rows.map(function (rowObj) {
-                    var cells = (rowObj && rowObj.c) || [];
-                    return headers.map(function (_, idx) {
-                      var cell = cells[idx];
-                      if (!cell) return "";
-                      return String(cell.f != null ? cell.f : (cell.v != null ? cell.v : "")).trim();
-                    });
-                  });
-
-                  var hasHeaderLabels = headers.some(function (h) {
-                    return h && !/^[A-Z]$/.test(h) && !/^Kolom \d+$/.test(h);
-                  });
-
-                  var combined = hasHeaderLabels ? [headers].concat(rows) : rows;
-                  var ok = applyParsedSheetRows(combined);
-                  cleanup();
-                  resolve(ok);
-                } catch (err) {
-                  cleanup();
-                  resolve(false);
-                }
-              };
-
-              script.onerror = function () {
-                cleanup();
-                resolve(false);
-              };
-              script.src = GVIZ_JSONP_BASE + "&tqx=responseHandler:" + cbName + "&_cb=" + Date.now();
-              document.head.appendChild(script);
-            });
-          }
-
-          async function syncScheduleData(isManual) {
-            if (state.isFetching) return;
-            state.isFetching = true;
-            if (manualRefreshBtn && isManual) manualRefreshBtn.disabled = true;
-
-            try {
-              var csvUrl = PUBLISHED_CSV_URL + "&_cb=" + Date.now();
-              var loaded = false;
-              try {
-                var res = await fetch(csvUrl, { cache: "no-store" });
-                if (res && res.ok) {
-                  var text = await res.text();
-                  if (text && !/^\s*<!doctype html>/i.test(text) && !/^\s*<html/i.test(text)) {
-                    var parsed = parseCsvText(text);
-                    loaded = applyParsedSheetRows(parsed);
-                  }
-                }
-              } catch (fetchErr) {}
-
-              if (!loaded) {
-                loaded = await fetchViaGvizJsonp();
-              }
-
-              if (!loaded && sheetSyncStatus && !state.lastSignature) {
-                sheetSyncStatus.textContent = "Menunggu koneksi Google Sheets...";
-              }
-            } finally {
-              state.isFetching = false;
-              if (manualRefreshBtn) manualRefreshBtn.disabled = false;
-            }
-          }
-
-          function describeWeatherCode(code) {
-            var c = Number(code);
-            if (c === 0) return { icon: "☀️", text: "Cerah" };
-            if (c === 1 || c === 2) return { icon: "⛅", text: "Cerah Berawan" };
-            if (c === 3) return { icon: "☁️", text: "Berawan" };
-            if (c === 45 || c === 48) return { icon: "🌫️", text: "Berkabut" };
-            if (c >= 51 && c <= 67) return { icon: "🌦️", text: "Hujan Ringan" };
-            if (c >= 80 && c <= 82) return { icon: "🌧️", text: "Hujan Lokal" };
-            if (c >= 95) return { icon: "⛈️", text: "Hujan Petir" };
-            return { icon: "⛅", text: "Cerah Berawan" };
-          }
-
-          async function fetchDumaiWeather() {
-            try {
-              var url = "https://api.open-meteo.com/v1/forecast?latitude=1.667&longitude=101.45&current=temperature_2m,weather_code,wind_speed_10m&timezone=Asia%2FJakarta";
-              var res = await fetch(url, { cache: "no-store" });
-              if (!res || !res.ok) return;
-              var data = await res.json();
-              var cur = data && data.current;
-              if (!cur) return;
-              var temp = Math.round(Number(cur.temperature_2m || 29));
-              var info = describeWeatherCode(cur.weather_code);
-              var wind = Math.round(Number(cur.wind_speed_10m || 0));
-              if (statWeather) {
-                statWeather.textContent = info.icon + " " + temp + "°C";
-              }
-              if (statWeatherDesc) {
-                statWeatherDesc.textContent = info.text + " • Angin " + wind + " km/j (Dumai)";
-              }
-            } catch (e) {}
-          }
-
-          async function checkForHtmlAppUpdate() {
-            if (state.isReloadingUpdate || state.activeVideoScheduleId) return;
-            var proto = window.location && window.location.protocol;
-            if (proto !== "http:" && proto !== "https:") return;
-            try {
-              var cleanUrl = window.location.pathname || "/";
-              var sep = cleanUrl.indexOf("?") === -1 ? "?" : "&";
-              var res = await fetch(cleanUrl + sep + "_vcheck=" + Date.now(), {
-                cache: "no-store",
-                headers: { "Cache-Control": "no-cache" }
-              });
-              if (!res || !res.ok) return;
-              var htmlText = await res.text();
-              if (!htmlText || htmlText.indexOf("<html") === -1) return;
-              var fingerprint = computeStringHash(htmlText);
-              if (!state.initialHtmlFingerprint) {
-                state.initialHtmlFingerprint = fingerprint;
-                return;
-              }
-              if (fingerprint !== state.initialHtmlFingerprint) {
-                state.isReloadingUpdate = true;
-                if (autoUpdateToast) autoUpdateToast.classList.add("visible");
-                setTimeout(function () {
-                  window.location.reload();
-                }, 1500);
-              }
-            } catch (e) {}
-          }
-
+          /* =========================
+             1. JAM REAL-TIME WIB
+             ========================= */
           function getJakartaNowParts() {
             var now = new Date();
-            var dateStr = new Intl.DateTimeFormat("en-CA", {
+            var fmt = new Intl.DateTimeFormat("en-GB", {
               timeZone: "Asia/Jakarta",
               year: "numeric",
               month: "2-digit",
-              day: "2-digit"
-            }).format(now);
-            var hmStr = new Intl.DateTimeFormat("en-GB", {
-              timeZone: "Asia/Jakarta",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false
-            }).format(now);
-            var wibTimeStr = new Intl.DateTimeFormat("en-GB", {
-              timeZone: "Asia/Jakarta",
+              day: "2-digit",
               hour: "2-digit",
               minute: "2-digit",
               second: "2-digit",
               hour12: false
-            }).format(now);
-            return { now: now, dateKey: dateStr, hm: hmStr, wibTime: wibTimeStr };
+            });
+            var parts = fmt.formatToParts(now);
+            var map = {};
+            parts.forEach(function (p) { map[p.type] = p.value; });
+            return {
+              dateKey: map.year + "-" + map.month + "-" + map.day,
+              hm: map.hour + ":" + map.minute,
+              hms: map.hour + ":" + map.minute + ":" + map.second
+            };
           }
 
           function updateLiveClock() {
-            var el = document.getElementById("liveClock");
-            if (!el) return;
+            if (!liveClock) return;
             var now = new Date();
-            var tanggal = new Intl.DateTimeFormat("id-ID", {
+            var dateStr = now.toLocaleDateString("id-ID", {
               timeZone: "Asia/Jakarta",
               weekday: "long",
               day: "2-digit",
               month: "short",
               year: "numeric"
-            }).format(now);
-            var jam = new Intl.DateTimeFormat("en-GB", {
+            });
+            var timeStr = now.toLocaleTimeString("id-ID", {
               timeZone: "Asia/Jakarta",
               hour: "2-digit",
               minute: "2-digit",
               second: "2-digit",
               hour12: false
-            }).format(now);
-            el.textContent = tanggal + " • " + jam + " WIB";
+            });
+            liveClock.textContent = dateStr + " • " + timeStr + " WIB";
           }
+          updateLiveClock();
+          setInterval(updateLiveClock, 1000);
 
-          function formatMultiRunningText(rawText) {
-            var lines = String(rawText || "")
-              .split(/\r?\n/)
-              .map(function (line) { return line.trim(); })
-              .filter(function (line) { return line.length > 0; });
-            return lines.join("   •   ");
-          }
-
-          function syncRunningTextDisplay(text) {
-            var val = formatMultiRunningText(text) || DEFAULT_RUNNING_TEXT;
-            if (inlineTickerText && inlineTickerText.textContent !== val) {
-              inlineTickerText.textContent = val;
+          /* =========================
+             2. MODE TEMA & LAYAR PENUH
+             ========================= */
+          var themeToggleBtn = document.getElementById("themeToggleBtn");
+          function applyTheme(isDark) {
+            if (isDark) {
+              document.body.classList.add("dark-mode");
+              if (themeToggleBtn) themeToggleBtn.textContent = "☀️ Mode Terang";
+            } else {
+              document.body.classList.remove("dark-mode");
+              if (themeToggleBtn) themeToggleBtn.textContent = "🌙 Mode Gelap";
             }
           }
+          var savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+          applyTheme(savedTheme === null ? true : savedTheme === "1");
 
-          function compressLogoForCloudSync(dataUrl) {
-            return new Promise(function (resolve) {
-              if (!dataUrl || typeof dataUrl !== "string") return resolve("");
-              if (dataUrl.indexOf("data:") !== 0) return resolve(dataUrl);
-              var img = new Image();
-              img.onload = function () {
-                try {
-                  var maxDim = 220;
-                  var w = img.naturalWidth || img.width || maxDim;
-                  var h = img.naturalHeight || img.height || maxDim;
-                  if (w > maxDim || h > maxDim) {
-                    var ratio = Math.min(maxDim / w, maxDim / h);
-                    w = Math.round(w * ratio);
-                    h = Math.round(h * ratio);
-                  }
-                  var canvas = document.createElement("canvas");
-                  canvas.width = w;
-                  canvas.height = h;
-                  var ctx = canvas.getContext("2d");
-                  if (!ctx) return resolve(dataUrl);
-                  ctx.drawImage(img, 0, 0, w, h);
-                  resolve(canvas.toDataURL("image/png"));
-                } catch (e) {
-                  resolve(dataUrl);
-                }
-              };
-              img.onerror = function () { resolve(dataUrl); };
-              img.src = dataUrl;
+          if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", function () {
+              var nextDark = !document.body.classList.contains("dark-mode");
+              applyTheme(nextDark);
+              localStorage.setItem(THEME_STORAGE_KEY, nextDark ? "1" : "0");
             });
           }
 
-          function showCloudSyncNotice(msg, isError) {
-            if (!autoUpdateToast) return;
-            autoUpdateToast.textContent = msg;
-            autoUpdateToast.style.borderColor = isError ? "#f87171" : "#4ade80";
-            autoUpdateToast.classList.add("visible");
-            clearTimeout(state._toastTimer);
-            state._toastTimer = setTimeout(function () {
-              autoUpdateToast.classList.remove("visible");
-            }, 3500);
+          var fullscreenToggleBtn = document.getElementById("fullscreenToggleBtn");
+          function isFullscreenActive() {
+            return Boolean(
+              document.fullscreenElement ||
+              document.webkitFullscreenElement ||
+              document.body.classList.contains("pseudo-fullscreen")
+            );
           }
 
-          async function getActiveCloudBlobUrl() {
-            var savedUrl = localStorage.getItem(CLOUD_BLOB_URL_KEY);
-            if (savedUrl && savedUrl.indexOf("http") === 0) return savedUrl;
-
-            try {
-              var lookupRes = await fetch("https://ntfy.sh/" + CLOUD_SYNC_BUCKET_ID + "/json?poll=1&since=all", {
-                cache: "no-store"
-              });
-              if (lookupRes && lookupRes.ok) {
-                var lines = (await lookupRes.text()).trim().split(/\r?\n/);
-                for (var i = lines.length - 1; i >= 0; i--) {
-                  if (!lines[i]) continue;
-                  var pkt = JSON.parse(lines[i]);
-                  if (pkt && pkt.message && pkt.message.indexOf("https://jsonblob.com/api/jsonBlob/") === 0) {
-                    localStorage.setItem(CLOUD_BLOB_URL_KEY, pkt.message.trim());
-                    return pkt.message.trim();
-                  }
-                }
-              }
-            } catch (e) {}
-
-            try {
-              var createRes = await fetch("https://jsonblob.com/api/jsonBlob", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Accept": "application/json"
-                },
-                body: JSON.stringify({ updatedAt: 0 })
-              });
-              if (createRes && createRes.ok) {
-                var loc = createRes.headers.get("Location") || createRes.headers.get("location") || "";
-                if (loc) {
-                  if (loc.indexOf("http") !== 0) {
-                    loc = "https://jsonblob.com" + (loc.charAt(0) === "/" ? "" : "/") + loc;
-                  }
-                  localStorage.setItem(CLOUD_BLOB_URL_KEY, loc);
-                  await fetch("https://ntfy.sh/" + CLOUD_SYNC_BUCKET_ID, {
-                    method: "POST",
-                    body: loc
-                  }).catch(function () {});
-                  return loc;
-                }
-              }
-            } catch (e) {}
-
-            return CLOUD_SYNC_ENDPOINTS[0];
+          function applyAdaptiveFullscreenScale() {
+            syncActiveVideoLayoutWithViewport();
+            if (!isFullscreenActive()) {
+              document.body.style.removeProperty("--tv-scale");
+              return;
+            }
+            var vw = window.innerWidth || document.documentElement.clientWidth || 1920;
+            var vh = window.innerHeight || document.documentElement.clientHeight || 1080;
+            // Hitung faktor proporsi otomatis berdasar rasio layar TV (HD 720p, FHD 1080p, 4K, 32" hingga 100"+)
+            var widthRatio = vw / 1920;
+            var heightRatio = vh / 1080;
+            var aspectFactor = Math.min(widthRatio, heightRatio) / Math.max(widthRatio, 0.5);
+            var scale = 1;
+            if (vw / vh < 1.35) {
+              // TV layar kotak (4:3) atau vertikal (portrait signage)
+              scale = Math.max(0.78, Math.min(1.15, (vh / vw) * 0.72));
+            } else if (vw / vh > 2.1) {
+              // TV ultra-wide (21:9)
+              scale = Math.max(0.82, Math.min(1.12, (vh / 1080) / (vw / 1920) * 1.15));
+            } else {
+              // TV standar 16:9 semua ukuran inchi (32", 43", 50", 55", 65", 75", 85", 100"+)
+              scale = Math.max(0.88, Math.min(1.18, aspectFactor));
+            }
+            document.body.style.setProperty("--tv-scale", scale.toFixed(3));
           }
 
-          async function pushSettingsToCloudSync() {
-            try {
-              showCloudSyncNotice("☁️ Mengirim pengaturan ke layar TV...", false);
-              var rawLeft = localStorage.getItem(LOGO_LEFT_KEY) || "";
-              var rawRight = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-              var cloudLeft = await compressLogoForCloudSync(rawLeft);
-              var cloudRight = await compressLogoForCloudSync(rawRight);
-              var cloudVideos = loadVideoSchedules().filter(function (v) {
-                return v && !v.hasLocalFile && v.url;
+          function syncActiveVideoLayoutWithViewport() {
+            if (!scheduledVideoPanel || !scheduledVideoMount) return;
+            var isFull = isFullscreenActive();
+            var panelRect = scheduledVideoPanel.getBoundingClientRect();
+            var targetW = Math.max(240, Math.round(panelRect.width || (isFull ? window.innerWidth : scheduledVideoPanel.clientWidth || 800)));
+            var targetH = Math.max(160, Math.round(panelRect.height || (isFull ? window.innerHeight : scheduledVideoPanel.clientHeight || 450)));
+
+            scheduledVideoMount.style.width = "100%";
+            scheduledVideoMount.style.height = "100%";
+
+            var vids = scheduledVideoMount.querySelectorAll("video");
+            vids.forEach(function (vid) {
+              vid.style.width = "100%";
+              vid.style.height = "100%";
+              vid.style.maxWidth = targetW + "px";
+              vid.style.maxHeight = targetH + "px";
+              vid.style.objectFit = "contain";
+              enableAudioOnElement(vid);
+            });
+
+            var iframes = scheduledVideoMount.querySelectorAll("iframe");
+            iframes.forEach(function (ifr) {
+              ifr.style.width = "100%";
+              ifr.style.height = "100%";
+              ifr.style.maxWidth = targetW + "px";
+              ifr.style.maxHeight = targetH + "px";
+            });
+          }
+
+          function updateFullscreenButtonLabel() {
+            var active = isFullscreenActive();
+            document.body.classList.toggle("is-fullscreen", active);
+            applyAdaptiveFullscreenScale();
+            if (fullscreenToggleBtn) {
+              fullscreenToggleBtn.textContent = active ? "🗗 Keluar Layar Penuh" : "⛶ Layar Penuh";
+            }
+            setTimeout(syncActiveVideoLayoutWithViewport, 60);
+            setTimeout(syncActiveVideoLayoutWithViewport, 220);
+          }
+          function enterFullscreenMode() {
+            var docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+              docEl.requestFullscreen().catch(function () {
+                document.body.classList.add("pseudo-fullscreen");
+                updateFullscreenButtonLabel();
               });
-              var nowTs = Date.now();
-              state.lastCloudUpdatedAt = nowTs;
-              localStorage.setItem("dumai_cloud_updated_at", String(nowTs));
-
-              var payload = {
-                updatedAt: nowTs,
-                runningText: localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT,
-                logoLeft: cloudLeft,
-                logoRight: cloudRight,
-                videos: cloudVideos
-              };
-              var serialized = JSON.stringify(payload);
-              state.lastCloudSyncSig = computeStringHash(serialized);
-
-              var blobUrl = await getActiveCloudBlobUrl();
-              var putRes = await fetch(blobUrl, {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Accept": "application/json"
-                },
-                body: serialized
-              });
-
-              if (putRes && putRes.ok) {
-                await fetch("https://ntfy.sh/" + CLOUD_SYNC_BUCKET_ID, {
-                  method: "POST",
-                  body: blobUrl
-                }).catch(function () {});
-                showCloudSyncNotice("✅ Pengaturan berhasil disinkronkan ke TV!", false);
+            } else if (docEl.webkitRequestFullscreen) {
+              docEl.webkitRequestFullscreen();
+            } else {
+              document.body.classList.add("pseudo-fullscreen");
+              updateFullscreenButtonLabel();
+            }
+          }
+          if (fullscreenToggleBtn) {
+            fullscreenToggleBtn.addEventListener("click", function () {
+              if (!isFullscreenActive()) {
+                enterFullscreenMode();
               } else {
-                showCloudSyncNotice("⚠️ Gagal mengirim ke server cloud, periksa koneksi internet.", true);
+                if (document.exitFullscreen && document.fullscreenElement) {
+                  document.exitFullscreen();
+                } else if (document.webkitExitFullscreen && document.webkitFullscreenElement) {
+                  document.webkitExitFullscreen();
+                }
+                document.body.classList.remove("pseudo-fullscreen");
+                updateFullscreenButtonLabel();
               }
-            } catch (e) {
-              showCloudSyncNotice("⚠️ Gagal sinkronisasi cloud: " + (e && e.message ? e.message : "Network error"), true);
-            }
+            });
+          }
+          document.addEventListener("fullscreenchange", updateFullscreenButtonLabel);
+          document.addEventListener("webkitfullscreenchange", updateFullscreenButtonLabel);
+          window.addEventListener("resize", applyAdaptiveFullscreenScale);
+          window.addEventListener("orientationchange", function () {
+            setTimeout(applyAdaptiveFullscreenScale, 150);
+          });
+
+          // Pulihkan status Layar Penuh secara otomatis setelah auto-update reload
+          if (sessionStorage.getItem("dumai_restore_fullscreen_after_update") === "1") {
+            sessionStorage.removeItem("dumai_restore_fullscreen_after_update");
+            setTimeout(function () {
+              if (!isFullscreenActive()) {
+                enterFullscreenMode();
+              }
+            }, 350);
           }
 
-          async function pullSettingsFromCloudSync() {
-            try {
-              var blobUrl = await getActiveCloudBlobUrl();
-              if (!blobUrl) return;
-              var sep = blobUrl.indexOf("?") === -1 ? "?" : "&";
-              var res = await fetch(blobUrl + sep + "_cb=" + Date.now(), {
-                cache: "no-store",
-                headers: { "Accept": "application/json" }
-              });
-              if (!res || !res.ok) return;
-              var rawText = await res.text();
-              if (!rawText) return;
-              var sig = computeStringHash(rawText);
-              if (sig === state.lastCloudSyncSig) return;
-              var data = JSON.parse(rawText);
-              if (!data || typeof data !== "object") return;
+          /* =========================
+             3. RUNNING TEXT INFORMASI
+             ========================= */
+          var runningTextModal = document.getElementById("runningTextModal");
+          var saveRunningTextBtn = document.getElementById("saveRunningTextBtn");
+          var closeRunningTextModalBtn = document.getElementById("closeRunningTextModalBtn");
+          var confirmRunningTextBtn = document.getElementById("confirmRunningTextBtn");
+          var resetRunningTextBtn = document.getElementById("resetRunningTextBtn");
+          var modalRunningTextInput = document.getElementById("modalRunningTextInput");
 
-              var remoteTs = Number(data.updatedAt || 0);
-              if (remoteTs <= 0 || remoteTs <= state.lastCloudUpdatedAt) {
-                state.lastCloudSyncSig = sig;
-                return;
-              }
-
-              state.lastCloudSyncSig = sig;
-              state.lastCloudUpdatedAt = remoteTs;
-              localStorage.setItem("dumai_cloud_updated_at", String(remoteTs));
-
-              if (typeof data.runningText === "string" && !state.remoteRunningText) {
-                var trimmedText = data.runningText.trim();
-                if (trimmedText) {
-                  localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, trimmedText);
-                  syncRunningTextDisplay(trimmedText);
-                }
-              }
-
-              var logoChanged = false;
-              if (typeof data.logoLeft === "string") {
-                var curL = localStorage.getItem(LOGO_LEFT_KEY) || "";
-                if (data.logoLeft !== curL) {
-                  if (data.logoLeft) localStorage.setItem(LOGO_LEFT_KEY, data.logoLeft);
-                  else localStorage.removeItem(LOGO_LEFT_KEY);
-                  logoChanged = true;
-                }
-              }
-              if (typeof data.logoRight === "string") {
-                var curR = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-                if (data.logoRight !== curR) {
-                  if (data.logoRight) localStorage.setItem(LOGO_RIGHT_KEY, data.logoRight);
-                  else localStorage.removeItem(LOGO_RIGHT_KEY);
-                  logoChanged = true;
-                }
-              }
-              if (logoChanged) renderHeaderLogos();
-
-              if (Array.isArray(data.videos)) {
-                var localAndSheet = loadVideoSchedules().filter(function (v) {
-                  return v && (v.hasLocalFile || String(v.id || "").indexOf("remote_vid_") === 0);
-                });
-                var merged = localAndSheet.concat(data.videos);
-                saveVideoSchedules(merged);
-                if (videoScheduleModal && videoScheduleModal.classList.contains("open")) {
-                  renderVideoScheduleList();
-                }
-              }
-            } catch (e) {}
+          function formatRunningTextForDisplay(raw) {
+            var lines = String(raw || "")
+              .split(/\r?\n/)
+              .map(function (l) { return l.trim().toUpperCase(); })
+              .filter(function (l) { return l.length > 0; });
+            return lines.length ? lines.join("   •   ") : DEFAULT_RUNNING_TEXT;
           }
 
-          async function syncRemoteConfigFromSheet() {
-            try {
-              var url = REMOTE_CONFIG_CSV_URL + "&_cb=" + Date.now();
-              var res = await fetch(url, { cache: "no-store" });
-              if (!res || !res.ok) return;
-              var csvText = await res.text();
-              if (!csvText || /^\s*<!doctype html>/i.test(csvText) || /^\s*<html/i.test(csvText)) return;
-
-              var rows = parseCsvText(csvText);
-              if (!rows.length) return;
-
-              var infoLines = [];
-              var remoteVideos = [];
-
-              rows.forEach(function (r, idx) {
-                var colA = String(r[0] || "").trim();
-                var colB = String(r[1] || "").trim();
-                var colC = String(r[2] || "").trim();
-                var colD = String(r[3] || "").trim();
-                if (!colA) return;
-                if (idx === 0 && /^(tipe|jenis|key|kategori)$/i.test(colA)) return;
-
-                var key = colA.toUpperCase();
-                if (key === "INFO" || key === "TEKS" || key === "RUNNING_TEXT") {
-                  if (colB) infoLines.push(colB);
-                } else if (key === "VIDEO" && colB && colC) {
-                  remoteVideos.push({
-                    id: "remote_vid_" + idx + "_" + colB.replace(/[^0-9]/g, ""),
-                    title: colD || "Tayangan Terjadwal",
-                    url: colC,
-                    hasLocalFile: false,
-                    fileName: "",
-                    playTime: colB.length === 4 ? ("0" + colB) : colB.slice(0, 5),
-                    durationSec: Math.max(0, Number(r[4] || 0))
-                  });
-                }
-              });
-
-              var sig = JSON.stringify({ info: infoLines, videos: remoteVideos });
-              if (sig === state.lastRemoteConfigSig) return;
-              state.lastRemoteConfigSig = sig;
-
-              if (infoLines.length > 0) {
-                state.remoteRunningText = infoLines.join("\n");
-                syncRunningTextDisplay(state.remoteRunningText);
-              } else if (state.remoteRunningText) {
-                state.remoteRunningText = "";
-                syncRunningTextDisplay(localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT);
-              }
-
-              if (remoteVideos.length > 0) {
-                var localOnly = loadVideoSchedules().filter(function (v) {
-                  return String(v.id || "").indexOf("remote_vid_") !== 0;
-                });
-                saveVideoSchedules(remoteVideos.concat(localOnly));
-                if (videoScheduleModal && videoScheduleModal.classList.contains("open")) {
-                  renderVideoScheduleList();
-                }
-              }
-            } catch (e) {}
+          function applyRunningText(rawText) {
+            if (!inlineTickerText) return;
+            inlineTickerText.textContent = formatRunningTextForDisplay(rawText).toUpperCase();
           }
 
-          function stripBlackBackgroundDataUrl(dataUrl) {
-            return new Promise(function (resolve) {
-              if (!dataUrl || typeof dataUrl !== "string") return resolve(dataUrl);
-              var img = new Image();
-              img.crossOrigin = "anonymous";
-              img.onload = function () {
-                try {
-                  var canvas = document.createElement("canvas");
-                  var w = img.naturalWidth || img.width || 256;
-                  var h = img.naturalHeight || img.height || 256;
-                  canvas.width = w;
-                  canvas.height = h;
-                  var ctx = canvas.getContext("2d");
-                  if (!ctx) return resolve(dataUrl);
-                  ctx.drawImage(img, 0, 0, w, h);
-                  var imgData = ctx.getImageData(0, 0, w, h);
-                  var d = imgData.data;
-                  for (var i = 0; i < d.length; i += 4) {
-                    var maxC = Math.max(d[i], d[i + 1], d[i + 2]);
-                    if (maxC <= 24) {
-                      d[i + 3] = 0;
-                    } else if (maxC < 52) {
-                      d[i + 3] = Math.round(d[i + 3] * ((maxC - 24) / 28));
-                    }
-                  }
-                  ctx.putImageData(imgData, 0, 0);
-                  resolve(canvas.toDataURL("image/png"));
-                } catch (err) {
-                  resolve(dataUrl);
-                }
-              };
-              img.onerror = function () { resolve(dataUrl); };
-              img.src = dataUrl;
+          var initialRunningText = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
+          applyRunningText(initialRunningText);
+
+          if (saveRunningTextBtn && runningTextModal) {
+            saveRunningTextBtn.addEventListener("click", function () {
+              if (modalRunningTextInput) {
+                modalRunningTextInput.value = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
+              }
+              runningTextModal.classList.add("open");
+            });
+          }
+          if (closeRunningTextModalBtn && runningTextModal) {
+            closeRunningTextModalBtn.addEventListener("click", function () {
+              runningTextModal.classList.remove("open");
+            });
+          }
+          if (confirmRunningTextBtn && runningTextModal) {
+            confirmRunningTextBtn.addEventListener("click", function () {
+              var val = ((modalRunningTextInput && modalRunningTextInput.value || "").trim() || DEFAULT_RUNNING_TEXT).toUpperCase();
+              localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, val);
+              applyRunningText(val);
+              runningTextModal.classList.remove("open");
+            });
+          }
+          if (resetRunningTextBtn) {
+            resetRunningTextBtn.addEventListener("click", function () {
+              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
+              if (modalRunningTextInput) modalRunningTextInput.value = DEFAULT_RUNNING_TEXT;
+              applyRunningText(DEFAULT_RUNNING_TEXT);
             });
           }
 
-          function renderHeaderLogos() {
-            var leftSlot = document.getElementById("headerLogoLeft");
-            var rightSlot = document.getElementById("headerLogoRight");
-            var leftLogo = localStorage.getItem(LOGO_LEFT_KEY) || "";
-            var rightLogo = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-
-            if (leftSlot) {
-              leftSlot.innerHTML = leftLogo
-                ? "<img src='" + escapeHtml(leftLogo) + "' alt='Logo Kiri' onerror='this.remove()' />"
-                : "";
-            }
-            if (rightSlot) {
-              rightSlot.innerHTML = rightLogo
-                ? "<img src='" + escapeHtml(rightLogo) + "' alt='Logo Kanan' onerror='this.remove()' />"
-                : "";
-            }
-          }
-
-          function readFileAsDataUrl(fileInput, callback) {
-            var file = fileInput && fileInput.files && fileInput.files[0];
-            if (!file) return callback(null);
-            var reader = new FileReader();
-            reader.onload = function (ev) { callback(String(ev.target && ev.target.result || "")); };
-            reader.onerror = function () { callback(null); };
-            reader.readAsDataURL(file);
-          }
-
+          /* =========================
+             4. PENGATURAN LOGO HEADER
+             ========================= */
           var logoModal = document.getElementById("logoModal");
           var openLogoModalBtn = document.getElementById("openLogoModalBtn");
           var closeLogoModalBtn = document.getElementById("closeLogoModalBtn");
@@ -1924,101 +1570,154 @@
           var cleanExistingBlackBgBtn = document.getElementById("cleanExistingBlackBgBtn");
           var removeBlackBgCheckbox = document.getElementById("removeBlackBgCheckbox");
           var leftLogoFile = document.getElementById("leftLogoFile");
-          var rightLogoFile = document.getElementById("rightLogoFile");
           var leftLogoUrl = document.getElementById("leftLogoUrl");
+          var rightLogoFile = document.getElementById("rightLogoFile");
           var rightLogoUrl = document.getElementById("rightLogoUrl");
+          var headerLogoLeft = document.getElementById("headerLogoLeft");
+          var headerLogoRight = document.getElementById("headerLogoRight");
 
-          if (openLogoModalBtn && logoModal) {
-            openLogoModalBtn.addEventListener("click", function () {
-              var curLeft = localStorage.getItem(LOGO_LEFT_KEY) || "";
-              var curRight = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-              if (leftLogoUrl) leftLogoUrl.value = curLeft.indexOf("data:") === 0 ? "" : curLeft;
-              if (rightLogoUrl) rightLogoUrl.value = curRight.indexOf("data:") === 0 ? "" : curRight;
-              if (leftLogoFile) leftLogoFile.value = "";
-              if (rightLogoFile) rightLogoFile.value = "";
-              logoModal.classList.add("open");
+          function renderHeaderLogos() {
+            var leftSrc = localStorage.getItem(LOGO_LEFT_KEY) || "";
+            var rightSrc = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+            if (headerLogoLeft) {
+              headerLogoLeft.innerHTML = leftSrc ? "<img src='" + escapeHtml(leftSrc) + "' alt='Logo Kiri' />" : "";
+            }
+            if (headerLogoRight) {
+              headerLogoRight.innerHTML = rightSrc ? "<img src='" + escapeHtml(rightSrc) + "' alt='Logo Kanan' />" : "";
+            }
+          }
+          renderHeaderLogos();
+
+          function stripDarkBackgroundDataUrl(srcUrl) {
+            return new Promise(function (resolve) {
+              if (!srcUrl) return resolve("");
+              var img = new Image();
+              img.crossOrigin = "anonymous";
+              img.onload = function () {
+                try {
+                  var canvas = document.createElement("canvas");
+                  canvas.width = img.naturalWidth || img.width;
+                  canvas.height = img.naturalHeight || img.height;
+                  var ctx = canvas.getContext("2d");
+                  ctx.drawImage(img, 0, 0);
+                  var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                  var d = imgData.data;
+                  for (var i = 0; i < d.length; i += 4) {
+                    var r = d[i], g = d[i + 1], b = d[i + 2];
+                    if (r < 38 && g < 38 && b < 38) {
+                      d[i + 3] = 0;
+                    }
+                  }
+                  ctx.putImageData(imgData, 0, 0);
+                  resolve(canvas.toDataURL("image/png"));
+                } catch (e) {
+                  resolve(srcUrl);
+                }
+              };
+              img.onerror = function () { resolve(srcUrl); };
+              img.src = srcUrl;
             });
           }
 
+          function readFileAsDataUrl(file) {
+            return new Promise(function (resolve) {
+              if (!file) return resolve("");
+              var reader = new FileReader();
+              reader.onload = function () { resolve(String(reader.result || "")); };
+              reader.onerror = function () { resolve(""); };
+              reader.readAsDataURL(file);
+            });
+          }
+
+          if (openLogoModalBtn && logoModal) {
+            openLogoModalBtn.addEventListener("click", function () {
+              logoModal.classList.add("open");
+            });
+          }
           if (closeLogoModalBtn && logoModal) {
             closeLogoModalBtn.addEventListener("click", function () {
               logoModal.classList.remove("open");
             });
           }
+          if (saveLogoBtn) {
+            saveLogoBtn.addEventListener("click", async function () {
+              var stripBg = removeBlackBgCheckbox && removeBlackBgCheckbox.checked;
+              var lFile = leftLogoFile && leftLogoFile.files && leftLogoFile.files[0];
+              var rFile = rightLogoFile && rightLogoFile.files && rightLogoFile.files[0];
+              var lUrl = (leftLogoUrl && leftLogoUrl.value || "").trim();
+              var rUrl = (rightLogoUrl && rightLogoUrl.value || "").trim();
 
+              if (lFile) {
+                var lData = await readFileAsDataUrl(lFile);
+                if (stripBg) lData = await stripDarkBackgroundDataUrl(lData);
+                if (lData) localStorage.setItem(LOGO_LEFT_KEY, lData);
+              } else if (lUrl) {
+                var lFinal = stripBg ? await stripDarkBackgroundDataUrl(lUrl) : lUrl;
+                localStorage.setItem(LOGO_LEFT_KEY, lFinal);
+              }
+
+              if (rFile) {
+                var rData = await readFileAsDataUrl(rFile);
+                if (stripBg) rData = await stripDarkBackgroundDataUrl(rData);
+                if (rData) localStorage.setItem(LOGO_RIGHT_KEY, rData);
+              } else if (rUrl) {
+                var rFinal = stripBg ? await stripDarkBackgroundDataUrl(rUrl) : rUrl;
+                localStorage.setItem(LOGO_RIGHT_KEY, rFinal);
+              }
+
+              renderHeaderLogos();
+              if (logoModal) logoModal.classList.remove("open");
+            });
+          }
+          if (cleanExistingBlackBgBtn) {
+            cleanExistingBlackBgBtn.addEventListener("click", async function () {
+              var lCurr = localStorage.getItem(LOGO_LEFT_KEY) || "";
+              var rCurr = localStorage.getItem(LOGO_RIGHT_KEY) || "";
+              if (lCurr) localStorage.setItem(LOGO_LEFT_KEY, await stripDarkBackgroundDataUrl(lCurr));
+              if (rCurr) localStorage.setItem(LOGO_RIGHT_KEY, await stripDarkBackgroundDataUrl(rCurr));
+              renderHeaderLogos();
+            });
+          }
           if (resetLogoBtn) {
             resetLogoBtn.addEventListener("click", function () {
               localStorage.removeItem(LOGO_LEFT_KEY);
               localStorage.removeItem(LOGO_RIGHT_KEY);
+              if (leftLogoFile) leftLogoFile.value = "";
+              if (leftLogoUrl) leftLogoUrl.value = "";
+              if (rightLogoFile) rightLogoFile.value = "";
+              if (rightLogoUrl) rightLogoUrl.value = "";
               renderHeaderLogos();
-              pushSettingsToCloudSync();
-              if (logoModal) logoModal.classList.remove("open");
             });
           }
 
-          if (cleanExistingBlackBgBtn) {
-            cleanExistingBlackBgBtn.addEventListener("click", async function () {
-              var curLeft = localStorage.getItem(LOGO_LEFT_KEY) || "";
-              var curRight = localStorage.getItem(LOGO_RIGHT_KEY) || "";
-              if (curLeft) {
-                var cleanedL = await stripBlackBackgroundDataUrl(curLeft);
-                if (cleanedL) localStorage.setItem(LOGO_LEFT_KEY, cleanedL);
-              }
-              if (curRight) {
-                var cleanedR = await stripBlackBackgroundDataUrl(curRight);
-                if (cleanedR) localStorage.setItem(LOGO_RIGHT_KEY, cleanedR);
-              }
-              renderHeaderLogos();
-              pushSettingsToCloudSync();
-            });
-          }
-
-          if (saveLogoBtn) {
-            saveLogoBtn.addEventListener("click", function () {
-              var shouldStripBlack = Boolean(removeBlackBgCheckbox && removeBlackBgCheckbox.checked);
-              readFileAsDataUrl(leftLogoFile, function (leftData) {
-                var finalLeft = leftData || (leftLogoUrl ? leftLogoUrl.value.trim() : "") || (localStorage.getItem(LOGO_LEFT_KEY) || "");
-                readFileAsDataUrl(rightLogoFile, async function (rightData) {
-                  var finalRight = rightData || (rightLogoUrl ? rightLogoUrl.value.trim() : "") || (localStorage.getItem(LOGO_RIGHT_KEY) || "");
-                  if (shouldStripBlack) {
-                    if (finalLeft) finalLeft = await stripBlackBackgroundDataUrl(finalLeft);
-                    if (finalRight) finalRight = await stripBlackBackgroundDataUrl(finalRight);
-                  }
-                  if (finalLeft) localStorage.setItem(LOGO_LEFT_KEY, finalLeft);
-                  else localStorage.removeItem(LOGO_LEFT_KEY);
-                  if (finalRight) localStorage.setItem(LOGO_RIGHT_KEY, finalRight);
-                  else localStorage.removeItem(LOGO_RIGHT_KEY);
-                  renderHeaderLogos();
-                  pushSettingsToCloudSync();
-                  if (logoModal) logoModal.classList.remove("open");
-                });
-              });
-            });
-          }
+          /* =========================
+             5. VIDEO HARIAN & VIDEO IKLAN (>5 FILE)
+             ========================= */
+          var VIDEO_DB_NAME = "DumaiPortVideoDB";
+          var VIDEO_STORE_NAME = "videos";
 
           function openVideoDb() {
             return new Promise(function (resolve) {
               if (!window.indexedDB) return resolve(null);
-              var req = window.indexedDB.open("DumaiVideoScheduleDB", 1);
-              req.onupgradeneeded = function (ev) {
-                var db = ev.target.result;
-                if (!db.objectStoreNames.contains("videos")) {
-                  db.createObjectStore("videos", { keyPath: "id" });
+              var req = indexedDB.open(VIDEO_DB_NAME, 1);
+              req.onupgradeneeded = function (e) {
+                var db = e.target.result;
+                if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
+                  db.createObjectStore(VIDEO_STORE_NAME);
                 }
               };
-              req.onsuccess = function (ev) { resolve(ev.target.result); };
+              req.onsuccess = function (e) { resolve(e.target.result); };
               req.onerror = function () { resolve(null); };
             });
           }
 
-          async function saveVideoBlobToDb(id, file) {
+          async function saveVideoBlobToDb(id, blob) {
             var db = await openVideoDb();
-            if (!db || !file) return false;
+            if (!db) return false;
             return new Promise(function (resolve) {
               try {
-                var tx = db.transaction("videos", "readwrite");
-                var store = tx.objectStore("videos");
-                store.put({ id: id, blob: file, type: file.type || "video/mp4" });
+                var tx = db.transaction(VIDEO_STORE_NAME, "readwrite");
+                tx.objectStore(VIDEO_STORE_NAME).put(blob, id);
                 tx.oncomplete = function () { resolve(true); };
                 tx.onerror = function () { resolve(false); };
               } catch (e) {
@@ -2027,18 +1726,14 @@
             });
           }
 
-          async function getVideoBlobUrlFromDb(id) {
+          async function getVideoBlobFromDb(id) {
             var db = await openVideoDb();
-            if (!db || !id) return null;
+            if (!db) return null;
             return new Promise(function (resolve) {
               try {
-                var tx = db.transaction("videos", "readonly");
-                var store = tx.objectStore("videos");
-                var req = store.get(id);
-                req.onsuccess = function () {
-                  var rec = req.result;
-                  resolve(rec && rec.blob ? URL.createObjectURL(rec.blob) : null);
-                };
+                var tx = db.transaction(VIDEO_STORE_NAME, "readonly");
+                var req = tx.objectStore(VIDEO_STORE_NAME).get(id);
+                req.onsuccess = function () { resolve(req.result || null); };
                 req.onerror = function () { resolve(null); };
               } catch (e) {
                 resolve(null);
@@ -2048,37 +1743,24 @@
 
           async function deleteVideoBlobFromDb(id) {
             var db = await openVideoDb();
-            if (!db || !id) return;
+            if (!db) return;
             try {
-              var tx = db.transaction("videos", "readwrite");
-              tx.objectStore("videos").delete(id);
+              var tx = db.transaction(VIDEO_STORE_NAME, "readwrite");
+              tx.objectStore(VIDEO_STORE_NAME).delete(id);
             } catch (e) {}
           }
 
           function loadVideoSchedules() {
             try {
-              var raw = localStorage.getItem(VIDEO_SCHEDULE_KEY);
-              var arr = raw ? JSON.parse(raw) : [];
-              return Array.isArray(arr) ? arr : [];
+              var parsed = JSON.parse(localStorage.getItem(VIDEO_SCHEDULE_KEY) || "[]");
+              return Array.isArray(parsed) ? parsed : [];
             } catch (e) {
               return [];
             }
           }
 
           function saveVideoSchedules(list) {
-            try {
-              localStorage.setItem(VIDEO_SCHEDULE_KEY, JSON.stringify(list || []));
-            } catch (e) {}
-          }
-
-          function extractYouTubeEmbedUrl(url) {
-            var u = String(url || "").trim();
-            if (!u) return null;
-            var m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
-            if (m && m[1]) {
-              return "https://www.youtube.com/embed/" + m[1] + "?autoplay=1&mute=1&rel=0";
-            }
-            return null;
+            localStorage.setItem(VIDEO_SCHEDULE_KEY, JSON.stringify(list || []));
           }
 
           var videoScheduleModal = document.getElementById("videoScheduleModal");
@@ -2092,364 +1774,910 @@
           var videoPlayTimeInput = document.getElementById("videoPlayTimeInput");
           var videoDurationInput = document.getElementById("videoDurationInput");
 
-          function renderVideoScheduleList() {
-            if (!videoScheduleList) return;
-            var list = loadVideoSchedules();
-            if (!list.length) {
-              videoScheduleList.innerHTML = "<div class='form-hint'>Belum ada jadwal video harian tersimpan.</div>";
-              return;
-            }
-            videoScheduleList.innerHTML = list.map(function (item) {
-              var durLabel = Number(item.durationSec || 0) > 0 ? (item.durationSec + " detik") : "Penuh (sesuai durasi)";
-              var srcLabel = item.hasLocalFile ? ("File Lokal: " + (item.fileName || "Video")) : (item.url || "-");
-              return (
-                "<div class='video-schedule-item'>" +
-                  "<div class='video-schedule-item-info'>" +
-                    "<div class='video-schedule-item-title'>⏰ " + escapeHtml(item.playTime) + " WIB • " + escapeHtml(item.title || "Tayangan Harian") + "</div>" +
-                    "<div class='video-schedule-item-meta'>Durasi: " + escapeHtml(durLabel) + " • " + escapeHtml(srcLabel) + "</div>" +
-                  "</div>" +
-                  "<button type='button' class='btn-danger-xs' data-del-vid='" + escapeHtml(item.id) + "'>Hapus</button>" +
-                "</div>"
-              );
-            }).join("");
+          var adVideoScheduleModal = document.getElementById("adVideoScheduleModal");
+          var openAdVideoModalBtn = document.getElementById("openAdVideoModalBtn");
+          var closeAdVideoModalBtn = document.getElementById("closeAdVideoModalBtn");
+          var addAdVideoBatchBtn = document.getElementById("addAdVideoBatchBtn");
+          var clearAllAdVideosBtn = document.getElementById("clearAllAdVideosBtn");
+          var adVideoScheduleList = document.getElementById("adVideoScheduleList");
+          var adVideoFilesInput = document.getElementById("adVideoFilesInput");
+          var adSelectedFilesInfo = document.getElementById("adSelectedFilesInfo");
+          var adVideoUrlsInput = document.getElementById("adVideoUrlsInput");
+          var adMultiTimesInput = document.getElementById("adMultiTimesInput");
+          var adVideoIntervalInput = document.getElementById("adVideoIntervalInput");
+          var adVideoDurationInput = document.getElementById("adVideoDurationInput");
 
-            videoScheduleList.querySelectorAll("[data-del-vid]").forEach(function (btn) {
-              btn.addEventListener("click", async function () {
-                var idToDel = btn.getAttribute("data-del-vid");
-                var updated = loadVideoSchedules().filter(function (x) { return x.id !== idToDel; });
-                saveVideoSchedules(updated);
-                await deleteVideoBlobFromDb(idToDel);
-                renderVideoScheduleList();
-                pushSettingsToCloudSync();
-              });
+          function parseMultiPlayTimes(rawTimesStr) {
+            var matches = String(rawTimesStr || "").match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/g) || [];
+            var normalized = matches.map(function (t) {
+              var p = t.split(":");
+              return String(parseInt(p[0], 10)).padStart(2, "0") + ":" + p[1];
+            });
+            var unique = Array.from(new Set(normalized));
+            unique.sort();
+            return unique.length ? unique : ["09:00"];
+          }
+
+          function getScheduleTimesArray(item) {
+            if (!item) return [];
+            if (Array.isArray(item.playTimes) && item.playTimes.length) {
+              return item.playTimes;
+            }
+            return item.playTime ? [item.playTime] : [];
+          }
+
+          function addMinutesToHm(hmStr, addMins) {
+            var parts = String(hmStr || "08:00").split(":");
+            var h = parseInt(parts[0], 10) || 0;
+            var m = parseInt(parts[1], 10) || 0;
+            var total = (h * 60 + m + (Number(addMins) || 0)) % (24 * 60);
+            if (total < 0) total += 24 * 60;
+            var nh = Math.floor(total / 60);
+            var nm = total % 60;
+            return String(nh).padStart(2, "0") + ":" + String(nm).padStart(2, "0");
+          }
+
+          function extractYouTubeEmbedUrl(url) {
+            var str = String(url || "").trim();
+            if (!str) return "";
+            var match = str.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            if (match && match[1]) {
+              return "https://www.youtube.com/embed/" + match[1] + "?autoplay=1&mute=0&rel=0&playsinline=1&enablejsapi=1";
+            }
+            return "";
+          }
+
+          var userSoundUnlocked = false;
+          function enableAudioOnElement(vid) {
+            if (!vid) return;
+            try {
+              vid.muted = false;
+              vid.defaultMuted = false;
+              vid.volume = 1;
+              if (vid.hasAttribute && vid.hasAttribute("muted")) {
+                vid.removeAttribute("muted");
+              }
+            } catch (e) {}
+          }
+
+          function forceAllDisplayedVideoSoundOn() {
+            if (!scheduledVideoMount) return;
+            var vids = scheduledVideoMount.querySelectorAll("video");
+            vids.forEach(function (v) {
+              enableAudioOnElement(v);
+              if (v.paused) {
+                v.play().catch(function () {});
+              }
+            });
+            var iframes = scheduledVideoMount.querySelectorAll("iframe");
+            iframes.forEach(function (ifr) {
+              try {
+                if (ifr.contentWindow) {
+                  ifr.contentWindow.postMessage(JSON.stringify({
+                    event: "command",
+                    func: "unMute",
+                    args: []
+                  }), "*");
+                  ifr.contentWindow.postMessage(JSON.stringify({
+                    event: "command",
+                    func: "setVolume",
+                    args: [100]
+                  }), "*");
+                }
+              } catch (e) {}
             });
           }
 
-          function stopScheduledVideoPanel() {
+          function unlockAudioAcrossPage() {
+            userSoundUnlocked = true;
+            forceAllDisplayedVideoSoundOn();
+            if (scheduledVideoUnmuteBtn) {
+              scheduledVideoUnmuteBtn.classList.remove("visible");
+            }
+          }
+
+          document.addEventListener("click", unlockAudioAcrossPage, true);
+          document.addEventListener("touchstart", unlockAudioAcrossPage, true);
+          document.addEventListener("keydown", unlockAudioAcrossPage, true);
+          document.addEventListener("pointerdown", unlockAudioAcrossPage, true);
+
+          var currentVideoObjectUrl = null;
+
+          function cleanupCurrentVideoElement() {
             if (state.activeVideoTimer) {
               clearTimeout(state.activeVideoTimer);
               state.activeVideoTimer = null;
             }
-            state.activeVideoScheduleId = null;
             if (scheduledVideoMount) {
-              var vid = scheduledVideoMount.querySelector("video");
-              if (vid) {
-                try { vid.pause(); vid.removeAttribute("src"); vid.load(); } catch (e) {}
-              }
+              var oldVids = scheduledVideoMount.querySelectorAll("video");
+              oldVids.forEach(function (v) {
+                try {
+                  v.onerror = null;
+                  v.onended = null;
+                  v.pause();
+                  v.removeAttribute("src");
+                  v.load();
+                } catch (e) {}
+              });
               scheduledVideoMount.innerHTML = "";
             }
-            if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.remove("visible");
+            if (currentVideoObjectUrl) {
+              try {
+                URL.revokeObjectURL(currentVideoObjectUrl);
+              } catch (e) {}
+              currentVideoObjectUrl = null;
+            }
+            if (scheduledVideoUnmuteBtn) {
+              scheduledVideoUnmuteBtn.classList.remove("visible");
+            }
+          }
+
+          function stopScheduledVideoPlayback() {
+            cleanupCurrentVideoElement();
+            if (state.videoQueue && state.videoQueue.length > 0) {
+              var nextItem = state.videoQueue.shift();
+              playScheduledVideoItem(nextItem, getScheduleTimesArray(nextItem)[0] || "");
+              return;
+            }
+            state.activeVideoScheduleId = null;
             if (scheduledVideoPanel) scheduledVideoPanel.classList.remove("active");
             if (tableResponsiveWrap) tableResponsiveWrap.style.display = "flex";
           }
 
-          async function playScheduledVideoItem(item) {
+          if (scheduledVideoUnmuteBtn) {
+            scheduledVideoUnmuteBtn.addEventListener("click", function () {
+              if (!scheduledVideoMount) return;
+              var vid = scheduledVideoMount.querySelector("video");
+              if (vid) {
+                vid.muted = false;
+                vid.volume = 1;
+                scheduledVideoUnmuteBtn.classList.remove("visible");
+              }
+            });
+          }
+
+          function renderDailyVideoScheduleList() {
+            if (!videoScheduleList) return;
+            var list = loadVideoSchedules().filter(function (x) {
+              return x && x.category !== "ad";
+            });
+            if (!list.length) {
+              videoScheduleList.innerHTML = "<div class='form-hint'>Belum ada jadwal video harian.</div>";
+              return;
+            }
+            videoScheduleList.innerHTML = list.map(function (item) {
+              var durLabel = Number(item.durationSec || 0) > 0 ? (item.durationSec + " detik") : "Penuh (sesuai durasi)";
+              var srcLabel = item.hasLocalFile ? ("File: " + (item.fileName || "Video Lokal")) : (item.url || "-");
+              var timesLabel = getScheduleTimesArray(item).join(", ") + " WIB";
+              return (
+                "<div class='video-schedule-item'>" +
+                  "<div class='video-schedule-item-info'>" +
+                    "<div class='video-schedule-item-title'>🎬 " + escapeHtml(item.title || "Tayangan Harian") + "</div>" +
+                    "<div class='video-schedule-item-meta'>⏰ Tiap Hari: <strong>" + escapeHtml(timesLabel) + "</strong> • Durasi: " + escapeHtml(durLabel) + " • " + escapeHtml(srcLabel) + "</div>" +
+                  "</div>" +
+                  "<div style='display:flex;gap:0.35rem;flex-shrink:0;'>" +
+                    "<button type='button' class='btn-primary' style='padding:0.25rem 0.55rem;font-size:0.74rem;' data-play-daily-vid='" + escapeHtml(item.id) + "'>▶ Putar</button>" +
+                    "<button type='button' class='btn-danger-xs' data-del-daily-vid='" + escapeHtml(item.id) + "'>Hapus</button>" +
+                  "</div>" +
+                "</div>"
+              );
+            }).join("");
+
+            videoScheduleList.querySelectorAll("[data-play-daily-vid]").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                var idToPlay = btn.getAttribute("data-play-daily-vid");
+                var target = loadVideoSchedules().find(function (x) { return x && x.id === idToPlay; });
+                if (target) {
+                  state.videoQueue = [];
+                  if (videoScheduleModal) videoScheduleModal.classList.remove("open");
+                  playScheduledVideoItem(target, getScheduleTimesArray(target)[0] || "Manual");
+                }
+              });
+            });
+
+            videoScheduleList.querySelectorAll("[data-del-daily-vid]").forEach(function (btn) {
+              btn.addEventListener("click", async function () {
+                var idToDel = btn.getAttribute("data-del-daily-vid");
+                var filtered = loadVideoSchedules().filter(function (x) { return x && x.id !== idToDel; });
+                saveVideoSchedules(filtered);
+                await deleteVideoBlobFromDb(idToDel);
+                renderDailyVideoScheduleList();
+              });
+            });
+          }
+
+          function renderAdVideoScheduleList() {
+            if (!adVideoScheduleList) return;
+            var list = loadVideoSchedules().filter(function (x) {
+              return x && x.category === "ad";
+            });
+            if (!list.length) {
+              adVideoScheduleList.innerHTML = "<div class='form-hint'>Belum ada video iklan terjadwal.</div>";
+              return;
+            }
+            adVideoScheduleList.innerHTML =
+              list.map(function (item, idx) {
+                var durLabel = Number(item.durationSec || 0) > 0 ? (item.durationSec + " detik") : "Penuh (sesuai durasi)";
+                var srcLabel = item.hasLocalFile ? ("File: " + (item.fileName || "Video Iklan")) : (item.url || "-");
+                var timesList = getScheduleTimesArray(item);
+                var timesLabel = timesList.join(", ") + " WIB";
+                return (
+                  "<div class='video-schedule-item'>" +
+                    "<div class='video-schedule-item-info'>" +
+                      "<div class='video-schedule-item-title'>📺 #" + (idx + 1) + " • " + escapeHtml(item.title || "Video Iklan") + "</div>" +
+                      "<div class='video-schedule-item-meta'>⏰ Tiap Hari: <strong>" + escapeHtml(timesLabel) + "</strong> • Durasi: " + escapeHtml(durLabel) + " • " + escapeHtml(srcLabel) + "</div>" +
+                    "</div>" +
+                    "<div style='display:flex;gap:0.35rem;flex-shrink:0;'>" +
+                      "<button type='button' class='btn-primary' style='padding:0.25rem 0.55rem;font-size:0.74rem;' data-play-vid='" + escapeHtml(item.id) + "'>▶ Putar</button>" +
+                      "<button type='button' class='btn-danger-xs' data-del-ad-vid='" + escapeHtml(item.id) + "'>Hapus</button>" +
+                    "</div>" +
+                  "</div>"
+                );
+              }).join("");
+
+            adVideoScheduleList.querySelectorAll("[data-play-vid]").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                var idToPlay = btn.getAttribute("data-play-vid");
+                var all = loadVideoSchedules();
+                var startIdx = all.findIndex(function (x) { return x && x.id === idToPlay; });
+                if (startIdx >= 0) {
+                  var target = all[startIdx];
+                  var restAds = all.slice(startIdx + 1).filter(function (x) {
+                    return x && x.category === "ad";
+                  });
+                  state.videoQueue = restAds;
+                  if (adVideoScheduleModal) adVideoScheduleModal.classList.remove("open");
+                  playScheduledVideoItem(target, getScheduleTimesArray(target)[0] || "Manual");
+                }
+              });
+            });
+
+            adVideoScheduleList.querySelectorAll("[data-del-ad-vid]").forEach(function (btn) {
+              btn.addEventListener("click", async function () {
+                var idToDel = btn.getAttribute("data-del-ad-vid");
+                var filtered = loadVideoSchedules().filter(function (x) { return x && x.id !== idToDel; });
+                saveVideoSchedules(filtered);
+                await deleteVideoBlobFromDb(idToDel);
+                renderAdVideoScheduleList();
+              });
+            });
+          }
+
+          async function playScheduledVideoItem(item, triggeredHm) {
             if (!item || !scheduledVideoPanel || !scheduledVideoMount) return;
-            stopScheduledVideoPanel();
+            cleanupCurrentVideoElement();
             state.activeVideoScheduleId = item.id;
 
             if (tableResponsiveWrap) tableResponsiveWrap.style.display = "none";
             scheduledVideoPanel.classList.add("active");
-            if (scheduledVideoCaption) {
-              scheduledVideoCaption.textContent = "🎬 " + (item.title || "Tayangan Harian") + " (" + item.playTime + " WIB)";
-            }
 
-            var ytEmbed = extractYouTubeEmbedUrl(item.url);
-            var durationSec = Number(item.durationSec || 0);
+            var ytEmbed = !item.hasLocalFile ? extractYouTubeEmbedUrl(item.url) : "";
+            var durationSec = Math.max(0, Number(item.durationSec || 0));
 
             if (ytEmbed) {
-              scheduledVideoMount.innerHTML = "<iframe src='" + escapeHtml(ytEmbed) + "' allow='autoplay; encrypted-media; fullscreen' allowfullscreen></iframe>";
-              if (durationSec > 0) {
-                state.activeVideoTimer = setTimeout(stopScheduledVideoPanel, durationSec * 1000);
-              }
+              var iframe = document.createElement("iframe");
+              iframe.src = ytEmbed;
+              iframe.allow = "autoplay; encrypted-media; fullscreen; microphone; camera";
+              iframe.allowFullscreen = true;
+              iframe.onload = function () {
+                forceAllDisplayedVideoSoundOn();
+              };
+              scheduledVideoMount.appendChild(iframe);
+              setTimeout(forceAllDisplayedVideoSoundOn, 600);
+              setTimeout(forceAllDisplayedVideoSoundOn, 1500);
+              var ytDur = durationSec > 0 ? durationSec : 60;
+              state.activeVideoTimer = setTimeout(stopScheduledVideoPlayback, ytDur * 1000);
               return;
             }
 
-            var srcUrl = item.url || "";
+            var srcToPlay = "";
             if (item.hasLocalFile) {
-              var blobUrl = await getVideoBlobUrlFromDb(item.id);
-              if (blobUrl) srcUrl = blobUrl;
+              var blob = await getVideoBlobFromDb(item.id);
+              if (blob) {
+                currentVideoObjectUrl = URL.createObjectURL(blob);
+                srcToPlay = currentVideoObjectUrl;
+              }
+            } else {
+              srcToPlay = String(item.url || "").trim();
             }
 
-            if (!srcUrl) {
-              stopScheduledVideoPanel();
+            if (!srcToPlay) {
+              stopScheduledVideoPlayback();
               return;
             }
 
-            var videoEl = document.createElement("video");
-            videoEl.src = srcUrl;
-            videoEl.autoplay = true;
-            videoEl.playsInline = true;
-            videoEl.muted = false;
-            videoEl.controls = false;
-            videoEl.addEventListener("ended", stopScheduledVideoPanel);
-            videoEl.addEventListener("error", stopScheduledVideoPanel);
-            scheduledVideoMount.appendChild(videoEl);
+            var vid = document.createElement("video");
+            vid.src = srcToPlay;
+            vid.muted = false;
+            vid.defaultMuted = false;
+            vid.volume = 1;
+            vid.autoplay = true;
+            vid.playsInline = true;
+            vid.controls = false;
+            vid.onloadedmetadata = function () {
+              enableAudioOnElement(vid);
+            };
+            vid.onloadeddata = function () {
+              enableAudioOnElement(vid);
+              if (vid.paused) {
+                vid.play().catch(function () {});
+              }
+            };
+            vid.oncanplay = function () {
+              enableAudioOnElement(vid);
+            };
+            vid.onplay = function () {
+              enableAudioOnElement(vid);
+            };
+            vid.ontimeupdate = function () {
+              if (vid.muted || vid.volume < 1) {
+                enableAudioOnElement(vid);
+              }
+            };
+            vid.onended = function () {
+              stopScheduledVideoPlayback();
+            };
+            vid.onerror = function () {
+              stopScheduledVideoPlayback();
+            };
+            scheduledVideoMount.appendChild(vid);
+            syncActiveVideoLayoutWithViewport();
 
+            // Pastikan suara otomatis hidup begitu semua video tampil
+            enableAudioOnElement(vid);
             try {
-              var p = videoEl.play();
-              if (p && typeof p.then === "function") {
-                p.catch(function () {
-                  videoEl.muted = true;
-                  videoEl.play().catch(function () {});
-                  if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.add("visible");
-                });
+              var AudioCtx = window.AudioContext || window.webkitAudioContext;
+              if (AudioCtx) {
+                var actx = new AudioCtx();
+                if (actx.state === "suspended") {
+                  actx.resume().catch(function () {});
+                }
               }
             } catch (e) {}
 
-            if (durationSec > 0) {
-              state.activeVideoTimer = setTimeout(stopScheduledVideoPanel, durationSec * 1000);
-            }
-          }
-
-          if (scheduledVideoUnmuteBtn) {
-            scheduledVideoUnmuteBtn.addEventListener("click", function () {
-              var vid = scheduledVideoMount && scheduledVideoMount.querySelector("video");
-              if (vid) {
-                vid.muted = false;
-                vid.play().catch(function () {});
-              }
-              scheduledVideoUnmuteBtn.classList.remove("visible");
+            vid.play().then(function () {
+              enableAudioOnElement(vid);
+            }).catch(function () {
+              enableAudioOnElement(vid);
+              vid.play().catch(function () {
+                // Jika browser TV memblokir autoplay bersuara sebelum ada interaksi pertama,
+                // tetap putar video dan tampilkan tombol suara serta buka suara otomatis saat layar disentuh/diklik
+                vid.muted = true;
+                if (scheduledVideoUnmuteBtn) scheduledVideoUnmuteBtn.classList.add("visible");
+                vid.play().catch(function () {
+                  stopScheduledVideoPlayback();
+                });
+              });
             });
+
+            if (durationSec > 0) {
+              state.activeVideoTimer = setTimeout(stopScheduledVideoPlayback, durationSec * 1000);
+            }
           }
 
           function checkVideoScheduleTrigger() {
             if (state.activeVideoScheduleId) return;
             var nowParts = getJakartaNowParts();
             var list = loadVideoSchedules();
+            var dueItems = [];
             for (var i = 0; i < list.length; i++) {
               var item = list[i];
-              if (item && item.playTime === nowParts.hm) {
-                var runKey = nowParts.dateKey + "_" + item.id + "_" + item.playTime;
+              var times = getScheduleTimesArray(item);
+              if (times.indexOf(nowParts.hm) !== -1) {
+                var runKey = nowParts.dateKey + "_" + item.id + "_" + nowParts.hm;
                 if (!state.playedTodayKeys[runKey]) {
                   state.playedTodayKeys[runKey] = true;
-                  playScheduledVideoItem(item);
-                  break;
+                  dueItems.push(item);
                 }
               }
             }
+            if (dueItems.length > 0) {
+              var firstItem = dueItems.shift();
+              state.videoQueue = (state.videoQueue || []).concat(dueItems);
+              playScheduledVideoItem(firstItem, nowParts.hm);
+            }
           }
+          setInterval(checkVideoScheduleTrigger, 1000);
 
           if (openVideoModalBtn && videoScheduleModal) {
             openVideoModalBtn.addEventListener("click", function () {
-              renderVideoScheduleList();
+              renderDailyVideoScheduleList();
               videoScheduleModal.classList.add("open");
             });
           }
-
           if (closeVideoModalBtn && videoScheduleModal) {
             closeVideoModalBtn.addEventListener("click", function () {
               videoScheduleModal.classList.remove("open");
             });
           }
-
           if (addVideoScheduleBtn) {
             addVideoScheduleBtn.addEventListener("click", async function () {
-              var titleVal = (videoTitleInput && videoTitleInput.value.trim()) || "Tayangan Video Harian";
-              var urlVal = (videoUrlInput && videoUrlInput.value.trim()) || "";
+              var titleVal = (videoTitleInput && videoTitleInput.value || "").trim();
+              var urlVal = (videoUrlInput && videoUrlInput.value || "").trim();
               var fileObj = videoFileInput && videoFileInput.files && videoFileInput.files[0];
-              var playTimeVal = (videoPlayTimeInput && videoPlayTimeInput.value) || "08:00";
+              var playTimeVal = (videoPlayTimeInput && videoPlayTimeInput.value || "08:00").trim();
               var durationVal = Math.max(0, Number(videoDurationInput && videoDurationInput.value || 0));
 
-              if (!urlVal && !fileObj) {
-                alert("Silakan isi URL Video atau pilih file video lokal terlebih dahulu.");
-                return;
+              if (!fileObj && !urlVal) return;
+
+              addVideoScheduleBtn.disabled = true;
+              addVideoScheduleBtn.textContent = "Menyimpan...";
+              try {
+                var newId = "daily_vid_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+                var hasLocal = false;
+                var fileName = "";
+                if (fileObj) {
+                  hasLocal = await saveVideoBlobToDb(newId, fileObj);
+                  fileName = fileObj.name;
+                }
+                var list = loadVideoSchedules();
+                list.push({
+                  id: newId,
+                  category: "daily",
+                  title: titleVal || (fileName ? fileName.replace(/\.[^/.]+$/, "") : "Tayangan Harian"),
+                  url: hasLocal ? "" : urlVal,
+                  hasLocalFile: hasLocal,
+                  fileName: fileName,
+                  playTime: playTimeVal,
+                  playTimes: [playTimeVal],
+                  durationSec: durationVal
+                });
+                saveVideoSchedules(list);
+                if (videoTitleInput) videoTitleInput.value = "";
+                if (videoUrlInput) videoUrlInput.value = "";
+                if (videoFileInput) videoFileInput.value = "";
+                renderDailyVideoScheduleList();
+              } finally {
+                addVideoScheduleBtn.disabled = false;
+                addVideoScheduleBtn.textContent = "+ Simpan Jadwal Harian";
               }
+            });
+          }
 
-              var newId = "vid_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
-              var savedLocal = false;
-              if (fileObj) {
-                savedLocal = await saveVideoBlobToDb(newId, fileObj);
+          if (adVideoFilesInput && adSelectedFilesInfo) {
+            adVideoFilesInput.addEventListener("change", function () {
+              var count = adVideoFilesInput.files ? adVideoFilesInput.files.length : 0;
+              adSelectedFilesInfo.textContent = count > 0
+                ? ("📁 Terpilih " + count + " file video iklan siap disimpan.")
+                : "Belum ada file dipilih. Anda dapat memilih 5, 10, atau lebih file video sekaligus.";
+            });
+          }
+
+          if (openAdVideoModalBtn && adVideoScheduleModal) {
+            openAdVideoModalBtn.addEventListener("click", function () {
+              renderAdVideoScheduleList();
+              adVideoScheduleModal.classList.add("open");
+            });
+          }
+          if (closeAdVideoModalBtn && adVideoScheduleModal) {
+            closeAdVideoModalBtn.addEventListener("click", function () {
+              adVideoScheduleModal.classList.remove("open");
+            });
+          }
+          if (clearAllAdVideosBtn) {
+            clearAllAdVideosBtn.addEventListener("click", async function () {
+              var all = loadVideoSchedules();
+              var ads = all.filter(function (x) { return x && x.category === "ad"; });
+              var nonAds = all.filter(function (x) { return !x || x.category !== "ad"; });
+              for (var i = 0; i < ads.length; i++) {
+                await deleteVideoBlobFromDb(ads[i].id);
               }
-
-              var list = loadVideoSchedules();
-              list.push({
-                id: newId,
-                title: titleVal,
-                url: urlVal,
-                hasLocalFile: savedLocal,
-                fileName: fileObj ? fileObj.name : "",
-                playTime: playTimeVal,
-                durationSec: durationVal
-              });
-              saveVideoSchedules(list);
-
-              if (videoTitleInput) videoTitleInput.value = "";
-              if (videoUrlInput) videoUrlInput.value = "";
-              if (videoFileInput) videoFileInput.value = "";
-              if (videoDurationInput) videoDurationInput.value = "0";
-              renderVideoScheduleList();
-              pushSettingsToCloudSync();
+              saveVideoSchedules(nonAds);
+              renderAdVideoScheduleList();
             });
           }
 
-          function openRunningTextModal() {
-            if (!runningTextModal) return;
-            if (modalRunningTextInput) {
-              var currentVal = localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT;
-              modalRunningTextInput.value = currentVal.split("   •   ").join("\n");
-            }
-            runningTextModal.classList.add("open");
-            if (modalRunningTextInput) {
-              setTimeout(function () { modalRunningTextInput.focus(); }, 30);
-            }
-          }
+          if (addAdVideoBatchBtn) {
+            addAdVideoBatchBtn.addEventListener("click", async function () {
+              var files = adVideoFilesInput && adVideoFilesInput.files ? Array.from(adVideoFilesInput.files) : [];
+              var urlLines = String(adVideoUrlsInput && adVideoUrlsInput.value || "")
+                .split(/\r?\n/)
+                .map(function (u) { return u.trim(); })
+                .filter(function (u) { return u.length > 0; });
 
-          function closeRunningTextModal() {
-            if (runningTextModal) runningTextModal.classList.remove("open");
-          }
+              if (!files.length && !urlLines.length) return;
 
-          function applyCustomRunningText(rawText) {
-            var formatted = formatMultiRunningText(rawText);
-            if (!formatted) {
-              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
-              syncRunningTextDisplay(DEFAULT_RUNNING_TEXT);
-            } else {
-              localStorage.setItem(RUNNING_TEXT_STORAGE_KEY, formatted);
-              syncRunningTextDisplay(formatted);
-            }
-            pushSettingsToCloudSync();
-          }
+              addAdVideoBatchBtn.disabled = true;
+              addAdVideoBatchBtn.textContent = "Menyimpan...";
+              try {
+                var baseTimes = parseMultiPlayTimes(adMultiTimesInput && adMultiTimesInput.value);
+                var intervalMins = Math.max(0, Number(adVideoIntervalInput && adVideoIntervalInput.value || 0));
+                var durationVal = Math.max(0, Number(adVideoDurationInput && adVideoDurationInput.value || 0));
 
-          if (saveRunningTextBtn) saveRunningTextBtn.addEventListener("click", openRunningTextModal);
-          if (closeRunningTextModalBtn) closeRunningTextModalBtn.addEventListener("click", closeRunningTextModal);
-          if (confirmRunningTextBtn) {
-            confirmRunningTextBtn.addEventListener("click", function () {
-              applyCustomRunningText(modalRunningTextInput ? modalRunningTextInput.value : "");
-              closeRunningTextModal();
+                var list = loadVideoSchedules();
+                var existingAdCount = list.filter(function (x) { return x && x.category === "ad"; }).length;
+                var offsetIndex = 0;
+
+                for (var i = 0; i < files.length; i++) {
+                  var f = files[i];
+                  var newId = "ad_vid_" + Date.now() + "_" + i + "_" + Math.floor(Math.random() * 1000);
+                  var savedOk = await saveVideoBlobToDb(newId, f);
+                  if (savedOk) {
+                    var cleanName = f.name.replace(/\.[^/.]+$/, "");
+                    var itemTimes = baseTimes.map(function (bt) {
+                      return addMinutesToHm(bt, offsetIndex * intervalMins);
+                    });
+                    list.push({
+                      id: newId,
+                      category: "ad",
+                      title: cleanName || ("Video Iklan #" + (existingAdCount + offsetIndex + 1)),
+                      url: "",
+                      hasLocalFile: true,
+                      fileName: f.name,
+                      playTime: itemTimes[0],
+                      playTimes: itemTimes,
+                      durationSec: durationVal
+                    });
+                    offsetIndex++;
+                  }
+                }
+
+                for (var j = 0; j < urlLines.length; j++) {
+                  var u = urlLines[j];
+                  var urlId = "ad_url_" + Date.now() + "_" + j + "_" + Math.floor(Math.random() * 1000);
+                  var urlItemTimes = baseTimes.map(function (bt) {
+                    return addMinutesToHm(bt, offsetIndex * intervalMins);
+                  });
+                  list.push({
+                    id: urlId,
+                    category: "ad",
+                    title: "Video Iklan #" + (existingAdCount + offsetIndex + 1),
+                    url: u,
+                    hasLocalFile: false,
+                    fileName: "",
+                    playTime: urlItemTimes[0],
+                    playTimes: urlItemTimes,
+                    durationSec: durationVal
+                  });
+                  offsetIndex++;
+                }
+
+                saveVideoSchedules(list);
+                if (adVideoFilesInput) adVideoFilesInput.value = "";
+                if (adVideoUrlsInput) adVideoUrlsInput.value = "";
+                if (adSelectedFilesInfo) {
+                  adSelectedFilesInfo.textContent = "✅ Berhasil menyimpan " + offsetIndex + " video iklan untuk jam: " + baseTimes.join(", ") + " WIB (otomatis tiap hari)!";
+                }
+                renderAdVideoScheduleList();
+              } finally {
+                addAdVideoBatchBtn.disabled = false;
+                addAdVideoBatchBtn.textContent = "+ Simpan Jadwal Iklan Harian";
+              }
             });
           }
-          if (resetRunningTextBtn) {
-            resetRunningTextBtn.addEventListener("click", function () {
-              localStorage.removeItem(RUNNING_TEXT_STORAGE_KEY);
-              if (modalRunningTextInput) modalRunningTextInput.value = DEFAULT_RUNNING_TEXT;
-              syncRunningTextDisplay(DEFAULT_RUNNING_TEXT);
-              pushSettingsToCloudSync();
-            });
-          }
 
-          var themeToggleBtn = document.getElementById("themeToggleBtn");
-          function applySavedTheme() {
-            var savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-            var isDark = savedTheme ? savedTheme === "dark" : true;
-            document.body.classList.toggle("dark-mode", isDark);
-            if (themeToggleBtn) {
-              themeToggleBtn.textContent = isDark ? "☀️ Mode Terang" : "🌙 Mode Gelap";
-            }
-          }
-
-          if (themeToggleBtn) {
-            themeToggleBtn.addEventListener("click", function () {
-              var nextDark = !document.body.classList.contains("dark-mode");
-              localStorage.setItem(THEME_STORAGE_KEY, nextDark ? "dark" : "light");
-              applySavedTheme();
-            });
-          }
-
-          var fullscreenToggleBtn = document.getElementById("fullscreenToggleBtn");
-          function isFullscreenActive() {
-            return Boolean(
-              document.fullscreenElement ||
-              document.webkitFullscreenElement ||
-              document.body.classList.contains("pseudo-fullscreen")
-            );
-          }
-
-          function syncFullscreenLabel() {
-            var active = isFullscreenActive();
-            document.body.classList.toggle("is-fullscreen", active);
-            if (fullscreenToggleBtn) {
-              fullscreenToggleBtn.textContent = active ? "✕ Keluar Layar Penuh" : "⛶ Layar Penuh";
-            }
-          }
-
-          async function enterFullscreenMode() {
-            try {
-              var root = document.documentElement;
-              if (root.requestFullscreen) await root.requestFullscreen();
-              else if (root.webkitRequestFullscreen) await root.webkitRequestFullscreen();
-              else document.body.classList.add("pseudo-fullscreen");
-            } catch (err) {
-              document.body.classList.add("pseudo-fullscreen");
-            }
-            syncFullscreenLabel();
-          }
-
-          if (fullscreenToggleBtn) {
-            fullscreenToggleBtn.addEventListener("click", async function () {
-              if (!isFullscreenActive()) {
-                localStorage.setItem(FULLSCREEN_PREF_KEY, "1");
-                await enterFullscreenMode();
+          /* =========================
+             6. SINKRONISASI GOOGLE SHEETS & AUTO-SLIDE
+             ========================= */
+          function parseCsvText(csvText) {
+            var rows = [];
+            var row = [];
+            var cell = "";
+            var inQuotes = false;
+            var str = String(csvText || "");
+            for (var i = 0; i < str.length; i++) {
+              var ch = str[i];
+              var next = str[i + 1];
+              if (inQuotes) {
+                if (ch === '"' && next === '"') {
+                  cell += '"';
+                  i++;
+                } else if (ch === '"') {
+                  inQuotes = false;
+                } else {
+                  cell += ch;
+                }
               } else {
-                localStorage.removeItem(FULLSCREEN_PREF_KEY);
-                document.body.classList.remove("pseudo-fullscreen");
-                try {
-                  if (document.exitFullscreen && document.fullscreenElement) await document.exitFullscreen();
-                  else if (document.webkitExitFullscreen && document.webkitExitFullscreen) await document.webkitExitFullscreen();
-                } catch (err) {}
-                syncFullscreenLabel();
+                if (ch === '"') {
+                  inQuotes = true;
+                } else if (ch === ",") {
+                  row.push(cell.trim());
+                  cell = "";
+                } else if (ch === "\r" && next === "\n") {
+                  row.push(cell.trim());
+                  rows.push(row);
+                  row = [];
+                  cell = "";
+                  i++;
+                } else if (ch === "\n" || ch === "\r") {
+                  row.push(cell.trim());
+                  rows.push(row);
+                  row = [];
+                  cell = "";
+                } else {
+                  cell += ch;
+                }
               }
+            }
+            if (cell.length > 0 || row.length > 0) {
+              row.push(cell.trim());
+              rows.push(row);
+            }
+            return rows.filter(function (r) {
+              return r.some(function (c) { return c !== ""; });
             });
           }
 
-          document.addEventListener("fullscreenchange", syncFullscreenLabel);
-          document.addEventListener("webkitfullscreenchange", syncFullscreenLabel);
+          function fetchViaGvizJsonp() {
+            return new Promise(function (resolve, reject) {
+              var cbName = "__dumaiGvizCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+              var script = document.createElement("script");
+              var timer = setTimeout(function () {
+                cleanup();
+                reject(new Error("JSONP timeout"));
+              }, 10000);
+
+              function cleanup() {
+                clearTimeout(timer);
+                try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                if (script.parentNode) script.parentNode.removeChild(script);
+              }
+
+              window[cbName] = function (resp) {
+                cleanup();
+                try {
+                  if (!resp || !resp.table) return reject(new Error("Invalid GViz response"));
+                  var cols = (resp.table.cols || []).map(function (c) {
+                    return String(c.label || c.id || "").trim();
+                  });
+                  var dataRows = (resp.table.rows || []).map(function (r) {
+                    return (r.c || []).map(function (cell) {
+                      if (!cell) return "";
+                      return String(cell.f != null ? cell.f : (cell.v != null ? cell.v : "")).trim();
+                    });
+                  });
+                  var hasHeaderLabels = cols.some(function (c) { return c && !/^[A-Z]$/.test(c); });
+                  if (hasHeaderLabels) {
+                    resolve([cols].concat(dataRows));
+                  } else {
+                    resolve(dataRows);
+                  }
+                } catch (err) {
+                  reject(err);
+                }
+              };
+
+              script.onerror = function () {
+                cleanup();
+                reject(new Error("JSONP script error"));
+              };
+              script.src = GVIZ_JSONP_BASE + "&tqx=responseHandler:" + cbName + "&_=" + Date.now();
+              document.head.appendChild(script);
+            });
+          }
+
+          function getStatusBadgeClass(statusRaw) {
+            var s = String(statusRaw || "").toLowerCase();
+            if (!s) return "status-neutral";
+            if (s.indexOf("berangkat") !== -1 || s.indexOf("selesai") !== -1 || s.indexOf("tiba") !== -1 || s.indexOf("sandar") !== -1) {
+              return "status-ok";
+            }
+            if (s.indexOf("boarding") !== -1 || s.indexOf("embarkasi") !== -1 || s.indexOf("debarkasi") !== -1 || s.indexOf("proses") !== -1) {
+              return "status-info";
+            }
+            if (s.indexOf("tunda") !== -1 || s.indexOf("delay") !== -1 || s.indexOf("batal") !== -1 || s.indexOf("tutup") !== -1) {
+              return "status-warn";
+            }
+            if (s.indexOf("persiapan") !== -1 || s.indexOf("menunggu") !== -1 || s.indexOf("open") !== -1 || s.indexOf("buka") !== -1) {
+              return "status-prep";
+            }
+            return "status-neutral";
+          }
+
+          function renderTableAndStats(animateSlide) {
+            if (!thead || !tbody) return;
+            var headers = state.headers;
+            thead.innerHTML =
+              "<tr>" +
+              headers.map(function (h) {
+                return "<th>" + escapeHtml(h) + "</th>";
+              }).join("") +
+              "</tr>";
+
+            var rows = state.rows;
+            if (statTableCount) statTableCount.textContent = String(rows.length);
+
+            var activeCount = rows.filter(function (r) {
+              var st = String(r[r.length - 1] || "").toLowerCase();
+              return st && st.indexOf("batal") === -1 && st.indexOf("selesai") === -1 && st.indexOf("berangkat") === -1;
+            }).length;
+            if (statActiveCount) statActiveCount.textContent = String(activeCount);
+
+            if (!rows.length) {
+              tbody.innerHTML = "";
+              if (emptyMsg) emptyMsg.style.display = "block";
+              if (slidePageBadge) slidePageBadge.classList.remove("visible");
+              return;
+            }
+
+            if (emptyMsg) emptyMsg.style.display = "none";
+            var totalPages = Math.max(1, Math.ceil(rows.length / ROWS_PER_SLIDE));
+            if (state.currentSlide >= totalPages) state.currentSlide = 0;
+
+            var startIdx = state.currentSlide * ROWS_PER_SLIDE;
+            var visibleRows = rows.slice(startIdx, startIdx + ROWS_PER_SLIDE);
+
+            if (animateSlide) {
+              tbody.classList.remove("slide-animate");
+              void tbody.offsetWidth;
+              tbody.classList.add("slide-animate");
+            }
+
+            tbody.innerHTML = visibleRows.map(function (r) {
+              return (
+                "<tr>" +
+                headers.map(function (_, colIdx) {
+                  var val = r[colIdx] != null ? r[colIdx] : "-";
+                  if (colIdx === 0) {
+                    return "<td><span class='ship-name'>" + escapeHtml(val || "-") + "</span></td>";
+                  }
+                  if (colIdx === 4) {
+                    return "<td><span class='gate-pill'>" + escapeHtml(val || "-") + "</span></td>";
+                  }
+                  if (colIdx === headers.length - 1) {
+                    var cls = getStatusBadgeClass(val);
+                    return "<td><span class='status-badge " + cls + "'>" + escapeHtml(val || "-") + "</span></td>";
+                  }
+                  return "<td>" + escapeHtml(val || "-") + "</td>";
+                }).join("") +
+                "</tr>"
+              );
+            }).join("");
+
+            if (slidePageBadge) {
+              if (totalPages > 1) {
+                slidePageBadge.textContent = "Halaman " + (state.currentSlide + 1) + " / " + totalPages;
+                slidePageBadge.classList.add("visible");
+              } else {
+                slidePageBadge.classList.remove("visible");
+              }
+            }
+          }
+
+          function advanceTableSlide() {
+            if (state.activeVideoScheduleId) return;
+            var totalPages = Math.ceil(state.rows.length / ROWS_PER_SLIDE);
+            if (totalPages <= 1) return;
+            state.currentSlide = (state.currentSlide + 1) % totalPages;
+            renderTableAndStats(true);
+          }
+          setInterval(advanceTableSlide, SLIDE_INTERVAL_MS);
+
+          async function syncScheduleData(isManual) {
+            if (state.isFetching) return;
+            state.isFetching = true;
+            if (manualRefreshBtn && isManual) manualRefreshBtn.disabled = true;
+
+            try {
+              var matrix = null;
+              try {
+                var res = await fetch(PUBLISHED_CSV_URL + "&_t=" + Date.now(), { cache: "no-store" });
+                if (res.ok) {
+                  var csvTxt = await res.text();
+                  matrix = parseCsvText(csvTxt);
+                }
+              } catch (e) {}
+
+              if (!matrix || !matrix.length) {
+                matrix = await fetchViaGvizJsonp();
+              }
+
+              if (matrix && matrix.length > 0) {
+                var rawHeaders = matrix[0];
+                var cleanHeaders = rawHeaders.filter(function (h) { return h !== ""; });
+                var colCount = cleanHeaders.length || 6;
+                if (cleanHeaders.length >= 2) {
+                  state.headers = cleanHeaders;
+                }
+                var dataRows = matrix.slice(1).filter(function (r) {
+                  return r.slice(0, colCount).some(function (c) { return String(c || "").trim() !== ""; });
+                });
+
+                var sig = JSON.stringify({ h: state.headers, r: dataRows });
+                if (sig !== state.lastSignature) {
+                  state.lastSignature = sig;
+                  state.rows = dataRows;
+                  renderTableAndStats(false);
+                }
+              }
+            } catch (err) {
+              console.warn("Gagal memuat Sheet:", err);
+            } finally {
+              state.isFetching = false;
+              if (manualRefreshBtn) manualRefreshBtn.disabled = false;
+            }
+          }
 
           if (manualRefreshBtn) {
             manualRefreshBtn.addEventListener("click", function () {
               syncScheduleData(true);
-              syncRemoteConfigFromSheet();
-              pullSettingsFromCloudSync();
-              fetchDumaiWeather();
-              checkForHtmlAppUpdate();
             });
           }
 
-          [logoModal, runningTextModal, videoScheduleModal].forEach(function (backdrop) {
-            if (!backdrop) return;
-            backdrop.addEventListener("click", function (ev) {
-              if (ev.target === backdrop) backdrop.classList.remove("open");
-            });
-          });
-
-          applySavedTheme();
-          renderHeaderLogos();
-          syncRunningTextDisplay(localStorage.getItem(RUNNING_TEXT_STORAGE_KEY) || DEFAULT_RUNNING_TEXT);
-          renderTableAndStats(state.rows, state.headers);
-          updateLiveClock();
           syncScheduleData(false);
-          syncRemoteConfigFromSheet();
-          pullSettingsFromCloudSync();
-          fetchDumaiWeather();
-          checkVideoScheduleTrigger();
-          checkForHtmlAppUpdate();
+          setInterval(function () { syncScheduleData(false); }, 5000);
 
-          if (localStorage.getItem(FULLSCREEN_PREF_KEY) === "1") {
-            enterFullscreenMode();
+          /* =========================
+             7. CUACA PERAIRAN DUMAI (OPEN-METEO)
+             ========================= */
+          function describeWeatherCode(code) {
+            if (code === 0) return { icon: "☀️", text: "Cerah" };
+            if (code >= 1 && code <= 3) return { icon: "⛅", text: "Cerah Berawan" };
+            if (code === 45 || code === 48) return { icon: "🌫️", text: "Berkabut" };
+            if (code >= 51 && code <= 67) return { icon: "🌦️", text: "Hujan Ringan" };
+            if (code >= 80 && code <= 82) return { icon: "🌧️", text: "Hujan Lebat" };
+            if (code >= 95) return { icon: "⛈️", text: "Hujan Petir" };
+            return { icon: "⛅", text: "Berawan" };
           }
 
-          setInterval(updateLiveClock, 1000);
-          setInterval(function () {
-            syncScheduleData(false);
-            syncRemoteConfigFromSheet();
-            pullSettingsFromCloudSync();
-          }, 5000);
-          state.slideTimer = setInterval(advanceTableSlide, SLIDE_INTERVAL_MS);
-          setInterval(checkVideoScheduleTrigger, 10000);
-          setInterval(fetchDumaiWeather, 300000);
-          setInterval(checkForHtmlAppUpdate, AUTO_UPDATE_CHECK_MS);
+          async function fetchDumaiWeather() {
+            try {
+              var url = "https://api.open-meteo.com/v1/forecast?latitude=1.6671&longitude=101.4432&current_weather=true";
+              var res = await fetch(url, { cache: "no-store" });
+              if (!res.ok) return;
+              var data = await res.json();
+              if (data && data.current_weather) {
+                var temp = Math.round(Number(data.current_weather.temperature || 29));
+                var wind = Math.round(Number(data.current_weather.windspeed || 0));
+                var info = describeWeatherCode(Number(data.current_weather.weathercode || 2));
+                if (statWeather) statWeather.textContent = info.icon + " " + temp + "°C";
+                if (statWeatherDesc) statWeatherDesc.textContent = info.text + " • Angin " + wind + " km/j (Dumai)";
+              }
+            } catch (e) {}
+          }
+          fetchDumaiWeather();
+          setInterval(fetchDumaiWeather, 15 * 60 * 1000);
 
-          document.addEventListener("visibilitychange", function () {
-            if (!document.hidden) {
-              updateLiveClock();
-              syncScheduleData(false);
-              pullSettingsFromCloudSync();
-              checkVideoScheduleTrigger();
-              checkForHtmlAppUpdate();
-            }
-          });
-        } catch (err) {
-          console.error("Dashboard initialization error:", err);
+          /* =========================
+             8. AUTO-UPDATE OTOMATIS UNTUK SEMUA DEVICE (TV / MONITOR / LAPTOP)
+             ========================= */
+          function normalizeHtmlSignature(rawHtml) {
+            // Hapus spasi berlebih / atribut dinamis agar perbandingan kode index.html akurat
+            return String(rawHtml || "")
+              .replace(/\s+/g, " ")
+              .trim();
+          }
+
+          async function checkForHtmlUpdate() {
+            if (state.isReloadingUpdate || state.activeVideoScheduleId) return;
+            try {
+              var baseUrl = window.location.href.split("#")[0].split("?")[0];
+              var res = await fetch(baseUrl + "?_nocache=" + Date.now(), {
+                method: "GET",
+                cache: "no-store",
+                headers: {
+                  "Cache-Control": "no-cache, no-store, must-revalidate",
+                  "Pragma": "no-cache"
+                }
+              });
+              if (!res.ok) return;
+              var htmlText = await res.text();
+              if (!htmlText || htmlText.length < 500) return;
+
+              var normalizedSig = normalizeHtmlSignature(htmlText);
+
+              if (state.initialHtmlFingerprint === null) {
+                state.initialHtmlFingerprint = normalizedSig;
+                return;
+              }
+
+              if (normalizedSig !== state.initialHtmlFingerprint) {
+                state.isReloadingUpdate = true;
+                if (isFullscreenActive()) {
+                  sessionStorage.setItem("dumai_restore_fullscreen_after_update", "1");
+                }
+                if (autoUpdateToast) autoUpdateToast.classList.add("visible");
+                setTimeout(function () {
+                  // Muat ulang tanpa cache lama agar semua device langsung memakai versi terbaru
+                  window.location.replace(baseUrl + "?_updated=" + Date.now());
+                }, 1500);
+              }
+            } catch (e) {}
+          }
+          setTimeout(checkForHtmlUpdate, 2000);
+          setInterval(checkForHtmlUpdate, 15000);
+        } catch (fatalErr) {
+          console.error("Dashboard initialization error:", fatalErr);
         }
       }
 
